@@ -108,6 +108,7 @@ GitHub.sublime-settings
 instructions.txt
 log/
 /.env.dev
+*.mo
 
 # WSGI
 pids/*.pid

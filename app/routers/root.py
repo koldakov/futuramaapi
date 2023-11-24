@@ -1,5 +1,7 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Request, status
 from fastapi.responses import Response
+
+from app.templates import templates
 
 router = APIRouter()
 
@@ -12,3 +14,18 @@ router = APIRouter()
 )
 async def get_health() -> Response:
     return Response(status_code=status.HTTP_200_OK)
+
+
+@router.get(
+    "/",
+    include_in_schema=False,
+    status_code=status.HTTP_200_OK,
+    name="root",
+)
+async def get_root(request: Request) -> Response:
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+        },
+    )

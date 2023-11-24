@@ -1,0 +1,28 @@
+# English (United States) translations for FuturamaAPI.
+# Copyright (C) 2023 FuturamaAPI
+# This file is distributed under the same license as the FuturamaAPI
+# project.
+# FIRST AUTHOR <coldie322@gmail.com>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: FuturamaAPI 0.0.1\n"
+"Report-Msgid-Bugs-To: coldie322@gmail.com\n"
+"POT-Creation-Date: 2023-12-01 19:08+0100\n"
+"PO-Revision-Date: 2023-11-24 14:14+0100\n"
+"Last-Translator: FULL NAME <coldie322@gmail.com>\n"
+"Language: en_US\n"
+"Language-Team: en_US <coldie322@gmail.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: templates/base.html:8 templates/index.html:10
+msgid "FB00002"
+msgstr "Welcome"
+
+#: templates/base.html:8 templates/base.html:25
+msgid "FB00001"
+msgstr "Futurama API"
