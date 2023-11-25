@@ -21,6 +21,18 @@ pip install -r requirements.txt
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+## Migrations
+
+If you create models in a new file please import it in env.py.
+Because alembic does not detect child classes.
+
+```commandline
+alembic revision --autogenerate -m "Revision Name"
+alembic upgrade head
+```
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Development
 
 ```commandline
