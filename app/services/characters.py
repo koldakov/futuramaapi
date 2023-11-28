@@ -1,6 +1,8 @@
 from datetime import datetime
 
 from fastapi import HTTPException, status
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import select
 from sqlalchemy.engine.result import Result
@@ -36,3 +38,10 @@ async def process_get_character(
     except NoResultFound:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return Character.model_validate(result)
+
+
+async def process_get_characters(session: AsyncSession) -> Page[Character]:
+    return await paginate(
+        session,
+        select(CharacterModel).order_by(CharacterModel.created_at),
+    )

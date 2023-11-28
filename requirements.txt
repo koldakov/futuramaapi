@@ -6,6 +6,7 @@ Babel==2.13.1
 cfgv==3.4.0
 distlib==0.3.7
 fastapi==0.104.1
+fastapi-pagination==0.12.13
 filelock==3.13.1
 greenlet==3.0.1
 h11==0.14.0

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi_pagination import add_pagination
 
 from app.configs import settings
 from app.routers.characters import router as characters_router
@@ -25,3 +26,5 @@ app.include_router(
 )
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+add_pagination(app)

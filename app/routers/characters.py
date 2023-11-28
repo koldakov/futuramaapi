@@ -1,8 +1,13 @@
 from fastapi import APIRouter, Depends, status
+from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.sessions import get_async_session
-from app.services.characters import Character, process_get_character
+from app.services.characters import (
+    Character,
+    process_get_character,
+    process_get_characters,
+)
 
 router = APIRouter(prefix="/characters")
 
@@ -17,3 +22,14 @@ async def get_character(
     session: AsyncSession = Depends(get_async_session),
 ) -> Character:
     return await process_get_character(character_id, session)
+
+
+@router.get(
+    "/",
+    status_code=status.HTTP_200_OK,
+    response_model=Page[Character],
+)
+async def get_characters(
+    session: AsyncSession = Depends(get_async_session),
+) -> Page[Character]:
+    return await process_get_characters(session)
