@@ -5,6 +5,7 @@ from fastapi_pagination import add_pagination
 
 from app.configs import settings
 from app.routers.characters import router as characters_router
+from app.routers.episodes import router as episodes_router
 from app.routers.root import router as root_router
 
 app = FastAPI()
@@ -22,6 +23,10 @@ app.include_router(root_router)
 # API
 app.include_router(
     characters_router,
+    prefix="/api",
+)
+app.include_router(
+    episodes_router,
     prefix="/api",
 )
 
