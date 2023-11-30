@@ -12,6 +12,20 @@
   </head>
   <body>
     <header>
+      <nav
+        class="navbar navbar-expand-lg navbar-light bg-light"
+      >
+        <div
+          class="container-fluid"
+        >
+          <a
+            class="navbar-brand"
+            href="{{ url_for('root') }}"
+          >
+            {{ _( "FB00001" ) }}
+          </a>
+        </div>
+      </nav>
     </header>
     <main>
       {% block main_content %}{% endblock %}
