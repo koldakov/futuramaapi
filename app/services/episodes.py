@@ -1,6 +1,8 @@
 from datetime import datetime
 
 from fastapi import HTTPException, status
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import select
 from sqlalchemy.engine.result import Result
@@ -32,3 +34,10 @@ async def process_get_episode(
     except NoResultFound:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return Episode.model_validate(result)
+
+
+async def process_get_episodes(session: AsyncSession) -> Page[Episode]:
+    return await paginate(
+        session,
+        select(EpisodeModel).order_by(EpisodeModel.id),
+    )
