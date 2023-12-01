@@ -26,10 +26,12 @@ app.include_router(root_router)
 # API
 app.include_router(
     characters_router,
+    tags=["characters"],
     prefix="/api",
 )
 app.include_router(
     episodes_router,
+    tags=["episodes"],
     prefix="/api",
 )
 
