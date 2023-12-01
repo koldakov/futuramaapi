@@ -8,7 +8,10 @@ from app.routers.characters import router as characters_router
 from app.routers.episodes import router as episodes_router
 from app.routers.root import router as root_router
 
-app = FastAPI()
+app = FastAPI(
+    docs_url=None,
+    redoc_url="/docs",
+)
 
 app.add_middleware(
     CORSMiddleware,
