@@ -6,6 +6,7 @@ try:
     gnu_translations = gettext.translation(
         domain="messages",
         localedir="locale",
+        languages=["en_US"],
     )
 except FileNotFoundError:
     raise RuntimeError("Please compile messages first")
