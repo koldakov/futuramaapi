@@ -7,7 +7,7 @@
     <meta name="author" content="Ivan Koldakov">
     <title>{% block titile %}{{ _("FB00002") }}{% endblock %} | {{ _("FB00001") }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', path='/css/base.css') }}" rel="stylesheet">
+    <link href="{{ relative_path_for('static', path='/css/base.css') }}" rel="stylesheet">
     {% block extra_styles %}{% endblock %}
   </head>
   <body>
@@ -20,7 +20,7 @@
         >
           <a
             class="navbar-brand"
-            href="{{ url_for('root') }}"
+            href="{{ relative_path_for('root') }}"
           >
             {{ _( "FB00001" ) }}
           </a>
