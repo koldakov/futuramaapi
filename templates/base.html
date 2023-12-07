@@ -28,6 +28,31 @@
       </nav>
     </header>
     <main>
+      {% block main_info %}
+      <div
+        class="px-4 pt-5 my-5 text-center intro-background"
+      >
+        <h1
+          class="display-4 fw-bold"
+        >
+          {{ _( "FB00001" ) }}
+        </h1>
+        <div
+          class="col-lg-6 mx-auto"
+        >
+          <div
+            class="d-grid d-sm-flex justify-content-sm-center mb-5"
+          >
+            <a
+              href="{{ relative_path_for('redoc_html') }}"
+              class="btn btn-danger"
+              role="button"
+            >{{ _( "FB00003" ) }}
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endblock %}
       {% block main_content %}{% endblock %}
     </main>
     <footer>
