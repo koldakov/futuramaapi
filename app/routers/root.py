@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, status
-from fastapi.responses import Response
+from fastapi.responses import FileResponse, Response
 
 from app.templates import templates
 
@@ -29,3 +29,11 @@ async def get_root(request: Request) -> Response:
             "request": request,
         },
     )
+
+
+@router.get(
+    "/favicon.ico",
+    include_in_schema=False,
+)
+async def favicon():
+    return FileResponse("favicon.ico")
