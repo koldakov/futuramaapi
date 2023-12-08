@@ -1,3 +1,4 @@
+from pathlib import Path
 from urllib.parse import ParseResult, urlparse
 
 from json import loads
@@ -94,6 +95,8 @@ def get_env_var(
 class Settings(BaseModel):
     allow_origins: List = get_env_var("ALLOW_ORIGINS", cast=List)
     database_url: List = get_env_var("DATABASE_URL", cast=str, async_=True, db_url=True)
+    project_root: Path = Path(__file__).parent.parent.resolve()
+    static: Path = Path("static")
 
 
 settings = Settings()
