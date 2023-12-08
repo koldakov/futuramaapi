@@ -1,9 +1,11 @@
 from datetime import datetime
+from typing import Any, Optional
 
-from fastapi import HTTPException, status
+from fastapi import HTTPException, Request, status
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
-from pydantic import BaseModel, ConfigDict
+from fastapi_storages import StorageImage
+from pydantic import BaseModel, ConfigDict, HttpUrl, field_validator
 from sqlalchemy import select
 from sqlalchemy.engine.result import Result
 from sqlalchemy.exc import NoResultFound
@@ -22,8 +24,27 @@ class Character(BaseModel):
     gender: CharacterGender
     status: CharacterStatus
     created_at: datetime
+    image: Optional[HttpUrl]
+
+    @field_validator("image", mode="before")
+    @classmethod
+    def make_url(cls, value: StorageImage) -> HttpUrl:
+        """Makes URL from DB path.
+
+        Currently, will return None for all URLs, cause to generate a URL we need a request.
+
+        Args:
+            value (fastapi_storages.StorageImage): Image field.
+
+        Returns: None. TODO: propagate request to generate a proper URL
+        """
+        return None
 
     model_config = ConfigDict(from_attributes=True)
+
+    def __init__(self, request: Request = None, **data: Any):
+        self.request = request
+        super().__init__(**data)
 
 
 async def process_get_character(

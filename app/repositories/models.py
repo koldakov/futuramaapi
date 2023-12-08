@@ -2,6 +2,8 @@ from enum import Enum
 from typing import List
 from uuid import uuid4
 
+from fastapi_storages import FileSystemStorage
+from fastapi_storages.integrations.sqlalchemy import ImageType
 from sqlalchemy import (
     Column,
     Date,
@@ -15,6 +17,7 @@ from sqlalchemy.dialects.postgresql import ENUM  # TODO: engine agnostic.
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
+from app.configs import settings
 from app.repositories.base import Base
 
 
@@ -180,6 +183,11 @@ class Character(Base):
         unique=True,
         nullable=False,
         default=uuid4,
+    )
+    image = Column(
+        ImageType(
+            storage=FileSystemStorage(path=settings.project_root / settings.static),
+        ),
     )
 
     # Mappers
