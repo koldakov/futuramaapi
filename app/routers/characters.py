@@ -16,6 +16,7 @@ router = APIRouter(prefix="/characters")
     "/{character_id}",
     status_code=status.HTTP_200_OK,
     response_model=Character,
+    name="character",
 )
 async def get_character(
     character_id: int,
@@ -28,6 +29,7 @@ async def get_character(
     "/",
     status_code=status.HTTP_200_OK,
     response_model=Page[Character],
+    name="characters",
 )
 async def get_characters(
     session: AsyncSession = Depends(get_async_session),

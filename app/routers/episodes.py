@@ -16,6 +16,7 @@ router = APIRouter(prefix="/episodes")
     "/{episode_id}",
     status_code=status.HTTP_200_OK,
     response_model=Episode,
+    name="episode",
 )
 async def get_episode(
     episode_id: int,
@@ -28,6 +29,7 @@ async def get_episode(
     "/",
     status_code=status.HTTP_200_OK,
     response_model=Page[Episode],
+    name="episodes",
 )
 async def get_episodes(
     session: AsyncSession = Depends(get_async_session),
