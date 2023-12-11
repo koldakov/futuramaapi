@@ -32,8 +32,12 @@ def _parse_str(setting: str, /, **extra):
 
 def _fix_db_url(url: str, /, **extra):
     db_url = urlparse(url)
+    try:
+        async_ = extra["async_"] or False
+    except KeyError:
+        async_ = False
     if db_url.scheme.split("+")[0] in ["postgres", "postgresql"]:
-        return _fix_postgres_url(db_url, is_async=extra.get("async_", False))
+        return _fix_postgres_url(db_url, is_async=async_)
     raise NotImplementedError() from None
 
 
