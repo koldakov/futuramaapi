@@ -1,4 +1,62 @@
 {% extends "base.html" %}
 
 {% block main_content %}
+<div
+  class="album py-5 bg-light"
+>
+  <div
+    class="container"
+  >
+    <div
+      class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"
+    >
+    {% for character in characters %}
+    <div
+      class="col"
+    >
+      <div
+        class="card shadow-sm"
+      >
+        <img
+          src="{{ '/static/' + character.image._name }}"
+          class="img-fluid"
+        />
+        <div
+          class="card-body"
+        >
+          <p
+            class="card-text"
+          >
+            {{ _("FB00004") }}: {{ character.gender.value|capitalize }}.
+            <br />
+            {{ _("FB00005") }}: {{ character.status.value|capitalize }}.
+          </p>
+          <div
+            class="d-flex justify-content-between align-items-center"
+          >
+            <div
+              class="btn-group"
+            >
+              <a
+                href='{{ relative_path_for("character", character_id=character.id) }}'
+                class="btn btn-sm btn-outline-secondary"
+                role="button"
+                target="_blank"
+              >
+                {{ _("FB00006") }}
+              </a>
+            </div>
+            <small
+              class="text-muted"
+            >
+              {{ character.name }}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FuturamaAPI 0.0.1\n"
 "Report-Msgid-Bugs-To: coldie322@gmail.com\n"
-"POT-Creation-Date: 2023-12-01 19:22+0100\n"
+"POT-Creation-Date: 2023-12-10 23:22+0100\n"
 "PO-Revision-Date: 2023-11-24 14:14+0100\n"
 "Last-Translator: FULL NAME <coldie322@gmail.com>\n"
 "Language: en_US\n"
@@ -23,10 +23,22 @@ msgstr ""
 msgid "FB00002"
 msgstr "Welcome"
 
-#: templates/base.html:8 templates/base.html:25 templates/index.html:10
+#: templates/base.html:8 templates/base.html:25 templates/base.html:38
 msgid "FB00001"
 msgstr "Futurama API"
 
-#: templates/index.html:27
+#: templates/base.html:50
 msgid "FB00003"
 msgstr "Documentation"
+
+#: templates/index.html:17
+msgid "FB00004"
+msgstr "Gender"
+
+#: templates/index.html:19
+msgid "FB00005"
+msgstr "Status"
+
+#: templates/index.html:28
+msgid "FB00006"
+msgstr "View"
