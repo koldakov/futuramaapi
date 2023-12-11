@@ -37,7 +37,7 @@ def _fix_db_url(url: str, /, **extra):
     raise NotImplementedError() from None
 
 
-def _fix_postgres_url(url: ParseResult, /, *, is_async=False):
+def _fix_postgres_url(url: ParseResult, /, *, is_async: bool = False):
     if is_async:
         return url._replace(scheme="postgresql+asyncpg").geturl()
     return url._replace(scheme="postgresql").geturl()
