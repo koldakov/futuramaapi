@@ -50,6 +50,7 @@ class Character(BaseModel):
 async def process_get_character(
     character_id: int,
     session: AsyncSession,
+    /,
 ) -> Character:
     cursor: Result = await session.execute(
         select(CharacterModel).where(CharacterModel.id == character_id)
@@ -61,7 +62,7 @@ async def process_get_character(
     return Character.model_validate(result)
 
 
-async def process_get_characters(session: AsyncSession) -> Page[Character]:
+async def process_get_characters(session: AsyncSession, /) -> Page[Character]:
     return await paginate(
         session,
         select(CharacterModel).order_by(CharacterModel.created_at),

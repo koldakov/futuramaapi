@@ -8,7 +8,7 @@ from typing import Any, Dict, List
 from pydantic import BaseModel
 
 
-def parse(cast: Any, setting: str, separator: str, **extra) -> Any:
+def parse(cast: Any, setting: str, separator: str, /, **extra) -> Any:
     if cast is str:
         return _parse_str(setting, **extra)
     elif cast is bool:
@@ -20,7 +20,7 @@ def parse(cast: Any, setting: str, separator: str, **extra) -> Any:
     raise NotImplementedError(f'Cast is not implemented. cast="{cast}"') from None
 
 
-def _parse_str(setting: str, **extra):
+def _parse_str(setting: str, /, **extra):
     try:
         is_db = extra["db_url"]
     except KeyError:
@@ -30,30 +30,30 @@ def _parse_str(setting: str, **extra):
     return setting
 
 
-def _fix_db_url(url: str, **extra):
+def _fix_db_url(url: str, /, **extra):
     db_url = urlparse(url)
     if db_url.scheme.split("+")[0] in ["postgres", "postgresql"]:
-        return _fix_postgres_url(db_url, extra.get("async_", False))
+        return _fix_postgres_url(db_url, is_async=extra.get("async_", False))
     raise NotImplementedError() from None
 
 
-def _fix_postgres_url(url: ParseResult, is_async=False):
+def _fix_postgres_url(url: ParseResult, /, *, is_async=False):
     if is_async:
         return url._replace(scheme="postgresql+asyncpg").geturl()
     return url._replace(scheme="postgresql").geturl()
 
 
-def _parse_list(setting: str, separator: str) -> List:
+def _parse_list(setting: str, separator: str, /) -> List:
     return [
         _setting for _setting in "".join(setting.split()).split(separator) if _setting
     ]
 
 
-def _parse_dict(setting: str) -> Dict:
+def _parse_dict(setting: str, /) -> Dict:
     return loads(setting)
 
 
-def _parse_bool(setting: str) -> bool:
+def _parse_bool(setting: str, /) -> bool:
     if setting.lower() in (
         "on",
         "true",
@@ -66,7 +66,7 @@ def _parse_bool(setting: str) -> bool:
     return False
 
 
-def _parse_int(setting: str) -> int:
+def _parse_int(setting: str, /) -> int:
     try:
         return int(setting)
     except ValueError:
@@ -77,6 +77,8 @@ def _parse_int(setting: str) -> int:
 
 def get_env_var(
     var: str,
+    /,
+    *,
     cast: Any = str,
     separator: str = ",",
     required=True,

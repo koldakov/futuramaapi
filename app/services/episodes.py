@@ -25,6 +25,7 @@ class Episode(BaseModel):
 async def process_get_episode(
     character_id: int,
     session: AsyncSession,
+    /,
 ) -> Episode:
     cursor: Result = await session.execute(
         select(EpisodeModel).where(EpisodeModel.id == character_id)
@@ -36,7 +37,7 @@ async def process_get_episode(
     return Episode.model_validate(result)
 
 
-async def process_get_episodes(session: AsyncSession) -> Page[Episode]:
+async def process_get_episodes(session: AsyncSession, /) -> Page[Episode]:
     return await paginate(
         session,
         select(EpisodeModel).order_by(EpisodeModel.id),
