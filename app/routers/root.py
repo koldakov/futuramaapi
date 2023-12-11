@@ -35,5 +35,5 @@ async def get_root(
     "/favicon.ico",
     include_in_schema=False,
 )
-async def favicon():
+async def favicon() -> FileResponse:
     return FileResponse("favicon.ico")
