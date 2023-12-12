@@ -14,7 +14,7 @@ mimetypes.add_type("image/webp", ".webp")
 
 app = FastAPI(
     docs_url=None,
-    redoc_url="/docs",
+    redoc_url=None,
 )
 
 app.add_middleware(
