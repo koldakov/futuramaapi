@@ -1,3 +1,5 @@
+import mimetypes
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -7,6 +9,8 @@ from app.configs import settings
 from app.routers.characters import router as characters_router
 from app.routers.episodes import router as episodes_router
 from app.routers.root import router as root_router
+
+mimetypes.add_type("image/webp", ".webp")
 
 app = FastAPI(
     docs_url=None,
