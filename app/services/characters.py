@@ -5,7 +5,7 @@ from fastapi import HTTPException, Request, status
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_storages import StorageImage
-from pydantic import BaseModel, ConfigDict, HttpUrl, field_validator
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator
 from sqlalchemy import select
 from sqlalchemy.engine.result import Result
 from sqlalchemy.exc import NoResultFound
@@ -23,7 +23,7 @@ class Character(BaseModel):
     name: str
     gender: CharacterGender
     status: CharacterStatus
-    created_at: datetime
+    created_at: datetime = Field(serialization_alias="createdAt")
     image: Optional[HttpUrl]
 
     @field_validator("image", mode="before")

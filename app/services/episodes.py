@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import HTTPException, status
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from sqlalchemy.engine.result import Result
 from sqlalchemy.exc import NoResultFound
@@ -15,9 +15,9 @@ from app.repositories.models import Episode as EpisodeModel
 class Episode(BaseModel):
     id: int
     name: str
-    air_date: datetime
+    air_date: datetime = Field(serialization_alias="airDate")
     duration: int
-    created_at: datetime
+    created_at: datetime = Field(serialization_alias="createdAt")
 
     model_config = ConfigDict(from_attributes=True)
 
