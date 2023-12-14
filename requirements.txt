@@ -9,7 +9,7 @@ cfgv==3.4.0
 distlib==0.3.7
 fastapi==0.104.1
 fastapi-pagination==0.12.13
-fastapi-storages==0.2.0
+fastapi-storages==0.2.1
 filelock==3.13.1
 greenlet==3.0.1
 h11==0.14.0
