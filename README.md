@@ -41,7 +41,7 @@ export $(cat .env | xargs)
 # Compile tranlations
 make messages-compile
 # Run hypercorn server
-hypercorn --reload main:app
+hypercorn --reload app.main:app
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>

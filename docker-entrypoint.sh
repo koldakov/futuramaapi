@@ -6,4 +6,4 @@ make messages-compile
 # Migrations
 alembic upgrade head
 
-hypercorn -b :$PORT main:app
+hypercorn -b :$PORT app.main:app
