@@ -56,7 +56,7 @@ class Character(BaseModel):
         super().__init__(**data)
 
 
-async def process_get_character(
+async def get_character(
     character_id: int,
     session: AsyncSession,
     /,
@@ -69,6 +69,14 @@ async def process_get_character(
     except NoResultFound:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return Character.model_validate(result)
+
+
+async def process_get_character(
+    character_id: int,
+    session: AsyncSession,
+    /,
+) -> Character:
+    return await get_character(character_id, session)
 
 
 async def process_get_characters(session: AsyncSession, /) -> Page[Character]:
