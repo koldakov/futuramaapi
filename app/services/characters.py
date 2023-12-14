@@ -11,6 +11,7 @@ from sqlalchemy.engine.result import Result
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
+from app.configs import settings
 from app.repositories.models import Character as CharacterModel
 from app.repositories.models import (
     CharacterGender,
@@ -28,17 +29,25 @@ class Character(BaseModel):
 
     @field_validator("image", mode="before")
     @classmethod
-    def make_url(cls, value: StorageImage) -> HttpUrl:
+    def make_url(cls, value: StorageImage | None) -> HttpUrl | None:
         """Makes URL from DB path.
 
-        Currently, will return None for all URLs, cause to generate a URL we need a request.
+        FastAPI does NOT work properly with proxy, so for now protocol will be hardcoded.
+        TODO: propagate forwarded headers, rely on trusted host.
 
         Args:
             value (fastapi_storages.StorageImage): Image field.
 
-        Returns: None. TODO: propagate request to generate a proper URL
+        Returns:
+            ``pydantic.HttpUrl`` if Character has an image returns absolute URL to image and ``None`` otherwise.
         """
-        return None
+        if value is None:
+            return None
+        return HttpUrl.build(
+            scheme="https",
+            host=settings.trusted_host,
+            path=f"{settings.static}/{value._name}",  # noqa
+        )
 
     model_config = ConfigDict(from_attributes=True)
 
