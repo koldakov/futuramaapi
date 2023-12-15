@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FuturamaAPI 0.0.1\n"
 "Report-Msgid-Bugs-To: coldie322@gmail.com\n"
-"POT-Creation-Date: 2023-12-10 23:22+0100\n"
+"POT-Creation-Date: 2023-12-15 21:47+0100\n"
 "PO-Revision-Date: 2023-11-24 14:14+0100\n"
 "Last-Translator: FULL NAME <coldie322@gmail.com>\n"
 "Language: en_US\n"
@@ -19,26 +19,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.13.1\n"
 
+#: app/routers/notifications.py:23
+msgid "FB00010"
+msgstr "SSE Endpoint. Pass character ID and retrieve character path! "
+"Please use with caution."
+
+#: app/routers/root.py:52 templates/base.html:50
+msgid "FB00003"
+msgstr "Documentation"
+
+#: app/routers/root.py:52 templates/base.html:8 templates/base.html:25
+#: templates/base.html:38
+msgid "FB00001"
+msgstr "Futurama API"
+
+#: app/services/notifications.py:19
+msgid "FB00007"
+msgstr "Character name"
+
+#: app/services/notifications.py:21
+msgid "FB00008"
+msgstr "Character X coordinate"
+
+#: app/services/notifications.py:26
+msgid "FB00009"
+msgstr "Character Y coordinate"
+
 #: templates/base.html:8
 msgid "FB00002"
 msgstr "Welcome"
 
-#: templates/base.html:8 templates/base.html:25 templates/base.html:38
-msgid "FB00001"
-msgstr "Futurama API"
-
-#: templates/base.html:50
-msgid "FB00003"
-msgstr "Documentation"
-
-#: templates/index.html:17
+#: templates/index.html:29
 msgid "FB00004"
 msgstr "Gender"
 
-#: templates/index.html:19
+#: templates/index.html:31
 msgid "FB00005"
 msgstr "Status"
 
-#: templates/index.html:28
+#: templates/index.html:45
 msgid "FB00006"
 msgstr "View"
