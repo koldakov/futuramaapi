@@ -16,7 +16,7 @@ class Episode(BaseModel):
     id: int
     name: str
     air_date: datetime = Field(serialization_alias="airDate")
-    duration: int
+    duration: int | None
     created_at: datetime = Field(serialization_alias="createdAt")
 
     model_config = ConfigDict(from_attributes=True)
