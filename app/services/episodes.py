@@ -3,7 +3,7 @@ from datetime import date, datetime
 from fastapi import HTTPException, status
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, computed_field
 from sqlalchemy import select
 from sqlalchemy.engine.result import Result
 from sqlalchemy.exc import NoResultFound
@@ -35,6 +35,17 @@ class Episode(BaseModel):
     season: SeasonEpisode
 
     model_config = ConfigDict(from_attributes=True)
+
+    @computed_field(
+        alias="broadcastCode",
+        examples=[
+            "S01E01",
+        ],
+        return_type=str,
+    )
+    @property
+    def broadcast_code(self) -> str:
+        return f"S{self.season.id:02d}E{self.broadcast_number:02d}"
 
 
 async def process_get_episode(
