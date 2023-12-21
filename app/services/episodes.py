@@ -22,7 +22,7 @@ class SeasonEpisode(BaseModel):
 class Episode(BaseModel):
     id: int
     name: str
-    air_date: datetime = Field(serialization_alias="airDate")
+    air_date: datetime | None = Field(serialization_alias="airDate")
     duration: int | None
     created_at: datetime = Field(serialization_alias="createdAt")
     season: SeasonEpisode
