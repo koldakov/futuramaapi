@@ -10,6 +10,7 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Integer,
+    SmallInteger,
     UUID as COLUMN_UUID,
     VARCHAR,
 )
@@ -125,6 +126,10 @@ class Episode(Base):
         VARCHAR(
             length=8,
         ),
+        nullable=True,
+    )
+    broadcast_number = Column(
+        SmallInteger,
         nullable=True,
     )
 
