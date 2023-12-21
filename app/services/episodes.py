@@ -8,8 +8,15 @@ from sqlalchemy import select
 from sqlalchemy.engine.result import Result
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.repositories.models import Episode as EpisodeModel
+
+
+class SeasonEpisode(BaseModel):
+    id: int
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Episode(BaseModel):
@@ -18,6 +25,7 @@ class Episode(BaseModel):
     air_date: datetime = Field(serialization_alias="airDate")
     duration: int | None
     created_at: datetime = Field(serialization_alias="createdAt")
+    season: SeasonEpisode
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -28,7 +36,9 @@ async def process_get_episode(
     /,
 ) -> Episode:
     cursor: Result = await session.execute(
-        select(EpisodeModel).where(EpisodeModel.id == character_id)
+        select(EpisodeModel)
+        .where(EpisodeModel.id == character_id)
+        .options(selectinload(EpisodeModel.season))
     )
     try:
         result: EpisodeModel = cursor.scalars().one()
@@ -40,5 +50,7 @@ async def process_get_episode(
 async def process_get_episodes(session: AsyncSession, /) -> Page[Episode]:
     return await paginate(
         session,
-        select(EpisodeModel).order_by(EpisodeModel.id),
+        select(EpisodeModel)
+        .order_by(EpisodeModel.id)
+        .options(selectinload(EpisodeModel.season)),
     )
