@@ -121,6 +121,12 @@ class Episode(Base):
         Integer,
         nullable=True,
     )
+    production_code = Column(
+        VARCHAR(
+            length=8,
+        ),
+        nullable=True,
+    )
 
     # Mappers
     season_id: Mapped[int] = mapped_column(
