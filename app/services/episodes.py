@@ -25,6 +25,12 @@ class Episode(BaseModel):
     air_date: date | None = Field(serialization_alias="airDate")
     duration: int | None
     created_at: datetime = Field(serialization_alias="createdAt")
+    production_code: str = Field(
+        serialization_alias="productionCode",
+        examples=[
+            "1ACV01",
+        ],
+    )
     season: SeasonEpisode
 
     model_config = ConfigDict(from_attributes=True)
