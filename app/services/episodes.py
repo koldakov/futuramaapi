@@ -31,6 +31,7 @@ class Episode(BaseModel):
             "1ACV01",
         ],
     )
+    broadcast_number: int = Field(serialization_alias="number")
     season: SeasonEpisode
 
     model_config = ConfigDict(from_attributes=True)
