@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.repositories.models import Episode as EpisodeModel
+from app.services.base import EpisodeBase
 
 
 class SeasonEpisode(BaseModel):
@@ -19,19 +20,10 @@ class SeasonEpisode(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class Episode(BaseModel):
-    id: int
-    name: str
+class Episode(EpisodeBase):
     air_date: date | None = Field(serialization_alias="airDate")
     duration: int | None
     created_at: datetime = Field(serialization_alias="createdAt")
-    production_code: str = Field(
-        serialization_alias="productionCode",
-        examples=[
-            "1ACV01",
-        ],
-    )
-    broadcast_number: int = Field(serialization_alias="number")
     season: SeasonEpisode
 
     model_config = ConfigDict(from_attributes=True)
