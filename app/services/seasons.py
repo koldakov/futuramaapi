@@ -1,6 +1,8 @@
 from typing import List
 
 from fastapi import HTTPException, status
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import select
 from sqlalchemy.engine.result import Result
@@ -38,3 +40,12 @@ async def process_get_season(
     except NoResultFound:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return Season.model_validate(result)
+
+
+async def process_get_seasons(session: AsyncSession, /) -> Page[Season]:
+    return await paginate(
+        session,
+        select(SeasonModel)
+        .order_by(SeasonModel.id)
+        .options(selectinload(SeasonModel.episodes)),
+    )
