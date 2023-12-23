@@ -5,6 +5,7 @@ asyncpg==0.29.0
 Babel==2.13.1
 boto3==1.33.10
 botocore==1.33.10
+certifi==2023.11.17
 cfgv==3.4.0
 click==8.1.7
 distlib==0.3.7
@@ -16,6 +17,8 @@ greenlet==3.0.1
 h11==0.14.0
 h2==4.1.0
 hpack==4.0.0
+httpcore==1.0.2
+httpx==0.26.0
 Hypercorn==0.15.0
 hyperframe==6.0.1
 identify==2.5.32

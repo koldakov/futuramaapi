@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import add_pagination
 
 from app.configs import settings
+from app.routers.callbacks import router as callbacks_router
 from app.routers.characters import router as characters_router
 from app.routers.episodes import router as episodes_router
 from app.routers.notifications import router as notifications_router
@@ -48,6 +49,11 @@ app.include_router(
 app.include_router(
     seasons_router,
     tags=["seasons"],
+    prefix="/api",
+)
+app.include_router(
+    callbacks_router,
+    tags=["callbacks"],
     prefix="/api",
 )
 
