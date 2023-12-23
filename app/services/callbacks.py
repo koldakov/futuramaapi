@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field, HttpUrl
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.services.characters import Character, get_character
+from app.services.episodes import Episode, get_episode
 
 MIN_DELAY: int = 5
 MAX_DELAY: int = 10
@@ -109,6 +110,66 @@ async def process_characters_callback(
         callback_characters_background_task,
         character_id,
         callback_request,
+        response,
+        session,
+    )
+    return response
+
+
+class EpisodeDoesNotExist(_ObjectDoesNotExist):
+    """Episode does not exist response."""
+
+
+async def _get_episode_or_not_found_object(
+    id_: int,
+    session: AsyncSession,
+    /,
+) -> Union[Episode, EpisodeDoesNotExist]:
+    episode: Union[Episode, EpisodeDoesNotExist]
+    try:
+        episode = await get_episode(id_, session)
+    except HTTPException as err:
+        episode = EpisodeDoesNotExist(
+            id=id_,
+            detail=err.detail,
+        )
+    return episode
+
+
+class EpisodeCallbackResponse(_ObjectType):
+    item: Union[Episode, EpisodeDoesNotExist]
+
+
+async def callback_episodes_background_task(
+    episode_id: int,
+    callback_request: CallbackRequest,
+    response: CallbackResponse,
+    session: AsyncSession,
+    /,
+):
+    await sleep(response.delay)
+    episode: Union[
+        Episode,
+        EpisodeDoesNotExist,
+    ] = await _get_episode_or_not_found_object(episode_id, session)
+    body = EpisodeCallbackResponse(
+        type=Episode.__name__,
+        item=episode,
+    )
+    await _send_callback(callback_request.callback_url, body)
+
+
+async def process_episodes_callback(
+    episode_id,
+    episode_request,
+    session,
+    background_tasks,
+) -> CallbackResponse:
+    response: CallbackResponse = CallbackResponse(delay=randint(MIN_DELAY, MAX_DELAY))
+    background_tasks.add_task(
+        callback_episodes_background_task,
+        episode_id,
+        episode_request,
         response,
         session,
     )

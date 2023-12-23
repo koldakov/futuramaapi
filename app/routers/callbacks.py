@@ -6,7 +6,9 @@ from app.services.callbacks import (
     CallbackResponse,
     CallbackRequest,
     CharacterCallbackResponse,
+    EpisodeCallbackResponse,
     process_characters_callback,
+    process_episodes_callback,
 )
 
 router = APIRouter(prefix="/callbacks")
@@ -47,4 +49,43 @@ async def create_characters_callback_request(
     """
     return await process_characters_callback(
         character_id, character_request, session, background_tasks
+    )
+
+
+_episodes_callbacks_router = APIRouter()
+
+
+@_episodes_callbacks_router.post(
+    "{$callback_url}",
+    status_code=status.HTTP_200_OK,
+)
+def episodes_callback(
+    body: EpisodeCallbackResponse,
+):
+    """Request to the provided callback URL."""
+
+
+@router.post(
+    "/episodes/{episode_id}",
+    status_code=status.HTTP_201_CREATED,
+    response_model=CallbackResponse,
+    name="episode",
+    callbacks=_episodes_callbacks_router.routes,
+)
+async def create_episodes_callback_request(
+    episode_id: int,
+    episode_request: CallbackRequest,
+    background_tasks: BackgroundTasks,
+    session: AsyncSession = Depends(get_async_session),
+) -> CallbackResponse:
+    """Create a request to get an episode by ID.
+
+    Keep in mind for now there are no retries.
+
+    * Send the episode ID you want to request via callback.
+    * Receive a delay after which the callback will be sent.
+    * Receive a notification back to the API, as a callback.
+    """
+    return await process_episodes_callback(
+        episode_id, episode_request, session, background_tasks
     )
