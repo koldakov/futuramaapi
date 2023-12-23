@@ -40,7 +40,7 @@ class Episode(EpisodeBase):
         return f"S{self.season.id:02d}E{self.broadcast_number:02d}"
 
 
-async def process_get_episode(
+async def get_episode(
     character_id: int,
     session: AsyncSession,
     /,
@@ -55,6 +55,14 @@ async def process_get_episode(
     except NoResultFound:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return Episode.model_validate(result)
+
+
+async def process_get_episode(
+    character_id: int,
+    session: AsyncSession,
+    /,
+) -> Episode:
+    return await get_episode(character_id, session)
 
 
 async def process_get_episodes(session: AsyncSession, /) -> Page[Episode]:
