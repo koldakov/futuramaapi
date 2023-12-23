@@ -24,7 +24,7 @@ class Character(BaseModel):
     name: str
     gender: CharacterGender
     status: CharacterStatus
-    created_at: datetime = Field(serialization_alias="createdAt")
+    created_at: datetime = Field(alias="createdAt")
     image: Optional[HttpUrl]
 
     @field_validator("image", mode="before")
@@ -49,7 +49,7 @@ class Character(BaseModel):
             path=f"{settings.static}/{value._name}",  # noqa
         )
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     def __init__(self, request: Request = None, **data: Any):
         self.request = request
