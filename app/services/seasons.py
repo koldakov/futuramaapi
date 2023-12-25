@@ -10,7 +10,11 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.repositories.models import Season as SeasonModel
+from app.repositories.models import (
+    Season as SeasonModel,
+    SeasonDoesNotExist,
+    get_season as get_season_model,
+)
 from app.services.base import EpisodeBase
 
 
@@ -30,16 +34,11 @@ async def process_get_season(
     session: AsyncSession,
     /,
 ) -> Season:
-    cursor: Result = await session.execute(
-        select(SeasonModel)
-        .where(SeasonModel.id == season_id)
-        .options(selectinload(SeasonModel.episodes))
-    )
     try:
-        result: SeasonModel = cursor.scalars().one()
-    except NoResultFound:
+        season = await get_season_model(season_id, session)
+    except SeasonDoesNotExist:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    return Season.model_validate(result)
+    return Season.model_validate(season)
 
 
 async def process_get_seasons(session: AsyncSession, /) -> Page[Season]:

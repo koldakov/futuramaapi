@@ -78,6 +78,26 @@ class Season(Base):
     )
 
 
+class SeasonDoesNotExist(Exception):
+    """Season does not exist."""
+
+
+async def get_season(
+    season_id: int,
+    session: AsyncSession,
+    /,
+) -> Season:
+    cursor: Result = await session.execute(
+        select(Season)
+        .where(Season.id == season_id)
+        .options(selectinload(Season.episodes))
+    )
+    try:
+        return cursor.scalars().one()
+    except NoResultFound:
+        raise SeasonDoesNotExist() from None
+
+
 class EpisodeCharacterAssociation(Base):
     __tablename__ = "episode_character_association"
 
