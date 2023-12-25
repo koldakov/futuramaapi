@@ -43,23 +43,23 @@ class Episode(EpisodeBase):
 
 
 async def get_episode(
-    character_id: int,
+    episode_id: int,
     session: AsyncSession,
     /,
 ) -> Episode:
     try:
-        episode = await get_episode_model(character_id, session)
+        episode = await get_episode_model(episode_id, session)
     except EpisodeDoesNotExist:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return Episode.model_validate(episode)
 
 
 async def process_get_episode(
-    character_id: int,
+    episode_id: int,
     session: AsyncSession,
     /,
 ) -> Episode:
-    return await get_episode(character_id, session)
+    return await get_episode(episode_id, session)
 
 
 async def process_get_episodes(session: AsyncSession, /) -> Page[Episode]:
