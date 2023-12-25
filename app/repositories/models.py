@@ -19,7 +19,7 @@ from sqlalchemy.dialects.postgresql import ENUM  # TODO: engine agnostic.
 from sqlalchemy.engine.result import Result
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 from sqlalchemy.sql import func
 
 from app.configs import settings
@@ -152,6 +152,26 @@ class Episode(Base):
     character_associations: Mapped[List["EpisodeCharacterAssociation"]] = relationship(
         back_populates="episode"
     )
+
+
+class EpisodeDoesNotExist(Exception):
+    """Episode does not exist."""
+
+
+async def get_episode(
+    episode_id: int,
+    session: AsyncSession,
+    /,
+) -> Episode:
+    cursor: Result = await session.execute(
+        select(Episode)
+        .where(Episode.id == episode_id)
+        .options(selectinload(Episode.season))
+    )
+    try:
+        return cursor.scalars().one()
+    except NoResultFound:
+        raise EpisodeDoesNotExist() from None
 
 
 class Character(Base):

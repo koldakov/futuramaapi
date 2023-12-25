@@ -10,7 +10,11 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.repositories.models import Episode as EpisodeModel
+from app.repositories.models import (
+    Episode as EpisodeModel,
+    EpisodeDoesNotExist,
+    get_episode as get_episode_model,
+)
 from app.services.base import EpisodeBase
 
 
@@ -45,16 +49,11 @@ async def get_episode(
     session: AsyncSession,
     /,
 ) -> Episode:
-    cursor: Result = await session.execute(
-        select(EpisodeModel)
-        .where(EpisodeModel.id == character_id)
-        .options(selectinload(EpisodeModel.season))
-    )
     try:
-        result: EpisodeModel = cursor.scalars().one()
-    except NoResultFound:
+        episode = await get_episode_model(character_id, session)
+    except EpisodeDoesNotExist:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    return Episode.model_validate(result)
+    return Episode.model_validate(episode)
 
 
 async def process_get_episode(
