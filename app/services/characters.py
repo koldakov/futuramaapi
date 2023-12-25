@@ -14,8 +14,10 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from app.configs import settings
 from app.repositories.models import Character as CharacterModel
 from app.repositories.models import (
+    CharacterDoesNotExist,
     CharacterGender,
     CharacterStatus,
+    get_character as get_character_model,
 )
 
 
@@ -61,14 +63,11 @@ async def get_character(
     session: AsyncSession,
     /,
 ) -> Character:
-    cursor: Result = await session.execute(
-        select(CharacterModel).where(CharacterModel.id == character_id)
-    )
     try:
-        result: CharacterModel = cursor.scalars().one()
-    except NoResultFound:
+        character: CharacterModel = await get_character_model(character_id, session)
+    except CharacterDoesNotExist:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    return Character.model_validate(result)
+    return Character.model_validate(character)
 
 
 async def process_get_character(

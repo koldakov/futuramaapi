@@ -13,8 +13,12 @@ from sqlalchemy import (
     SmallInteger,
     UUID as COLUMN_UUID,
     VARCHAR,
+    select,
 )
 from sqlalchemy.dialects.postgresql import ENUM  # TODO: engine agnostic.
+from sqlalchemy.engine.result import Result
+from sqlalchemy.exc import NoResultFound
+from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
@@ -208,3 +212,21 @@ class Character(Base):
     episode_associations: Mapped[List["EpisodeCharacterAssociation"]] = relationship(
         back_populates="character"
     )
+
+
+class CharacterDoesNotExist(Exception):
+    """Character does not exist."""
+
+
+async def get_character(
+    character_id: int,
+    session: AsyncSession,
+    /,
+) -> Character:
+    cursor: Result = await session.execute(
+        select(Character).where(Character.id == character_id)
+    )
+    try:
+        return cursor.scalars().one()
+    except NoResultFound:
+        raise CharacterDoesNotExist() from None
