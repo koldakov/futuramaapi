@@ -5,8 +5,6 @@ from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from pydantic import BaseModel, ConfigDict, Field, computed_field
 from sqlalchemy import select
-from sqlalchemy.engine.result import Result
-from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import selectinload
 
