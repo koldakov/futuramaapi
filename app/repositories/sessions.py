@@ -10,12 +10,16 @@ async_engine = create_async_engine(
 )
 
 
-async def get_async_session() -> AsyncSession:
-    async_session = async_sessionmaker(
+def build_async_session() -> async_sessionmaker:
+    return async_sessionmaker(
         bind=async_engine,
         class_=AsyncSession,
         expire_on_commit=False,
     )
+
+
+async def get_async_session() -> AsyncSession:
+    async_session: async_sessionmaker = build_async_session()
     async with async_session() as session:
         try:
             yield session
