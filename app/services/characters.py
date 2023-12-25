@@ -7,8 +7,6 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_storages import StorageImage
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator
 from sqlalchemy import select
-from sqlalchemy.engine.result import Result
-from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.configs import settings
