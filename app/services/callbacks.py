@@ -10,6 +10,11 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.services.characters import Character, get_character
 from app.services.episodes import Episode, get_episode
+from app.repositories.models import (
+    SeasonDoesNotExist as SeasonDoesNotExistException,
+    get_season,
+)
+from app.services.seasons import Season
 
 MIN_DELAY: int = 5
 MAX_DELAY: int = 10
@@ -170,6 +175,67 @@ async def process_episodes_callback(
         callback_episodes_background_task,
         episode_id,
         episode_request,
+        response,
+        session,
+    )
+    return response
+
+
+# Season related part.
+class SeasonDoesNotExist(_ObjectDoesNotExist):
+    """Season does not exist response."""
+
+
+async def _get_season_or_not_found_object(
+    id_: int,
+    session: AsyncSession,
+    /,
+) -> Union[Season, SeasonDoesNotExist]:
+    season: Union[Season, SeasonDoesNotExist]
+    try:
+        season = await get_season(id_, session)
+    except SeasonDoesNotExistException:
+        season = SeasonDoesNotExist(
+            id=id_,
+            detail="Not found",
+        )
+    return season
+
+
+class SeasonCallbackResponse(_ObjectType):
+    item: Union[Season, SeasonDoesNotExist]
+
+
+async def callback_seasons_background_task(
+    season_id: int,
+    callback_request: CallbackRequest,
+    response: CallbackResponse,
+    session: AsyncSession,
+    /,
+):
+    await sleep(response.delay)
+    season: Union[
+        Season,
+        SeasonDoesNotExist,
+    ] = await _get_season_or_not_found_object(season_id, session)
+    body = SeasonCallbackResponse(
+        type=Season.__name__,
+        item=season,
+    )
+    await _send_callback(callback_request.callback_url, body)
+
+
+async def process_seasons_callback(
+    season_id,
+    season_request,
+    session,
+    background_tasks,
+) -> CallbackResponse:
+    response: CallbackResponse = CallbackResponse(delay=randint(MIN_DELAY, MAX_DELAY))
+    background_tasks.add_task(
+        callback_seasons_background_task,
+        season_id,
+        season_request,
         response,
         session,
     )
