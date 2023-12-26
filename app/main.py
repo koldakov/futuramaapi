@@ -60,6 +60,7 @@ app.include_router(
 app.include_router(
     graphql_router,
     prefix="/api",
+    include_in_schema=False,
 )
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
