@@ -8,10 +8,14 @@ from httpx import AsyncClient, Response
 from pydantic import BaseModel, Field, HttpUrl
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from app.services.characters import Character, get_character
-from app.services.episodes import Episode, get_episode
+from app.services.characters import Character
+from app.services.episodes import Episode
 from app.repositories.models import (
+    CharacterDoesNotExist as CharacterDoesNotExistException,
+    EpisodeDoesNotExist as EpisodeDoesNotExistException,
     SeasonDoesNotExist as SeasonDoesNotExistException,
+    get_character,
+    get_episode,
     get_season,
 )
 from app.services.seasons import Season
@@ -67,10 +71,10 @@ async def _get_character_or_not_found_object(
     character: Union[Character, CharacterDoesNotExist]
     try:
         character = await get_character(id_, session)
-    except HTTPException as err:
+    except CharacterDoesNotExistException:
         character = CharacterDoesNotExist(
             id=id_,
-            detail=err.detail,
+            detail="Not found",
         )
     return character
 
@@ -133,10 +137,10 @@ async def _get_episode_or_not_found_object(
     episode: Union[Episode, EpisodeDoesNotExist]
     try:
         episode = await get_episode(id_, session)
-    except HTTPException as err:
+    except EpisodeDoesNotExistException:
         episode = EpisodeDoesNotExist(
             id=id_,
-            detail=err.detail,
+            detail="Not found",
         )
     return episode
 
