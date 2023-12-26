@@ -8,8 +8,6 @@ from httpx import AsyncClient, Response
 from pydantic import BaseModel, Field, HttpUrl
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from app.services.characters import Character
-from app.services.episodes import Episode
 from app.repositories.models import (
     CharacterDoesNotExist as CharacterDoesNotExistException,
     EpisodeDoesNotExist as EpisodeDoesNotExistException,
@@ -18,6 +16,8 @@ from app.repositories.models import (
     get_episode,
     get_season,
 )
+from app.services.characters import Character
+from app.services.episodes import Episode
 from app.services.seasons import Season
 
 MIN_DELAY: int = 5
