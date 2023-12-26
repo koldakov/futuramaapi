@@ -3,7 +3,7 @@ import json
 from random import randint
 from typing import Union
 
-from fastapi import BackgroundTasks, HTTPException
+from fastapi import BackgroundTasks
 from httpx import AsyncClient, Response
 from pydantic import BaseModel, Field, HttpUrl
 from sqlalchemy.ext.asyncio.session import AsyncSession
