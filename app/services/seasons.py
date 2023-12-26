@@ -17,14 +17,14 @@ from app.services.base import EpisodeBase
 
 
 class EpisodeSeason(EpisodeBase):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
 class Season(BaseModel):
     id: int
     episodes: List[EpisodeSeason]
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
 async def process_get_season(

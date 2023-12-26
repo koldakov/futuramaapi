@@ -19,16 +19,16 @@ from app.services.base import EpisodeBase
 class SeasonEpisode(BaseModel):
     id: int
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
 class Episode(EpisodeBase):
-    air_date: date | None = Field(serialization_alias="airDate")
+    air_date: date | None = Field(alias="airDate")
     duration: int | None
-    created_at: datetime = Field(serialization_alias="createdAt")
+    created_at: datetime = Field(alias="createdAt")
     season: SeasonEpisode
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     @computed_field(
         alias="broadcastCode",

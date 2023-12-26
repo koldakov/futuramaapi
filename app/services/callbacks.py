@@ -5,7 +5,7 @@ from typing import Union
 
 from fastapi import BackgroundTasks
 from httpx import AsyncClient, Response
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.models import (
@@ -26,8 +26,10 @@ MAX_DELAY: int = 10
 
 class CallbackRequest(BaseModel):
     callback_url: HttpUrl = Field(
-        validation_alias="callbackUrl",
+        alias="callbackUrl",
     )
+
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class CallbackResponse(BaseModel):
