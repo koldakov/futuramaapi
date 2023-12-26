@@ -24,6 +24,36 @@
           >
             {{ _( "FB00001" ) }}
           </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span
+              class="navbar-toggler-icon"
+            ></span>
+          </button>
+          <div
+            class="collapse navbar-collapse justify-content-end"
+            id="navbarSupportedContent"
+          >
+            <ul
+              class="navbar-nav"
+            >
+              <li
+                class="nav-item"
+              >
+               <a
+                class="nav-link"
+                href="/api/graphql"
+               >{{ _( "FB00011" ) }}</a>
+              </li>
+            </ul>
+          </div>
         </div>
       </nav>
     </header>
@@ -50,16 +80,6 @@
             >{{ _( "FB00003" ) }}
             </a>
           </div>
-          <div
-            class="d-grid d-sm-flex justify-content-sm-center mb-5"
-          >
-            <a
-              href="/api/graphql"
-              class="btn btn-danger"
-              role="button"
-            >{{ _( "FB00011" ) }}
-            </a>
-          </div>
         </div>
       </div>
       {% endblock %}
@@ -67,6 +87,11 @@
     </main>
     <footer>
     </footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+      crossorigin="anonymous"
+    ></script>
     {% block extra_scripts %}{% endblock %}
   </body>
 </html>
