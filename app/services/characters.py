@@ -19,6 +19,15 @@ from app.repositories.models import (
 )
 
 
+def build_url(*, path: str = None):
+    path = f"{settings.static}/{path}" if path else f"{settings.static}"
+    return HttpUrl.build(
+        scheme="https",
+        host=settings.trusted_host,
+        path=path,
+    )
+
+
 class Character(BaseModel):
     id: int
     name: str
@@ -43,11 +52,7 @@ class Character(BaseModel):
         """
         if value is None:
             return None
-        return HttpUrl.build(
-            scheme="https",
-            host=settings.trusted_host,
-            path=f"{settings.static}/{value._name}",  # noqa
-        )
+        return build_url(path=value._name)  # noqa
 
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
