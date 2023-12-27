@@ -48,7 +48,7 @@
                 class="nav-item"
               >
                 <a
-                  class="nav-link"
+                  class="nav-link{% if active_page == 'about' %} active{% endif %}"
                   aria-current="page"
                   href="{{ relative_path_for('about') }}"
                 >{{ _( "FB00012" ) }}</a>
