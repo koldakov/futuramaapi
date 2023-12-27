@@ -57,6 +57,13 @@ async def get_characters(
     ] = None,
     session: AsyncSession = Depends(get_async_session),
 ) -> Page[Character]:
+    """Retrieve characters information.
+
+    Also, you can include filtering in requests. Check query Parameters to more info.
+    "!" is logical "NO". For example, if you want to retrieve all aliens,
+    who have known gender and known status request will be
+    `/api/characters/?gender=!unknown&status=!unknown&species=alien`.
+    """
     return await process_get_characters(
         session,
         gender=gender,
