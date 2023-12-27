@@ -1,7 +1,14 @@
-from fastapi import APIRouter, Depends, status
+from typing import Annotated, Optional
+
+from fastapi import APIRouter, Depends, Query, status
 from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
+from app.repositories.models import (
+    CharacterGenderFilter,
+    CharacterSpeciesFilter,
+    CharacterStatusFilter,
+)
 from app.repositories.sessions import get_async_session
 from app.services.characters import (
     Character,
@@ -32,6 +39,17 @@ async def get_character(
     name="characters",
 )
 async def get_characters(
+    gender: Optional[CharacterGenderFilter] = None,
+    character_status: Annotated[
+        Optional[CharacterStatusFilter],
+        Query(alias="status"),
+    ] = None,
+    species: Optional[CharacterSpeciesFilter] = None,
     session: AsyncSession = Depends(get_async_session),
 ) -> Page[Character]:
-    return await process_get_characters(session)
+    return await process_get_characters(
+        session,
+        gender=gender,
+        character_status=character_status,
+        species=species,
+    )

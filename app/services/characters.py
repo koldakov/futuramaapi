@@ -14,8 +14,12 @@ from app.repositories.models import Character as CharacterModel
 from app.repositories.models import (
     CharacterDoesNotExist,
     CharacterGender,
+    CharacterGenderFilter,
+    CharacterSpeciesFilter,
     CharacterStatus,
+    CharacterStatusFilter,
     get_character as get_character_model,
+    get_cond,
 )
 
 
@@ -81,8 +85,23 @@ async def process_get_character(
     return await get_character(character_id, session)
 
 
-async def process_get_characters(session: AsyncSession, /) -> Page[Character]:
+async def process_get_characters(
+    session: AsyncSession,
+    /,
+    *,
+    gender: Optional[CharacterGenderFilter] = None,
+    character_status: Optional[CharacterStatusFilter] = None,
+    species: Optional[CharacterSpeciesFilter] = None,
+) -> Page[Character]:
     return await paginate(
         session,
-        select(CharacterModel).order_by(CharacterModel.created_at),
+        select(CharacterModel)
+        .order_by(CharacterModel.created_at)
+        .where(
+            *get_cond(
+                gender=gender,
+                character_status=character_status,
+                species=species,
+            )
+        ),
     )

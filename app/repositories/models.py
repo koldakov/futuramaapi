@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, Optional, Type, Union
 from uuid import uuid4
 
 from fastapi_storages import FileSystemStorage
@@ -32,10 +32,34 @@ class CharacterStatus(Enum):
     UNKNOWN = "UNKNOWN"
 
 
+class CharacterInvertedStatus(Enum):
+    NOT_ALIVE = "!ALIVE"
+    NOT_DEAD = "!DEAD"
+    NOT_UNKNOWN = "!UNKNOWN"
+
+
+CharacterStatusFilter = Enum(
+    "CharacterStatusFilter",
+    {i.name: i.value for i in list(CharacterStatus) + list(CharacterInvertedStatus)},
+)
+
+
 class CharacterGender(Enum):
     MALE = "MALE"
     FEMALE = "FEMALE"
     UNKNOWN = "UNKNOWN"
+
+
+class CharacterInvertedGender(Enum):
+    NOT_MALE = "!MALE"
+    NOT_FEMALE = "!FEMALE"
+    NOT_UNKNOWN = "!UNKNOWN"
+
+
+CharacterGenderFilter = Enum(
+    "CharacterGenderFilter",
+    {i.name: i.value for i in list(CharacterGender) + list(CharacterInvertedGender)},
+)
 
 
 class CharacterSpecies(Enum):
@@ -46,6 +70,22 @@ class CharacterSpecies(Enum):
     MUTANT = "MUTANT"
     MONSTER = "MONSTER"
     UNKNOWN = "UNKNOWN"
+
+
+class CharacterInvertedSpecies(Enum):
+    NOT_HUMAN = "!HUMAN"
+    NOT_ROBOT = "!ROBOT"
+    NOT_HEAD = "!HEAD"
+    NOT_ALIEN = "!ALIEN"
+    NOT_MUTANT = "!MUTANT"
+    NOT_MONSTER = "!MONSTER"
+    NOT_UNKNOWN = "!UNKNOWN"
+
+
+CharacterSpeciesFilter = Enum(
+    "CharacterSpeciesFilter",
+    {i.name: i.value for i in list(CharacterSpecies) + list(CharacterInvertedSpecies)},
+)
 
 
 class Season(Base):
@@ -270,3 +310,39 @@ async def get_character(
         return cursor.scalars().one()
     except NoResultFound:
         raise CharacterDoesNotExist() from None
+
+
+def _get_cond(
+    filter_obj: Union[
+        CharacterGenderFilter,
+        CharacterSpeciesFilter,
+        CharacterStatusFilter,
+    ],
+    orig_enum: Union[
+        Type[CharacterGender],
+        Type[CharacterStatus],
+        Type[CharacterSpecies],
+    ],
+    model_field: Column[Union[str, Enum]],
+    /,
+):
+    if filter_obj.value.startswith("!"):
+        return model_field != orig_enum[filter_obj.value[1:]]
+    else:
+        return model_field == orig_enum[filter_obj.value]
+
+
+def get_cond(
+    *,
+    gender: Optional[CharacterGenderFilter] = None,
+    character_status: Optional[CharacterStatusFilter] = None,
+    species: Optional[CharacterSpeciesFilter] = None,
+) -> List:
+    cond = []
+    if gender is not None:
+        cond.append(_get_cond(gender, CharacterGender, Character.gender))
+    if character_status is not None:
+        cond.append(_get_cond(character_status, CharacterStatus, Character.status))
+    if species is not None:
+        cond.append(_get_cond(species, CharacterSpecies, Character.species))
+    return cond
