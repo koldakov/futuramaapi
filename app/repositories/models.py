@@ -26,6 +26,17 @@ from app.configs import settings
 from app.repositories.base import Base
 
 
+def to_camel(
+    val: str,
+):
+    return "".join(
+        [
+            word if idx == 0 else word.capitalize()
+            for idx, word in enumerate(val.lower().split("_"))
+        ]
+    )
+
+
 class CharacterStatus(Enum):
     ALIVE = "ALIVE"
     DEAD = "DEAD"
@@ -40,7 +51,10 @@ class CharacterInvertedStatus(Enum):
 
 CharacterStatusFilter = Enum(
     "CharacterStatusFilter",
-    {i.name: i.value for i in list(CharacterStatus) + list(CharacterInvertedStatus)},
+    {
+        i.name: to_camel(i.value)
+        for i in list(CharacterStatus) + list(CharacterInvertedStatus)
+    },
 )
 
 
@@ -58,7 +72,10 @@ class CharacterInvertedGender(Enum):
 
 CharacterGenderFilter = Enum(
     "CharacterGenderFilter",
-    {i.name: i.value for i in list(CharacterGender) + list(CharacterInvertedGender)},
+    {
+        i.name: to_camel(i.value)
+        for i in list(CharacterGender) + list(CharacterInvertedGender)
+    },
 )
 
 
@@ -84,7 +101,10 @@ class CharacterInvertedSpecies(Enum):
 
 CharacterSpeciesFilter = Enum(
     "CharacterSpeciesFilter",
-    {i.name: i.value for i in list(CharacterSpecies) + list(CharacterInvertedSpecies)},
+    {
+        i.name: to_camel(i.value)
+        for i in list(CharacterSpecies) + list(CharacterInvertedSpecies)
+    },
 )
 
 
@@ -337,10 +357,10 @@ def _get_cond(
     model_field: Column[Union[str, Enum]],
     /,
 ):
-    if filter_obj.value.startswith("!"):
-        return model_field != orig_enum[filter_obj.value[1:]]
+    if filter_obj.name.startswith("NOT_"):
+        return model_field != orig_enum[filter_obj.name.split("NOT_", 1)[1]]
     else:
-        return model_field == orig_enum[filter_obj.value]
+        return model_field == orig_enum[filter_obj.name]
 
 
 def get_cond(
