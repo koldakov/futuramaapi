@@ -15,6 +15,7 @@ from app.repositories.models import (
     CharacterDoesNotExist,
     CharacterGender,
     CharacterGenderFilter,
+    CharacterSpecies,
     CharacterSpeciesFilter,
     CharacterStatus,
     CharacterStatusFilter,
@@ -37,6 +38,7 @@ class Character(BaseModel):
     name: str
     gender: CharacterGender
     status: CharacterStatus
+    species: CharacterSpecies
     created_at: datetime = Field(alias="createdAt")
     image: Optional[HttpUrl]
 
