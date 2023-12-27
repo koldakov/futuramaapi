@@ -6,8 +6,10 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.models import (
     CharacterGenderFilter,
+    CharacterOrderBy,
     CharacterSpeciesFilter,
     CharacterStatusFilter,
+    OrderByDirection,
 )
 from app.repositories.sessions import get_async_session
 from app.services.characters import (
@@ -45,6 +47,14 @@ async def get_characters(
         Query(alias="status"),
     ] = None,
     species: Optional[CharacterSpeciesFilter] = None,
+    order_by: Annotated[
+        Optional[CharacterOrderBy],
+        Query(alias="orderBy"),
+    ] = None,
+    direction: Annotated[
+        Optional[OrderByDirection],
+        Query(alias="orderByDirection"),
+    ] = None,
     session: AsyncSession = Depends(get_async_session),
 ) -> Page[Character]:
     return await process_get_characters(
@@ -52,4 +62,6 @@ async def get_characters(
         gender=gender,
         character_status=character_status,
         species=species,
+        order_by=order_by,
+        direction=direction,
     )

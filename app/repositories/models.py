@@ -312,6 +312,17 @@ async def get_character(
         raise CharacterDoesNotExist() from None
 
 
+class OrderByDirection(Enum):
+    ASC = "asc"
+    DESC = "desc"
+
+
+class CharacterOrderBy(Enum):
+    ID = "id"
+    NAME = "name"
+    CREATED_AT = "createdAt"
+
+
 def _get_cond(
     filter_obj: Union[
         CharacterGenderFilter,
@@ -346,3 +357,19 @@ def get_cond(
     if species is not None:
         cond.append(_get_cond(species, CharacterSpecies, Character.species))
     return cond
+
+
+def get_order_by(
+    obj: Union[Type[Character],],
+    field: Union[Optional[CharacterOrderBy],],
+    /,
+    *,
+    direction: OrderByDirection = OrderByDirection.ASC,
+):
+    if field is None:
+        _field = obj.id
+    else:
+        _field = obj.__table__.c[field.name.lower()]
+    if direction == OrderByDirection.DESC:
+        return _field.desc()
+    return _field
