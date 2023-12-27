@@ -23,3 +23,15 @@ async def process_get_root(
             "characters": cursor.scalars().all(),
         },
     )
+
+
+async def process_about(
+    request: Request,
+    /,
+) -> Response:
+    return templates.TemplateResponse(
+        "about.html",
+        {
+            "request": request,
+        },
+    )

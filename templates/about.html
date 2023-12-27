@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block titile %}{{ _("FB00012") }}{% endblock %} | {{ _("FB00001") }}
+
+{% block main_info %}{% endblock %}
+
+{% block main_content %}
+<div
+  class="container px-5 my-3 w-50"
+>
+  <h1>{{ _("FB00012") }}</h1>
+  <h2>{{ _("What is this?") }}</h2>
+  <p>
+    {% trans %}
+    This is
+    <a
+      href="https://www.hulu.com/series/futurama-85bf4cc1-cd8b-4469-ad87-7289217a0b74"
+      target="_blank"
+    ><s>Hulu</s>rama</a> REST API
+    and GraphQL API aiming to popularize TV show Futurama and made for you guys, so you can study, try new technologies.
+    You have access to characters, seasons, episodes,
+    Server Sent Events (SSE) and many more.
+    {% endtrans %}
+  </p>
+  <p>
+    {{ _("Check our") }}
+    <a href="{{ relative_path_for('redoc_html') }}">{{ _("documentation") }}</a> {{ _("to get started.") }}
+  </p>
+  <h2>{{ _("Why is this?") }}</h2>
+  {% trans %}
+  <p>
+    I realised there are similar projects for not so popular TV shows and thought why not? Also, wanted to try
+    new technologies such as FastAPI, SSE, WebSockets, GraphQL, Hypercorn, HTTP/2.0, etc.
+  </p>
+  {% endtrans %}
+  <h2>{{ _("Technical part?") }}</h2>
+  {% trans %}
+  <p>
+    Python, FastAPI, Docker, Hypercorn, PostgreSQL + SQLAlchemy (async), alembic for migrations, Strawberry for GraphQL.
+  </p>
+  {% endtrans %}
+  <h2>{{ _("Can I contribute?") }}</h2>
+  {% trans %}
+  <p>
+    Sure, <a href="https://github.com/AivGitHub/futuramaapi/" target="_blank">here is a link to the project.</a>
+  </p>
+  {% endtrans %}
+  <h2>{{ _("Design?") }}</h2>
+  {% trans %}
+  <p>
+    I'm not a designer, so please if you know HTML create a PR
+    <a href="https://github.com/AivGitHub/futuramaapi/" target="_blank">to this project.</a>
+    I appreciate any help.
+  </p>
+  {% endtrans %}
+  <h2>{{ _("Who are you?") }}</h2>
+  {% trans %}
+  <p>
+    I'm <a href="https://koldakov.com" target="_blank">Ivan Koldakov</a>, a python developer, enthusiast.
+    Add me on <a href="https://linkedin.com/in/aiv/" target="_blank">LinkedIn</a>.
+  </p>
+  {% endtrans %}
+</div>
+{% endblock %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FuturamaAPI 0.0.1\n"
 "Report-Msgid-Bugs-To: coldie322@gmail.com\n"
-"POT-Creation-Date: 2023-12-26 02:20+0100\n"
+"POT-Creation-Date: 2023-12-27 20:15+0100\n"
 "PO-Revision-Date: 2023-11-24 14:14+0100\n"
 "Last-Translator: FULL NAME <coldie322@gmail.com>\n"
 "Language: en_US\n"
@@ -25,12 +25,12 @@ msgstr ""
 "SSE Endpoint. Pass character ID and retrieve character path! Please use "
 "with caution."
 
-#: app/routers/root.py:52 templates/base.html:50
+#: app/routers/root.py:52 templates/base.html:89
 msgid "FB00003"
 msgstr "Documentation"
 
-#: app/routers/root.py:52 templates/base.html:8 templates/base.html:25
-#: templates/base.html:38
+#: app/routers/root.py:52 templates/about.html:3 templates/base.html:8
+#: templates/base.html:25 templates/base.html:77
 msgid "FB00001"
 msgstr "Futurama API"
 
@@ -46,11 +46,120 @@ msgstr "Character X coordinate"
 msgid "FB00009"
 msgstr "Character Y coordinate"
 
+#: templates/about.html:3 templates/about.html:11 templates/base.html:54
+msgid "FB00012"
+msgstr "About"
+
+#: templates/about.html:12
+msgid "What is this?"
+msgstr ""
+
+#: templates/about.html:14
+msgid ""
+"\n"
+"    This is\n"
+"    <a href=\"https://www.hulu.com/series/futurama-"
+"85bf4cc1-cd8b-4469-ad87-7289217a0b74\"><s>Hulu</s>rama</a> REST API\n"
+"    and GraphQL API aiming to popularize TV show Futurama and made for "
+"you guys, so you can study, try new technologies.\n"
+"    You have access to characters, seasons, episodes,\n"
+"    Server Sent Events (SSE) and many more.\n"
+"    "
+msgstr ""
+
+#: templates/about.html:23
+msgid "Check our"
+msgstr ""
+
+#: templates/about.html:24
+msgid "documentation"
+msgstr ""
+
+#: templates/about.html:24
+msgid "to get started."
+msgstr ""
+
+#: templates/about.html:26
+msgid "Why is this?"
+msgstr ""
+
+#: templates/about.html:27
+msgid ""
+"\n"
+"  <p>\n"
+"    I realised there are similar projects for not so popular TV shows and"
+" thought why not? Also, wanted to try\n"
+"    new technologies such as FastAPI, SSE, WebSockets, GraphQL, "
+"Hypercorn, HTTP/2.0, etc.\n"
+"  </p>\n"
+"  "
+msgstr ""
+
+#: templates/about.html:33
+msgid "Technical part?"
+msgstr ""
+
+#: templates/about.html:34
+msgid ""
+"\n"
+"  <p>\n"
+"    Python, FastAPI, Docker, Hypercorn, PostgreSQL + SQLAlchemy (async), "
+"alembic for migrations, Strawberry for GraphQL.\n"
+"  </p>\n"
+"  "
+msgstr ""
+
+#: templates/about.html:39
+msgid "Can I contribute?"
+msgstr ""
+
+#: templates/about.html:40
+msgid ""
+"\n"
+"  <p>\n"
+"    Sure, <a href=\"https://github.com/AivGitHub/futuramaapi/\" "
+"target=\"_blank\">here is a link to the project.</a>\n"
+"  </p>\n"
+"  "
+msgstr ""
+
+#: templates/about.html:45
+msgid "Design?"
+msgstr ""
+
+#: templates/about.html:46
+msgid ""
+"\n"
+"  <p>\n"
+"    I'm not a designer, so please if you know HTML create a PR\n"
+"    <a href=\"https://github.com/AivGitHub/futuramaapi/\" "
+"target=\"_blank\">to this project.</a>\n"
+"    I appreciate any help.\n"
+"  </p>\n"
+"  "
+msgstr ""
+
+#: templates/about.html:53
+msgid "Who are you?"
+msgstr ""
+
+#: templates/about.html:54
+msgid ""
+"\n"
+"  <p>\n"
+"    I'm <a href=\"https://koldakov.com\" target=\"_blank\">Ivan "
+"Koldakov</a>, a python developer, enthusiast.\n"
+"    Add me on <a href=\"https://linkedin.com/in/aiv/\" "
+"target=\"_blank\">LinkedIn</a>.\n"
+"  </p>\n"
+"  "
+msgstr ""
+
 #: templates/base.html:8
 msgid "FB00002"
 msgstr "Welcome"
 
-#: templates/base.html:60
+#: templates/base.html:62
 msgid "FB00011"
 msgstr "GraphQL"
 
