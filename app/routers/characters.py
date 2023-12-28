@@ -50,11 +50,11 @@ async def get_characters(
     order_by: Annotated[
         Optional[CharacterOrderBy],
         Query(alias="orderBy"),
-    ] = None,
+    ] = CharacterOrderBy.ID,
     direction: Annotated[
         Optional[OrderByDirection],
         Query(alias="orderByDirection"),
-    ] = None,
+    ] = OrderByDirection.ASC,
     query: Annotated[
         str,
         Query(
