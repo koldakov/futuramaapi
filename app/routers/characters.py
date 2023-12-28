@@ -55,6 +55,13 @@ async def get_characters(
         Optional[OrderByDirection],
         Query(alias="orderByDirection"),
     ] = None,
+    query: Annotated[
+        str,
+        Query(
+            alias="query",
+            description="Name search query.",
+        ),
+    ] = None,
     session: AsyncSession = Depends(get_async_session),
 ) -> Page[Character]:
     """Retrieve characters information.
@@ -71,4 +78,5 @@ async def get_characters(
         species=species,
         order_by=order_by,
         direction=direction,
+        query=query,
     )

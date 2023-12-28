@@ -99,6 +99,7 @@ async def process_get_characters(
     species: Optional[CharacterSpeciesFilter] = None,
     order_by: Optional[CharacterOrderBy] = None,
     direction: Optional[OrderByDirection] = None,
+    query: Optional[str] = None,
 ) -> Page[Character]:
     return await paginate(
         session,
@@ -115,6 +116,7 @@ async def process_get_characters(
                 gender=gender,
                 character_status=character_status,
                 species=species,
+                query=query,
             )
         ),
     )

@@ -368,6 +368,7 @@ def get_cond(
     gender: Optional[CharacterGenderFilter] = None,
     character_status: Optional[CharacterStatusFilter] = None,
     species: Optional[CharacterSpeciesFilter] = None,
+    query: Optional[str] = None,
 ) -> List:
     cond = []
     if gender is not None:
@@ -376,6 +377,8 @@ def get_cond(
         cond.append(_get_cond(character_status, CharacterStatus, Character.status))
     if species is not None:
         cond.append(_get_cond(species, CharacterSpecies, Character.species))
+    if query is not None:
+        cond.append(Character.name.ilike(f"%{query.lower()}%"))
     return cond
 
 
