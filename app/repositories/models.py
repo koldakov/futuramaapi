@@ -363,7 +363,7 @@ def _get_cond(
         return model_field == orig_enum[filter_obj.name]
 
 
-def get_cond(
+def get_characters_cond(
     *,
     gender: Optional[CharacterGenderFilter] = None,
     character_status: Optional[CharacterStatusFilter] = None,

@@ -22,7 +22,7 @@ from app.repositories.models import (
     CharacterStatusFilter,
     OrderByDirection,
     get_character as get_character_model,
-    get_cond,
+    get_characters_cond,
     get_order_by,
 )
 
@@ -112,7 +112,7 @@ async def process_get_characters(
             )
         )
         .where(
-            *get_cond(
+            *get_characters_cond(
                 gender=gender,
                 character_status=character_status,
                 species=species,
