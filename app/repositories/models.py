@@ -53,7 +53,10 @@ CharacterStatusFilter = Enum(
     "CharacterStatusFilter",
     {
         i.name: to_camel(i.value)
-        for i in list(CharacterStatus) + list(CharacterInvertedStatus)
+        for i in [
+            *CharacterStatus,
+            *CharacterInvertedStatus,
+        ]
     },
 )
 
@@ -74,7 +77,10 @@ CharacterGenderFilter = Enum(
     "CharacterGenderFilter",
     {
         i.name: to_camel(i.value)
-        for i in list(CharacterGender) + list(CharacterInvertedGender)
+        for i in [
+            *CharacterGender,
+            *CharacterInvertedGender,
+        ]
     },
 )
 
@@ -103,7 +109,10 @@ CharacterSpeciesFilter = Enum(
     "CharacterSpeciesFilter",
     {
         i.name: to_camel(i.value)
-        for i in list(CharacterSpecies) + list(CharacterInvertedSpecies)
+        for i in [
+            *CharacterSpecies,
+            *CharacterInvertedSpecies,
+        ]
     },
 )
 
