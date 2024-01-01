@@ -170,14 +170,22 @@ async def get_season(
 class EpisodeCharacterAssociation(Base):
     __tablename__ = "episode_character_association"
 
-    episode_id: Mapped[int] = mapped_column(ForeignKey("episodes.id"), primary_key=True)
+    episode_id: Mapped[int] = mapped_column(
+        ForeignKey("episodes.id"),
+        primary_key=True,
+    )
     character_id: Mapped[int] = mapped_column(
-        ForeignKey("characters.id"), primary_key=True
+        ForeignKey("characters.id"),
+        primary_key=True,
     )
 
-    character: Mapped["Character"] = relationship(back_populates="episode_associations")
+    character: Mapped["Character"] = relationship(
+        back_populates="episode_associations",
+    )
 
-    episode: Mapped["Episode"] = relationship(back_populates="character_associations")
+    episode: Mapped["Episode"] = relationship(
+        back_populates="character_associations",
+    )
 
 
 class Episode(Base):
@@ -235,11 +243,12 @@ class Episode(Base):
     )
 
     characters: Mapped[List["Character"]] = relationship(
-        secondary="episode_character_association", back_populates="episodes"
+        secondary="episode_character_association",
+        back_populates="episodes",
     )
 
     character_associations: Mapped[List["EpisodeCharacterAssociation"]] = relationship(
-        back_populates="episode"
+        back_populates="episode",
     )
 
 
@@ -316,10 +325,11 @@ class Character(Base):
 
     # Mappers
     episodes: Mapped[List["Episode"]] = relationship(
-        secondary="episode_character_association", back_populates="characters"
+        secondary="episode_character_association",
+        back_populates="characters",
     )
     episode_associations: Mapped[List["EpisodeCharacterAssociation"]] = relationship(
-        back_populates="character"
+        back_populates="character",
     )
 
 
