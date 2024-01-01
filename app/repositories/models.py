@@ -163,8 +163,8 @@ async def get_season(
     )
     try:
         return cursor.scalars().one()
-    except NoResultFound:
-        raise SeasonDoesNotExist() from None
+    except NoResultFound as err:
+        raise SeasonDoesNotExist() from err
 
 
 class EpisodeCharacterAssociation(Base):
@@ -268,8 +268,8 @@ async def get_episode(
     )
     try:
         return cursor.scalars().one()
-    except NoResultFound:
-        raise EpisodeDoesNotExist() from None
+    except NoResultFound as err:
+        raise EpisodeDoesNotExist() from err
 
 
 class Character(Base):
@@ -347,8 +347,8 @@ async def get_character(
     )
     try:
         return cursor.scalars().one()
-    except NoResultFound:
-        raise CharacterDoesNotExist() from None
+    except NoResultFound as err:
+        raise CharacterDoesNotExist() from err
 
 
 class OrderByDirection(Enum):
