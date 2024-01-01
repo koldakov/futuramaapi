@@ -179,14 +179,6 @@ class EpisodeCharacterAssociation(Base):
         primary_key=True,
     )
 
-    character: Mapped["Character"] = relationship(
-        back_populates="episode_associations",
-    )
-
-    episode: Mapped["Episode"] = relationship(
-        back_populates="character_associations",
-    )
-
 
 class Episode(Base):
     __tablename__ = "episodes"
@@ -245,10 +237,6 @@ class Episode(Base):
     characters: Mapped[List["Character"]] = relationship(
         secondary="episode_character_association",
         back_populates="episodes",
-    )
-
-    character_associations: Mapped[List["EpisodeCharacterAssociation"]] = relationship(
-        back_populates="episode",
     )
 
 
@@ -327,9 +315,6 @@ class Character(Base):
     episodes: Mapped[List["Episode"]] = relationship(
         secondary="episode_character_association",
         back_populates="characters",
-    )
-    episode_associations: Mapped[List["EpisodeCharacterAssociation"]] = relationship(
-        back_populates="character",
     )
 
 
