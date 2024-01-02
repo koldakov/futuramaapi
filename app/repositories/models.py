@@ -23,7 +23,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 from sqlalchemy.sql import func
 
 from app.configs import settings
-from app.repositories.base import Base
+from app.repositories.base import Base, CharacterOrderBy, OrderByDirection
 
 
 def to_camel(
@@ -340,17 +340,6 @@ class Character(Base):
 
 class CharacterDoesNotExist(Exception):
     """Character does not exist."""
-
-
-class OrderByDirection(Enum):
-    ASC = "asc"
-    DESC = "desc"
-
-
-class CharacterOrderBy(Enum):
-    ID = "id"
-    NAME = "name"
-    CREATED_AT = "createdAt"
 
 
 def _get_cond(

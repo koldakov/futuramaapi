@@ -1,9 +1,21 @@
+from enum import Enum
 from typing import List
 
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import declarative_base
 
 _Base = declarative_base()
+
+
+class OrderByDirection(Enum):
+    ASC = "asc"
+    DESC = "desc"
+
+
+class CharacterOrderBy(Enum):
+    ID = "id"
+    NAME = "name"
+    CREATED_AT = "createdAt"
 
 
 class Base(_Base):

@@ -4,12 +4,11 @@ from fastapi import APIRouter, Depends, Query, status
 from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
+from app.repositories.base import CharacterOrderBy, OrderByDirection
 from app.repositories.models import (
     CharacterGenderFilter,
-    CharacterOrderBy,
     CharacterSpeciesFilter,
     CharacterStatusFilter,
-    OrderByDirection,
 )
 from app.repositories.sessions import get_async_session
 from app.services.characters import (

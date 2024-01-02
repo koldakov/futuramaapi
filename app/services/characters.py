@@ -10,17 +10,16 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.configs import settings
+from app.repositories.base import CharacterOrderBy, OrderByDirection
 from app.repositories.models import Character as CharacterModel
 from app.repositories.models import (
     CharacterDoesNotExist,
     CharacterGender,
     CharacterGenderFilter,
-    CharacterOrderBy,
     CharacterSpecies,
     CharacterSpeciesFilter,
     CharacterStatus,
     CharacterStatusFilter,
-    OrderByDirection,
     get_characters_cond,
     get_order_by,
 )
