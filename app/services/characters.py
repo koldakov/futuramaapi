@@ -103,9 +103,8 @@ async def process_get_characters(
         session,
         select(CharacterModel)
         .order_by(
-            get_order_by(
-                CharacterModel,
-                order_by,
+            CharacterModel.get_order_by(
+                field=order_by,
                 direction=direction,
             )
         )

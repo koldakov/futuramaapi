@@ -3,6 +3,8 @@ from typing import List
 
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm.attributes import InstrumentedAttribute
+from sqlalchemy.sql.elements import UnaryExpression
 
 _Base = declarative_base()
 
@@ -17,8 +19,9 @@ class OrderBy(Enum):
     CREATED_AT = "createdAt"
 
 
-class Base[T](_Base):
+class Base[T, U](_Base):
     __abstract__ = True
+    order_by: U = OrderBy
 
     def to_dict(
         self,
@@ -41,3 +44,19 @@ class Base[T](_Base):
         /,
     ) -> T:
         ...
+
+    @classmethod
+    def get_order_by(
+        cls,
+        *,
+        field: U = OrderBy.ID,
+        direction: OrderByDirection = OrderByDirection.ASC,
+    ) -> UnaryExpression:
+        _field: InstrumentedAttribute
+        if field is None:
+            _field = cls.id
+        else:
+            _field = cls.__table__.c[field.name.lower()]
+        if direction == OrderByDirection.DESC:
+            return _field.desc()
+        return _field.asc()
