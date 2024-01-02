@@ -264,8 +264,15 @@ class EpisodeDoesNotExist(Exception):
     """Episode does not exist."""
 
 
+class CharacterOrderBy(Enum):
+    ID = "id"
+    NAME = "name"
+    CREATED_AT = "createdAt"
+
+
 class Character(Base):
     __tablename__ = "characters"
+    order_by = CharacterOrderBy
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
