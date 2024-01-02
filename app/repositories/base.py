@@ -12,9 +12,8 @@ class OrderByDirection(Enum):
     DESC = "desc"
 
 
-class CharacterOrderBy(Enum):
+class OrderBy(Enum):
     ID = "id"
-    NAME = "name"
     CREATED_AT = "createdAt"
 
 

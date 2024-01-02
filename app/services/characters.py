@@ -10,7 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.configs import settings
-from app.repositories.base import CharacterOrderBy, OrderByDirection
+from app.repositories.base import OrderBy, OrderByDirection
 from app.repositories.models import Character as CharacterModel
 from app.repositories.models import (
     CharacterDoesNotExist,
@@ -95,7 +95,7 @@ async def process_get_characters(
     gender: Optional[CharacterGenderFilter] = None,
     character_status: Optional[CharacterStatusFilter] = None,
     species: Optional[CharacterSpeciesFilter] = None,
-    order_by: Optional[CharacterOrderBy] = None,
+    order_by: Optional[OrderBy] = None,
     direction: Optional[OrderByDirection] = None,
     query: Optional[str] = None,
 ) -> Page[Character]:

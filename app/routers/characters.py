@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Query, status
 from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from app.repositories.base import CharacterOrderBy, OrderByDirection
+from app.repositories.base import OrderBy, OrderByDirection
 from app.repositories.models import (
     CharacterGenderFilter,
     CharacterSpeciesFilter,
@@ -47,9 +47,9 @@ async def get_characters(
     ] = None,
     species: Optional[CharacterSpeciesFilter] = None,
     order_by: Annotated[
-        Optional[CharacterOrderBy],
+        Optional[OrderBy],
         Query(alias="orderBy"),
-    ] = CharacterOrderBy.ID,
+    ] = OrderBy.ID,
     direction: Annotated[
         Optional[OrderByDirection],
         Query(alias="orderByDirection"),

@@ -23,7 +23,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 from sqlalchemy.sql import func
 
 from app.configs import settings
-from app.repositories.base import Base, CharacterOrderBy, OrderByDirection
+from app.repositories.base import Base, OrderBy, OrderByDirection
 
 
 def to_camel(
@@ -383,7 +383,7 @@ def get_characters_cond(
 
 def get_order_by(
     obj: Union[Type[Character],],
-    field: Union[Optional[CharacterOrderBy],],
+    field: Union[Optional[OrderBy],],
     /,
     *,
     direction: OrderByDirection = OrderByDirection.ASC,
