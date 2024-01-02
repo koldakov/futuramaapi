@@ -10,7 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.configs import settings
-from app.repositories.base import OrderBy, OrderByDirection
+from app.repositories.base import OrderByDirection
 from app.repositories.models import Character as CharacterModel
 from app.repositories.models import (
     CharacterDoesNotExist,
