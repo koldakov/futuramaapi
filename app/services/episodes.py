@@ -48,7 +48,7 @@ async def get_episode(
     /,
 ) -> Episode:
     try:
-        episode = await get_episode_model(episode_id, session)
+        episode: EpisodeModel = await EpisodeModel.get(session, episode_id)
     except EpisodeDoesNotExist:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return Episode.model_validate(episode)

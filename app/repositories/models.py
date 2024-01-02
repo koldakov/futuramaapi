@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional, Type, Union
+from typing import List, Optional, Type, Union, override
 from uuid import uuid4
 
 from fastapi_storages import FileSystemStorage
@@ -146,6 +146,24 @@ class Season(Base):
         back_populates="season",
     )
 
+    @classmethod
+    @override
+    async def get(
+        cls,
+        session: AsyncSession,
+        id_: int,
+        /,
+    ) -> "Season":
+        cursor: Result = await session.execute(
+            select(Season)
+            .where(Season.id == id_)
+            .options(selectinload(Season.episodes))
+        )
+        try:
+            return cursor.scalars().one()
+        except NoResultFound as err:
+            raise SeasonDoesNotExist() from err
+
 
 class SeasonDoesNotExist(Exception):
     """Season does not exist."""
@@ -239,6 +257,24 @@ class Episode(Base):
         back_populates="episodes",
     )
 
+    @classmethod
+    @override
+    async def get(
+        cls,
+        session: AsyncSession,
+        id_: int,
+        /,
+    ) -> "Episode":
+        cursor: Result = await session.execute(
+            select(Episode)
+            .where(Episode.id == id_)
+            .options(selectinload(Episode.season))
+        )
+        try:
+            return cursor.scalars().one()
+        except NoResultFound as err:
+            raise EpisodeDoesNotExist() from err
+
 
 class EpisodeDoesNotExist(Exception):
     """Episode does not exist."""
@@ -316,6 +352,22 @@ class Character(Base):
         secondary="episode_character_association",
         back_populates="characters",
     )
+
+    @classmethod
+    @override
+    async def get(
+        cls,
+        session: AsyncSession,
+        id_: int,
+        /,
+    ) -> "Character":
+        cursor: Result = await session.execute(
+            select(Character).where(Character.id == id_)
+        )
+        try:
+            return cursor.scalars().one()
+        except NoResultFound as err:
+            raise CharacterDoesNotExist() from err
 
 
 class CharacterDoesNotExist(Exception):

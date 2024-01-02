@@ -9,8 +9,11 @@ from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.models import (
+    Character as CharacterModel,
     CharacterDoesNotExist as CharacterDoesNotExistException,
+    Episode as EpisodeModel,
     EpisodeDoesNotExist as EpisodeDoesNotExistException,
+    Season as SeasonModel,
     SeasonDoesNotExist as SeasonDoesNotExistException,
     get_character,
     get_episode,
@@ -72,7 +75,7 @@ async def _get_character_or_not_found_object(
 ) -> Union[Character, CharacterDoesNotExist]:
     character: Union[Character, CharacterDoesNotExist]
     try:
-        character = await get_character(id_, session)
+        character: CharacterModel = await CharacterModel.get(session, id_)
     except CharacterDoesNotExistException:
         character = CharacterDoesNotExist(
             id=id_,
@@ -138,7 +141,7 @@ async def _get_episode_or_not_found_object(
 ) -> Union[Episode, EpisodeDoesNotExist]:
     episode: Union[Episode, EpisodeDoesNotExist]
     try:
-        episode = await get_episode(id_, session)
+        episode: EpisodeModel = await EpisodeModel.get(session, id_)
     except EpisodeDoesNotExistException:
         episode = EpisodeDoesNotExist(
             id=id_,
@@ -199,7 +202,7 @@ async def _get_season_or_not_found_object(
 ) -> Union[Season, SeasonDoesNotExist]:
     season: Union[Season, SeasonDoesNotExist]
     try:
-        season = await get_season(id_, session)
+        season: SeasonModel = await SeasonModel.get(session, id_)
     except SeasonDoesNotExistException:
         season = SeasonDoesNotExist(
             id=id_,

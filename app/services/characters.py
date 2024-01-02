@@ -76,7 +76,7 @@ async def get_character(
     /,
 ) -> Character:
     try:
-        character: CharacterModel = await get_character_model(character_id, session)
+        character: CharacterModel = await CharacterModel.get(session, character_id)
     except CharacterDoesNotExist:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return Character.model_validate(character)

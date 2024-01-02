@@ -33,7 +33,7 @@ async def process_get_season(
     /,
 ) -> Season:
     try:
-        season = await get_season_model(season_id, session)
+        season: SeasonModel = await SeasonModel.get(session, season_id)
     except SeasonDoesNotExist:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return Season.model_validate(season)

@@ -91,7 +91,10 @@ class Query:
     async def character(self, character_id: int) -> Optional[CharacterResponse]:
         async with get_async_session_ctx() as session:
             try:
-                character: CharacterModel = await get_character(character_id, session)
+                character: CharacterModel = await CharacterModel.get(
+                    session,
+                    character_id,
+                )
             except CharacterDoesNotExist:
                 return None
         data: dict = character.to_dict()
@@ -105,7 +108,7 @@ class Query:
     async def episode(self, episode_id: int) -> Optional[EpisodeResponse]:
         async with get_async_session_ctx() as session:
             try:
-                episode: EpisodeModel = await get_episode(episode_id, session)
+                episode: EpisodeModel = await EpisodeModel.get(session, episode_id)
             except EpisodeDoesNotExist:
                 return None
         return EpisodeResponse(**episode.to_dict(exclude=["season_id"]))
@@ -114,7 +117,7 @@ class Query:
     async def season(self, season_id: int) -> Optional[SeasonResponse]:
         async with get_async_session_ctx() as session:
             try:
-                season: SeasonModel = await get_season(season_id, session)
+                season: SeasonModel = await SeasonModel.get(session, season_id)
             except SeasonDoesNotExist:
                 return None
         return SeasonResponse(**season.to_dict())
