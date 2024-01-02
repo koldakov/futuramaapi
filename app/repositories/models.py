@@ -169,22 +169,6 @@ class SeasonDoesNotExist(Exception):
     """Season does not exist."""
 
 
-async def get_season(
-    season_id: int,
-    session: AsyncSession,
-    /,
-) -> Season:
-    cursor: Result = await session.execute(
-        select(Season)
-        .where(Season.id == season_id)
-        .options(selectinload(Season.episodes))
-    )
-    try:
-        return cursor.scalars().one()
-    except NoResultFound as err:
-        raise SeasonDoesNotExist() from err
-
-
 class EpisodeCharacterAssociation(Base):
     __tablename__ = "episode_character_association"
 
@@ -280,22 +264,6 @@ class EpisodeDoesNotExist(Exception):
     """Episode does not exist."""
 
 
-async def get_episode(
-    episode_id: int,
-    session: AsyncSession,
-    /,
-) -> Episode:
-    cursor: Result = await session.execute(
-        select(Episode)
-        .where(Episode.id == episode_id)
-        .options(selectinload(Episode.season))
-    )
-    try:
-        return cursor.scalars().one()
-    except NoResultFound as err:
-        raise EpisodeDoesNotExist() from err
-
-
 class Character(Base):
     __tablename__ = "characters"
 
@@ -372,20 +340,6 @@ class Character(Base):
 
 class CharacterDoesNotExist(Exception):
     """Character does not exist."""
-
-
-async def get_character(
-    character_id: int,
-    session: AsyncSession,
-    /,
-) -> Character:
-    cursor: Result = await session.execute(
-        select(Character).where(Character.id == character_id)
-    )
-    try:
-        return cursor.scalars().one()
-    except NoResultFound as err:
-        raise CharacterDoesNotExist() from err
 
 
 class OrderByDirection(Enum):
