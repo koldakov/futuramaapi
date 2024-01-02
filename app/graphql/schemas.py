@@ -15,9 +15,6 @@ from app.repositories.models import (
     EpisodeDoesNotExist,
     Season as SeasonModel,
     SeasonDoesNotExist,
-    get_character,
-    get_episode,
-    get_season,
 )
 from app.repositories.sessions import get_async_session_ctx
 from app.services.characters import build_url

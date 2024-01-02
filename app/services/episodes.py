@@ -11,7 +11,6 @@ from sqlalchemy.orm import selectinload
 from app.repositories.models import (
     Episode as EpisodeModel,
     EpisodeDoesNotExist,
-    get_episode as get_episode_model,
 )
 from app.services.base import EpisodeBase
 

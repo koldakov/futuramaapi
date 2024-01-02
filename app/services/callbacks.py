@@ -15,9 +15,6 @@ from app.repositories.models import (
     EpisodeDoesNotExist as EpisodeDoesNotExistException,
     Season as SeasonModel,
     SeasonDoesNotExist as SeasonDoesNotExistException,
-    get_character,
-    get_episode,
-    get_season,
 )
 from app.services.characters import Character
 from app.services.episodes import Episode

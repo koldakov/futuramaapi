@@ -21,7 +21,6 @@ from app.repositories.models import (
     CharacterStatus,
     CharacterStatusFilter,
     OrderByDirection,
-    get_character as get_character_model,
     get_characters_cond,
     get_order_by,
 )
