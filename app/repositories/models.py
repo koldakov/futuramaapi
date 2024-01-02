@@ -379,19 +379,3 @@ def get_characters_cond(
     if query is not None:
         cond.append(Character.name.ilike(f"%{query.lower()}%"))
     return cond
-
-
-def get_order_by(
-    obj: Union[Type[Character],],
-    field: Union[Optional[OrderBy],],
-    /,
-    *,
-    direction: OrderByDirection = OrderByDirection.ASC,
-):
-    if field is None:
-        _field = obj.id
-    else:
-        _field = obj.__table__.c[field.name.lower()]
-    if direction == OrderByDirection.DESC:
-        return _field.desc()
-    return _field
