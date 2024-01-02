@@ -18,7 +18,7 @@ class CharacterOrderBy(Enum):
     CREATED_AT = "createdAt"
 
 
-class Base(_Base):
+class Base[T](_Base):
     __abstract__ = True
 
     def to_dict(
@@ -40,5 +40,5 @@ class Base(_Base):
         session: AsyncSession,
         id_: int,
         /,
-    ):
+    ) -> T:
         ...
