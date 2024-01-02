@@ -23,7 +23,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 from sqlalchemy.sql import func
 
 from app.configs import settings
-from app.repositories.base import Base, OrderBy, OrderByDirection
+from app.repositories.base import Base
 
 
 def to_camel(
