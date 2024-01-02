@@ -94,7 +94,7 @@ async def process_get_characters(
     gender: Optional[CharacterGenderFilter] = None,
     character_status: Optional[CharacterStatusFilter] = None,
     species: Optional[CharacterSpeciesFilter] = None,
-    order_by: Optional[OrderBy] = None,
+    order_by: Optional[CharacterModel.order_by] = None,
     direction: Optional[OrderByDirection] = None,
     query: Optional[str] = None,
 ) -> Page[Character]:

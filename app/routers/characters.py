@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.base import OrderBy, OrderByDirection
 from app.repositories.models import (
+    Character as CharacterModel,
     CharacterGenderFilter,
     CharacterSpeciesFilter,
     CharacterStatusFilter,
@@ -47,9 +48,9 @@ async def get_characters(
     ] = None,
     species: Optional[CharacterSpeciesFilter] = None,
     order_by: Annotated[
-        Optional[OrderBy],
+        Optional[CharacterModel.order_by],
         Query(alias="orderBy"),
-    ] = OrderBy.ID,
+    ] = CharacterModel.order_by.ID,
     direction: Annotated[
         Optional[OrderByDirection],
         Query(alias="orderByDirection"),
