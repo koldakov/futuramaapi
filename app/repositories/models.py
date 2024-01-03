@@ -37,16 +37,24 @@ def to_camel(
     )
 
 
+def generate_inverted_enum[T: Type[Enum]](
+    name: str,
+    proto_enum: T,
+    /,
+) -> T:
+    return Enum(name, {f"NOT_{i.name}": f"!{i.value}" for i in [*proto_enum]})
+
+
 class CharacterStatus(Enum):
     ALIVE = "ALIVE"
     DEAD = "DEAD"
     UNKNOWN = "UNKNOWN"
 
 
-class CharacterInvertedStatus(Enum):
-    NOT_ALIVE = "!ALIVE"
-    NOT_DEAD = "!DEAD"
-    NOT_UNKNOWN = "!UNKNOWN"
+CharacterInvertedStatus = generate_inverted_enum(
+    "CharacterInvertedStatus",
+    CharacterStatus,
+)
 
 
 CharacterStatusFilter = Enum(
@@ -67,10 +75,10 @@ class CharacterGender(Enum):
     UNKNOWN = "UNKNOWN"
 
 
-class CharacterInvertedGender(Enum):
-    NOT_MALE = "!MALE"
-    NOT_FEMALE = "!FEMALE"
-    NOT_UNKNOWN = "!UNKNOWN"
+CharacterInvertedGender = generate_inverted_enum(
+    "CharacterInvertedGender",
+    CharacterGender,
+)
 
 
 CharacterGenderFilter = Enum(
@@ -95,14 +103,10 @@ class CharacterSpecies(Enum):
     UNKNOWN = "UNKNOWN"
 
 
-class CharacterInvertedSpecies(Enum):
-    NOT_HUMAN = "!HUMAN"
-    NOT_ROBOT = "!ROBOT"
-    NOT_HEAD = "!HEAD"
-    NOT_ALIEN = "!ALIEN"
-    NOT_MUTANT = "!MUTANT"
-    NOT_MONSTER = "!MONSTER"
-    NOT_UNKNOWN = "!UNKNOWN"
+CharacterInvertedSpecies = generate_inverted_enum(
+    "CharacterInvertedSpecies",
+    CharacterSpecies,
+)
 
 
 CharacterSpeciesFilter = Enum(
