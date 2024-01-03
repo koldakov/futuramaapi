@@ -1,6 +1,9 @@
 from enum import Enum
 from typing import List
 
+from sqlalchemy import select
+from sqlalchemy.engine.result import Result
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm.attributes import InstrumentedAttribute
@@ -17,6 +20,10 @@ class OrderByDirection(Enum):
 class OrderBy(Enum):
     ID = "id"
     CREATED_AT = "createdAt"
+
+
+class ModelDoesNotExist(Exception):
+    """Model Does Not Exist."""
 
 
 class Base[T, U](_Base):
@@ -43,7 +50,11 @@ class Base[T, U](_Base):
         id_: int,
         /,
     ) -> T:
-        ...
+        cursor: Result = await session.execute(select(cls).where(cls.id == id_))
+        try:
+            return cursor.scalars().one()
+        except NoResultFound as err:
+            raise ModelDoesNotExist() from err
 
     @classmethod
     def get_order_by(

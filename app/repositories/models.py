@@ -23,7 +23,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 from sqlalchemy.sql import func
 
 from app.configs import settings
-from app.repositories.base import Base
+from app.repositories.base import Base, ModelDoesNotExist
 
 
 def to_camel(
@@ -165,7 +165,7 @@ class Season(Base):
             raise SeasonDoesNotExist() from err
 
 
-class SeasonDoesNotExist(Exception):
+class SeasonDoesNotExist(ModelDoesNotExist):
     """Season does not exist."""
 
 
@@ -260,7 +260,7 @@ class Episode(Base):
             raise EpisodeDoesNotExist() from err
 
 
-class EpisodeDoesNotExist(Exception):
+class EpisodeDoesNotExist(ModelDoesNotExist):
     """Episode does not exist."""
 
 
@@ -345,7 +345,7 @@ class Character(Base):
             raise CharacterDoesNotExist() from err
 
 
-class CharacterDoesNotExist(Exception):
+class CharacterDoesNotExist(ModelDoesNotExist):
     """Character does not exist."""
 
 
