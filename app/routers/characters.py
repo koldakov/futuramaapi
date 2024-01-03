@@ -60,6 +60,7 @@ async def get_characters(
         Query(
             alias="query",
             description="Name search query.",
+            max_length=128,
         ),
     ] = None,
     session: AsyncSession = Depends(get_async_session),
