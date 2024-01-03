@@ -45,6 +45,14 @@ def generate_inverted_enum[T: Type[Enum]](
     return Enum(name, {f"NOT_{i.name}": f"!{i.value}" for i in [*proto_enum]})
 
 
+def generate_filter_enum[T: Type[Enum]](
+    name: str,
+    enums: List[T],
+) -> T:
+    unpacked_enums: [List[T]] = [val for _e in enums for val in _e]
+    return Enum(name, {e.name: to_camel(e.value) for e in unpacked_enums})
+
+
 class CharacterStatus(Enum):
     ALIVE = "ALIVE"
     DEAD = "DEAD"
@@ -57,15 +65,12 @@ CharacterInvertedStatus = generate_inverted_enum(
 )
 
 
-CharacterStatusFilter = Enum(
+CharacterStatusFilter = generate_filter_enum(
     "CharacterStatusFilter",
-    {
-        i.name: to_camel(i.value)
-        for i in [
-            *CharacterStatus,
-            *CharacterInvertedStatus,
-        ]
-    },
+    [
+        CharacterStatus,
+        CharacterInvertedStatus,
+    ],
 )
 
 
@@ -81,15 +86,12 @@ CharacterInvertedGender = generate_inverted_enum(
 )
 
 
-CharacterGenderFilter = Enum(
+CharacterGenderFilter = generate_filter_enum(
     "CharacterGenderFilter",
-    {
-        i.name: to_camel(i.value)
-        for i in [
-            *CharacterGender,
-            *CharacterInvertedGender,
-        ]
-    },
+    [
+        CharacterGender,
+        CharacterInvertedGender,
+    ],
 )
 
 
@@ -109,15 +111,12 @@ CharacterInvertedSpecies = generate_inverted_enum(
 )
 
 
-CharacterSpeciesFilter = Enum(
+CharacterSpeciesFilter = generate_filter_enum(
     "CharacterSpeciesFilter",
-    {
-        i.name: to_camel(i.value)
-        for i in [
-            *CharacterSpecies,
-            *CharacterInvertedSpecies,
-        ]
-    },
+    [
+        CharacterSpecies,
+        CharacterInvertedSpecies,
+    ],
 )
 
 
