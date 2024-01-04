@@ -1,12 +1,13 @@
 from enum import Enum
 from typing import List
 
-from sqlalchemy import select
+from sqlalchemy import Column, DateTime, select
 from sqlalchemy.engine.result import Result
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm.attributes import InstrumentedAttribute
+from sqlalchemy.sql import func
 from sqlalchemy.sql.elements import UnaryExpression
 
 _Base = declarative_base()
@@ -29,6 +30,14 @@ class ModelDoesNotExist(Exception):
 class Base[T, U](_Base):
     __abstract__ = True
     order_by: U = OrderBy
+
+    created_at = Column(
+        DateTime(
+            timezone=True,
+        ),
+        server_default=func.now(),
+        nullable=False,
+    )
 
     def to_dict(
         self,

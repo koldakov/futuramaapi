@@ -127,13 +127,6 @@ class Season(Base):
         primary_key=True,
     )
 
-    created_at = Column(
-        DateTime(
-            timezone=True,
-        ),
-        server_default=func.now(),
-        nullable=False,
-    )
     uuid = Column(
         COLUMN_UUID(
             as_uuid=True,
@@ -175,6 +168,7 @@ class SeasonDoesNotExist(ModelDoesNotExist):
 class EpisodeCharacterAssociation(Base):
     __tablename__ = "episode_character_association"
 
+    created_at = None
     episode_id: Mapped[int] = mapped_column(
         ForeignKey("episodes.id"),
         primary_key=True,
@@ -195,13 +189,6 @@ class Episode(Base):
             length=128,
         ),
         nullable=True,
-    )
-    created_at = Column(
-        DateTime(
-            timezone=True,
-        ),
-        server_default=func.now(),
-        nullable=False,
     )
     uuid = Column(
         COLUMN_UUID(
@@ -289,13 +276,6 @@ class Character(Base):
         ENUM(
             CharacterStatus,
         ),
-        nullable=False,
-    )
-    created_at = Column(
-        DateTime(
-            timezone=True,
-        ),
-        server_default=func.now(),
         nullable=False,
     )
     gender = Column(
