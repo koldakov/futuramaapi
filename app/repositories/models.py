@@ -7,7 +7,6 @@ from fastapi_storages.integrations.sqlalchemy import ImageType
 from sqlalchemy import (
     Column,
     Date,
-    DateTime,
     ForeignKey,
     Integer,
     SmallInteger,
@@ -20,7 +19,6 @@ from sqlalchemy.engine.result import Result
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
-from sqlalchemy.sql import func
 
 from app.configs import settings
 from app.repositories.base import Base, ModelDoesNotExist
