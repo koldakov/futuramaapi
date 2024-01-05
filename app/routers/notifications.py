@@ -20,11 +20,18 @@ router = APIRouter(
         }
     },
     status_code=status.HTTP_200_OK,
-    description=gnu_translations.gettext("FB00010"),
 )
 async def sse(
     character_id: int,
     request: Request,
     session: AsyncSession = Depends(get_async_session),
 ) -> EventSourceResponse:
+    """Retrieve character path.
+
+    Server-Sent Events (SSE) Endpoint for Character Paths:
+
+    This SSE endpoint is designed for retrieving characters paths by passing the character ID.
+    It facilitates real-time updates on character path.
+    Exercise caution when using this endpoint to ensure responsible and accurate data retrieval.
+    """
     return await process_sse(character_id, request, session)

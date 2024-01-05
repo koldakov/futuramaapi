@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FuturamaAPI 0.0.1\n"
 "Report-Msgid-Bugs-To: coldie322@gmail.com\n"
-"POT-Creation-Date: 2023-12-27 20:15+0100\n"
+"POT-Creation-Date: 2024-01-05 20:40+0100\n"
 "PO-Revision-Date: 2023-11-24 14:14+0100\n"
 "Last-Translator: FULL NAME <coldie322@gmail.com>\n"
 "Language: en_US\n"
@@ -19,47 +19,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.13.1\n"
 
-#: app/routers/notifications.py:23 tmp/routers_notifications.py:24
-msgid "FB00010"
-msgstr ""
-"SSE Endpoint. Pass character ID and retrieve character path! Please use "
-"with caution."
-
 #: app/routers/root.py:52 templates/base.html:89
 msgid "FB00003"
 msgstr "Documentation"
 
-#: app/routers/root.py:52 templates/about.html:3 templates/base.html:8
+#: app/routers/root.py:52 templates/about.html:5 templates/base.html:8
 #: templates/base.html:25 templates/base.html:77
 msgid "FB00001"
 msgstr "Futurama API"
 
-#: app/services/notifications.py:19 tmp/services_notifications.py:20
+#: app/services/notifications.py:19
 msgid "FB00007"
 msgstr "Character name"
 
-#: app/services/notifications.py:21 tmp/services_notifications.py:22
+#: app/services/notifications.py:21
 msgid "FB00008"
 msgstr "Character X coordinate"
 
-#: app/services/notifications.py:26 tmp/services_notifications.py:27
+#: app/services/notifications.py:26
 msgid "FB00009"
 msgstr "Character Y coordinate"
 
-#: templates/about.html:3 templates/about.html:11 templates/base.html:54
+#: templates/about.html:5 templates/about.html:13 templates/base.html:54
 msgid "FB00012"
 msgstr "About"
 
-#: templates/about.html:12
+#: templates/about.html:14
 msgid "What is this?"
 msgstr ""
 
-#: templates/about.html:14
+#: templates/about.html:16
 msgid ""
 "\n"
 "    This is\n"
-"    <a href=\"https://www.hulu.com/series/futurama-"
-"85bf4cc1-cd8b-4469-ad87-7289217a0b74\"><s>Hulu</s>rama</a> REST API\n"
+"    <a\n"
+"      href=\"https://www.hulu.com/series/futurama-"
+"85bf4cc1-cd8b-4469-ad87-7289217a0b74\"\n"
+"      target=\"_blank\"\n"
+"    ><s>Hulu</s>rama</a> REST API\n"
 "    and GraphQL API aiming to popularize TV show Futurama and made for "
 "you guys, so you can study, try new technologies.\n"
 "    You have access to characters, seasons, episodes,\n"
@@ -67,23 +64,23 @@ msgid ""
 "    "
 msgstr ""
 
-#: templates/about.html:23
+#: templates/about.html:28
 msgid "Check our"
 msgstr ""
 
-#: templates/about.html:24
+#: templates/about.html:29
 msgid "documentation"
 msgstr ""
 
-#: templates/about.html:24
+#: templates/about.html:29
 msgid "to get started."
 msgstr ""
 
-#: templates/about.html:26
+#: templates/about.html:31
 msgid "Why is this?"
 msgstr ""
 
-#: templates/about.html:27
+#: templates/about.html:32
 msgid ""
 "\n"
 "  <p>\n"
@@ -95,11 +92,11 @@ msgid ""
 "  "
 msgstr ""
 
-#: templates/about.html:33
+#: templates/about.html:38
 msgid "Technical part?"
 msgstr ""
 
-#: templates/about.html:34
+#: templates/about.html:39
 msgid ""
 "\n"
 "  <p>\n"
@@ -109,11 +106,11 @@ msgid ""
 "  "
 msgstr ""
 
-#: templates/about.html:39
+#: templates/about.html:44
 msgid "Can I contribute?"
 msgstr ""
 
-#: templates/about.html:40
+#: templates/about.html:45
 msgid ""
 "\n"
 "  <p>\n"
@@ -123,11 +120,11 @@ msgid ""
 "  "
 msgstr ""
 
-#: templates/about.html:45
+#: templates/about.html:50
 msgid "Design?"
 msgstr ""
 
-#: templates/about.html:46
+#: templates/about.html:51
 msgid ""
 "\n"
 "  <p>\n"
@@ -139,11 +136,11 @@ msgid ""
 "  "
 msgstr ""
 
-#: templates/about.html:53
+#: templates/about.html:58
 msgid "Who are you?"
 msgstr ""
 
-#: templates/about.html:54
+#: templates/about.html:59
 msgid ""
 "\n"
 "  <p>\n"
@@ -163,15 +160,14 @@ msgstr "Welcome"
 msgid "FB00011"
 msgstr "GraphQL"
 
-#: templates/index.html:29
+#: templates/index.html:31
 msgid "FB00004"
 msgstr "Gender"
 
-#: templates/index.html:31
+#: templates/index.html:33
 msgid "FB00005"
 msgstr "Status"
 
-#: templates/index.html:45
+#: templates/index.html:47
 msgid "FB00006"
 msgstr "View"
-
