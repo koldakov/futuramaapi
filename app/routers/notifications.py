@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.sessions import get_async_session
 from app.services.notifications import CharacterMove, process_sse
-from app.templates import gnu_translations
 
 router = APIRouter(
     prefix="/notifications",
