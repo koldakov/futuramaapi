@@ -2,6 +2,7 @@ from pathlib import Path
 from urllib.parse import ParseResult, urlparse
 
 from json import loads
+from json.decoder import JSONDecodeError
 from os import environ
 from typing import Dict, List, TypedDict, Unpack
 
@@ -65,7 +66,10 @@ def _parse_list(setting: str, separator: str, /) -> List:
 
 
 def _parse_dict(setting: str, /) -> Dict:
-    return loads(setting)
+    try:
+        return loads(setting)
+    except JSONDecodeError as err:
+        raise RuntimeError() from err
 
 
 def _parse_bool(setting: str, /) -> bool:
