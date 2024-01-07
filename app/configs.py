@@ -13,13 +13,13 @@ class _ExtraSettingArg(TypedDict):
     db_url: bool
 
 
-def parse(
-    cast: Any,
+def parse[T](
+    cast: T,
     setting: str,
     separator: str,
     /,
     **extra: Unpack[_ExtraSettingArg],
-) -> Any:
+) -> T:
     if cast is str:
         return _parse_str(setting, **extra)
     elif cast is bool:
@@ -90,16 +90,16 @@ def _parse_int(setting: str, /) -> int:
         ) from None
 
 
-def get_env_var(
+def get_env_var[T](
     var: str,
     /,
     *,
-    cast: Any = str,
+    cast: T = str,
     separator: str = ",",
     required=True,
-    default: Any = None,
+    default: T = None,
     **extra: Unpack[_ExtraSettingArg],
-) -> Any:
+) -> T:
     try:
         setting = environ[var]
     except KeyError:
