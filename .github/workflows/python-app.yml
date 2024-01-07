@@ -30,4 +30,4 @@ jobs:
         ruff --output-format=github .
     - name: Pytest
       run: |
-        python -m pytest -p tests.plugins.env_vars
+        python -m pytest -p configs.plugins.env_vars
