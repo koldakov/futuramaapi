@@ -3,12 +3,23 @@ from urllib.parse import ParseResult, urlparse
 
 from json import loads
 from os import environ
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypedDict, Unpack
 
 from pydantic import BaseModel
 
 
-def parse(cast: Any, setting: str, separator: str, /, **extra) -> Any:
+class _ExtraSettingArg(TypedDict):
+    async_: bool
+    db_url: bool
+
+
+def parse(
+    cast: Any,
+    setting: str,
+    separator: str,
+    /,
+    **extra: Unpack[_ExtraSettingArg],
+) -> Any:
     if cast is str:
         return _parse_str(setting, **extra)
     elif cast is bool:
@@ -20,7 +31,7 @@ def parse(cast: Any, setting: str, separator: str, /, **extra) -> Any:
     raise NotImplementedError(f'Cast is not implemented. cast="{cast}"') from None
 
 
-def _parse_str(setting: str, /, **extra):
+def _parse_str(setting: str, /, **extra: Unpack[_ExtraSettingArg]):
     try:
         is_db = extra["db_url"]
     except KeyError:
@@ -30,7 +41,7 @@ def _parse_str(setting: str, /, **extra):
     return setting
 
 
-def _fix_db_url(url: str, /, **extra):
+def _fix_db_url(url: str, /, **extra: Unpack[_ExtraSettingArg]):
     db_url = urlparse(url)
     try:
         async_ = extra["async_"] or False
@@ -87,7 +98,7 @@ def get_env_var(
     separator: str = ",",
     required=True,
     default: Any = None,
-    **extra,
+    **extra: Unpack[_ExtraSettingArg],
 ) -> Any:
     try:
         setting = environ[var]
