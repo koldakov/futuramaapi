@@ -4,7 +4,7 @@ from urllib.parse import ParseResult, urlparse
 from json import loads
 from json.decoder import JSONDecodeError
 from os import environ
-from typing import Dict, List, TypedDict, Unpack
+from typing import Dict, List, Type, TypedDict, Unpack
 
 from pydantic import BaseModel
 
@@ -15,7 +15,7 @@ class _ExtraSettingArg(TypedDict):
 
 
 def parse[T](
-    cast: T,
+    cast: Type[T],
     setting: str,
     separator: str,
     /,
@@ -98,7 +98,7 @@ def get_env_var[T](
     var: str,
     /,
     *,
-    cast: T = str,
+    cast: Type[T] = str,
     separator: str = ",",
     required=True,
     default: T = None,
