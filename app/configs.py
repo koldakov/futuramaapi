@@ -3,7 +3,7 @@ from urllib.parse import ParseResult, urlparse
 
 from json import loads
 from os import environ
-from typing import Any, Dict, List, TypedDict, Unpack
+from typing import Dict, List, TypedDict, Unpack
 
 from pydantic import BaseModel
 
