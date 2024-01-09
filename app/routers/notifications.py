@@ -3,7 +3,7 @@ from sse_starlette.sse import EventSourceResponse
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.sessions import get_async_session
-from app.services.notifications import CharacterMove, process_sse
+from app.services.notifications import CharacterMove, process_character_sse
 
 router = APIRouter(
     prefix="/notifications",
@@ -20,7 +20,7 @@ router = APIRouter(
     },
     status_code=status.HTTP_200_OK,
 )
-async def sse(
+async def character_sse(
     character_id: int,
     request: Request,
     session: AsyncSession = Depends(get_async_session),
@@ -33,4 +33,4 @@ async def sse(
     It facilitates real-time updates on character path.
     Exercise caution when using this endpoint to ensure responsible and accurate data retrieval.
     """
-    return await process_sse(character_id, request, session)
+    return await process_character_sse(character_id, request, session)

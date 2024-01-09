@@ -30,7 +30,7 @@ class CharacterMove(BaseModel):
     time: datetime = datetime.now()
 
 
-async def character_move_generator(
+async def generate_character_move(
     request: Request,
     character: Character,
     /,
@@ -51,11 +51,11 @@ async def character_move_generator(
         await sleep(randint(1, 3))
 
 
-async def process_sse(
+async def process_character_sse(
     character_id: int,
     request: Request,
     session: AsyncSession,
     /,
 ) -> EventSourceResponse:
     character: Character = await get_character(character_id, session)
-    return EventSourceResponse(character_move_generator(request, character))
+    return EventSourceResponse(generate_character_move(request, character))
