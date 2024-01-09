@@ -6,7 +6,6 @@ from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_storages import StorageImage
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.configs import settings
@@ -20,7 +19,6 @@ from app.repositories.models import (
     CharacterSpeciesFilter,
     CharacterStatus,
     CharacterStatusFilter,
-    get_characters_cond,
 )
 
 
