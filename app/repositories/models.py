@@ -19,6 +19,7 @@ from sqlalchemy.engine.result import Result
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
+from sqlalchemy.sql.elements import BinaryExpression
 
 from app.configs import settings
 from app.repositories.base import Base, ModelDoesNotExist
@@ -324,6 +325,42 @@ class Character(Base):
             return cursor.scalars().one()
         except NoResultFound as err:
             raise CharacterDoesNotExist() from err
+
+    @classmethod
+    @override
+    def get_cond_list(cls, **kwargs) -> List[BinaryExpression]:
+        gender: CharacterGenderFilter | None = kwargs.get("gender")
+        character_status: CharacterStatusFilter | None = kwargs.get("character_status")
+        species: CharacterSpeciesFilter | None = kwargs.get("species")
+        query: str | None = kwargs.get("query")
+        cond_list = []
+        if gender is not None:
+            cond_list.append(
+                cls.filter_obj_to_cond(
+                    gender,
+                    CharacterGender,
+                    Character.gender,
+                )
+            )
+        if character_status is not None:
+            cond_list.append(
+                cls.filter_obj_to_cond(
+                    character_status,
+                    CharacterStatus,
+                    Character.status,
+                )
+            )
+        if species is not None:
+            cond_list.append(
+                cls.filter_obj_to_cond(
+                    species,
+                    CharacterSpecies,
+                    Character.species,
+                )
+            )
+        if query is not None:
+            cond_list.append(Character.name.ilike(f"%{query.lower()}%"))
+        return cond_list
 
 
 class CharacterDoesNotExist(ModelDoesNotExist):
