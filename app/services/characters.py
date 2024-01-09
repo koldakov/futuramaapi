@@ -100,19 +100,12 @@ async def process_get_characters(
 ) -> Page[Character]:
     return await paginate(
         session,
-        select(CharacterModel)
-        .order_by(
-            CharacterModel.get_order_by(
-                field=order_by,
-                direction=direction,
-            )
-        )
-        .where(
-            *get_characters_cond(
-                gender=gender,
-                character_status=character_status,
-                species=species,
-                query=query,
-            )
+        CharacterModel.get_filter_statement(
+            order_by=order_by,
+            order_by_direction=direction,
+            gender=gender,
+            character_statusx=character_status,
+            species=species,
+            query=query,
         ),
     )

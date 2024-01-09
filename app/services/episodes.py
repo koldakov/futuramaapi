@@ -64,7 +64,7 @@ async def process_get_episode(
 async def process_get_episodes(session: AsyncSession, /) -> Page[Episode]:
     return await paginate(
         session,
-        select(EpisodeModel)
-        .order_by(EpisodeModel.id)
-        .options(selectinload(EpisodeModel.season)),
+        EpisodeModel.get_filter_statement(
+            select_in_load=EpisodeModel.season,
+        ),
     )
