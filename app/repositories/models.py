@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional, Type, Union, override
+from typing import List, Type, override
 from uuid import uuid4
 
 from fastapi_storages import FileSystemStorage
