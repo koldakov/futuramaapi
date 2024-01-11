@@ -23,3 +23,6 @@ messages: # Update all locales
 
 messages-compile: # Generate .mo files for all locales
 	@pybabel compile --directory=locale
+
+tests: # Run tests
+	@python -m pytest -p configs.plugins.env_vars
