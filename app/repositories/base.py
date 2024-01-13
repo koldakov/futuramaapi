@@ -145,3 +145,8 @@ class Base[T, U, F, O](_Base):
         if direction == OrderByDirection.DESC:
             return _field.desc()
         return _field.asc()
+
+    @classmethod
+    async def count(cls, session: AsyncSession) -> int:
+        res = await session.execute(func.count(cls.id))
+        return res.scalar()
