@@ -84,6 +84,7 @@ class Base[T, U, F, O](_Base):
         order_by: Type[Enum] = OrderBy.ID,
         order_by_direction: OrderByDirection = OrderByDirection.ASC,
         select_in_load: InstrumentedAttribute = None,
+        offset: int = None,
         **kwargs,
     ):
         statement = select(cls)
@@ -98,6 +99,8 @@ class Base[T, U, F, O](_Base):
             statement = statement.where(*cond_list)
         if select_in_load is not None:
             statement = statement.options(selectinload(select_in_load))
+        if offset:
+            statement = statement.offset(offset)
         if limit is not None:
             statement = statement.limit(limit)
         return statement
