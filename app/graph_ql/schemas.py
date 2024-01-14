@@ -139,6 +139,26 @@ def validate_limit(limit: int, min_: int, max_: int, /) -> None:
 
 
 @strawberry.type
+class Seasons:
+    limit: int
+    offset: int
+    total: int
+    edges: List[Season]
+
+    @classmethod
+    def from_params(cls, seasons, limit: int, offset: int, total: int, /):
+        return cls(
+            limit=limit,
+            offset=offset,
+            total=total,
+            edges=[
+                Season.from_pydantic(SeasonSchema.model_validate(season))
+                for season in seasons
+            ],
+        )
+
+
+@strawberry.type
 class Query:
     @strawberry.field()
     async def character(self, character_id: int) -> Character | None:
@@ -221,3 +241,22 @@ class Query:
             except SeasonDoesNotExist:
                 return None
         return Season.from_pydantic(SeasonSchema.model_validate(season))
+
+    @strawberry.field()
+    async def seasons(
+        self,
+        *,
+        limit: int | None = 50,
+        offset: int | None = 0,
+    ) -> Seasons:
+        validate_limit(limit, 1, 50)
+        async with get_async_session_ctx() as session:
+            total: int = await SeasonModel.count(session)
+            validate_limit(offset, 0, total)
+            seasons = await SeasonModel.filter(
+                session,
+                limit=limit,
+                select_in_load=SeasonModel.episodes,
+                offset=offset,
+            )
+        return Seasons.from_params(seasons, limit, offset, total)
