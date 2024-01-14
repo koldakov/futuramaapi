@@ -111,6 +111,13 @@ class Season:
     episodes: List[EpisodeSeason]
 
 
+def validate_limit(limit: int, min_: int, max_: int, /) -> None:
+    if not min_ <= limit <= max_:
+        raise LimitViolation(
+            f"Limit can be more than {min_} and less than {max_}"
+        ) from None
+
+
 @strawberry.type
 class Query:
     @strawberry.field()
@@ -140,17 +147,11 @@ class Query:
         _min_l: int = 1
         _max_l: int = 50
         _min_offset: int = 0
-        if not _min_l <= limit <= _max_l:
-            raise LimitViolation(
-                f"Limit can be more than {_min_l} and less than {_max_l}"
-            ) from None
+        validate_limit(limit, _min_l, _max_l)
 
         async with get_async_session_ctx() as session:
             total: int = await CharacterModel.count(session)
-            if not _min_offset <= offset <= total:
-                raise LimitViolation(
-                    f"Offset can't be less than {_min_offset} more than {total}"
-                ) from None
+            validate_limit(offset, _min_offset, total)
             characters = await CharacterModel.filter(
                 session,
                 limit=limit,
