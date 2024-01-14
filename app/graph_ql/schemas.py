@@ -105,6 +105,26 @@ class EpisodeSeason(EpisodeBase):
     production_code: strawberry.auto
 
 
+@strawberry.type
+class Episodes:
+    limit: int
+    offset: int
+    total: int
+    edges: List[Episode]
+
+    @classmethod
+    def from_params(cls, episodes, limit: int, offset: int, total: int, /):
+        return cls(
+            limit=limit,
+            offset=offset,
+            total=total,
+            edges=[
+                Episode.from_pydantic(EpisodeSchema.model_validate(episode))
+                for episode in episodes
+            ],
+        )
+
+
 @strawberry.experimental.pydantic.type(model=SeasonSchema)
 class Season:
     id: strawberry.auto
@@ -173,6 +193,25 @@ class Query:
             except EpisodeDoesNotExist:
                 return None
         return Episode.from_pydantic(EpisodeSchema.model_validate(episode))
+
+    @strawberry.field()
+    async def episodes(
+        self,
+        *,
+        limit: int | None = 50,
+        offset: int | None = 0,
+    ) -> Episodes:
+        validate_limit(limit, 1, 50)
+        async with get_async_session_ctx() as session:
+            total: int = await CharacterModel.count(session)
+            validate_limit(offset, 0, total)
+            episodes = await EpisodeModel.filter(
+                session,
+                limit=limit,
+                select_in_load=EpisodeModel.season,
+                offset=offset,
+            )
+        return Episodes.from_params(episodes, limit, offset, total)
 
     @strawberry.field()
     async def season(self, season_id: int) -> Season | None:
