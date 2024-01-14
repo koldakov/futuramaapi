@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, List
 
 import strawberry
 
@@ -59,23 +59,46 @@ class Character:
 
 
 @strawberry.type
-class Characters:
+class PageBase:
     limit: int
     offset: int
     total: int
-    edges: List[Character]
+    edges: List[Any]
+
+    @staticmethod
+    def get_schema_class():
+        raise NotImplementedError()
+
+    @staticmethod
+    def get_edge_class():
+        raise NotImplementedError()
 
     @classmethod
-    def from_params(cls, characters, limit: int, offset: int, total: int, /):
+    def from_params(cls, edges, limit: int, offset: int, total: int, /):
+        schema_class = cls.get_schema_class()
+        edge_class = cls.get_edge_class()
         return cls(
             limit=limit,
             offset=offset,
             total=total,
             edges=[
-                Character.from_pydantic(CharacterSchema.model_validate(character))
-                for character in characters
+                edge_class.from_pydantic(schema_class.model_validate(edge))
+                for edge in edges
             ],
         )
+
+
+@strawberry.type
+class Characters(PageBase):
+    edges: List[Character]
+
+    @staticmethod
+    def get_schema_class():
+        return CharacterSchema
+
+    @staticmethod
+    def get_edge_class():
+        return Character
 
 
 @strawberry.experimental.pydantic.type(model=SeasonEpisodeSchema, all_fields=True)
@@ -106,23 +129,16 @@ class EpisodeSeason(EpisodeBase):
 
 
 @strawberry.type
-class Episodes:
-    limit: int
-    offset: int
-    total: int
+class Episodes(PageBase):
     edges: List[Episode]
 
-    @classmethod
-    def from_params(cls, episodes, limit: int, offset: int, total: int, /):
-        return cls(
-            limit=limit,
-            offset=offset,
-            total=total,
-            edges=[
-                Episode.from_pydantic(EpisodeSchema.model_validate(episode))
-                for episode in episodes
-            ],
-        )
+    @staticmethod
+    def get_schema_class():
+        return EpisodeSchema
+
+    @staticmethod
+    def get_edge_class():
+        return Episode
 
 
 @strawberry.experimental.pydantic.type(model=SeasonSchema)
@@ -139,23 +155,16 @@ def validate_limit(limit: int, min_: int, max_: int, /) -> None:
 
 
 @strawberry.type
-class Seasons:
-    limit: int
-    offset: int
-    total: int
+class Seasons(PageBase):
     edges: List[Season]
 
-    @classmethod
-    def from_params(cls, seasons, limit: int, offset: int, total: int, /):
-        return cls(
-            limit=limit,
-            offset=offset,
-            total=total,
-            edges=[
-                Season.from_pydantic(SeasonSchema.model_validate(season))
-                for season in seasons
-            ],
-        )
+    @staticmethod
+    def get_schema_class():
+        return SeasonSchema
+
+    @staticmethod
+    def get_edge_class():
+        return Season
 
 
 @strawberry.type
