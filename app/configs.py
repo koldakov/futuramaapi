@@ -115,7 +115,7 @@ def get_env_var[T](
 
 class Settings(BaseModel):
     allow_origins: List = get_env_var("ALLOW_ORIGINS", cast=List)
-    database_url: List = get_env_var("DATABASE_URL", cast=str, async_=True, db_url=True)
+    database_url: str = get_env_var("DATABASE_URL", cast=str, async_=True, db_url=True)
     project_root: Path = Path(__file__).parent.parent.resolve()
     static: Path = Path("static")
     trusted_host: str = get_env_var("TRUSTED_HOST", cast=str)
