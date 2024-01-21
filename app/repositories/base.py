@@ -1,11 +1,12 @@
 from enum import Enum
 from typing import List, Any, Sequence, Tuple, Type
+from uuid import uuid4
 
-from sqlalchemy import Column, DateTime, Row, select
+from sqlalchemy import Column, DateTime, Row, UUID as COLUMN_UUID, select
 from sqlalchemy.engine.result import Result
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from sqlalchemy.orm import declarative_base, selectinload
+from sqlalchemy.orm import Mapped, declarative_base, mapped_column, selectinload
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql import func
 from sqlalchemy.sql.elements import BinaryExpression, UnaryExpression
@@ -31,12 +32,23 @@ class Base[T, U, F, O](_Base):
     __abstract__ = True
     order_by: U = OrderBy
 
+    id: Mapped[int] = mapped_column(primary_key=True)
+
     created_at = Column(
         DateTime(
             timezone=True,
         ),
         server_default=func.now(),
         nullable=False,
+    )
+    uuid = Column(
+        COLUMN_UUID(
+            as_uuid=True,
+        ),
+        primary_key=False,
+        unique=True,
+        nullable=False,
+        default=uuid4,
     )
 
     def to_dict(

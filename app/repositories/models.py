@@ -122,20 +122,6 @@ CharacterSpeciesFilter = generate_filter_enum(
 class Season(Base):
     __tablename__ = "seasons"
 
-    id: Mapped[int] = mapped_column(
-        primary_key=True,
-    )
-
-    uuid = Column(
-        COLUMN_UUID(
-            as_uuid=True,
-        ),
-        primary_key=False,
-        unique=True,
-        nullable=False,
-        default=uuid4,
-    )
-
     # Mappers
     episodes: Mapped[List["Episode"]] = relationship(
         back_populates="season",
@@ -167,7 +153,9 @@ class SeasonDoesNotExist(ModelDoesNotExist):
 class EpisodeCharacterAssociation(Base):
     __tablename__ = "episode_character_association"
 
+    id = None
     created_at = None
+    uuid = None
     episode_id: Mapped[int] = mapped_column(
         ForeignKey("episodes.id"),
         primary_key=True,
@@ -181,22 +169,11 @@ class EpisodeCharacterAssociation(Base):
 class Episode(Base):
     __tablename__ = "episodes"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-
     name = Column(
         VARCHAR(
             length=128,
         ),
         nullable=True,
-    )
-    uuid = Column(
-        COLUMN_UUID(
-            as_uuid=True,
-        ),
-        primary_key=False,
-        unique=True,
-        nullable=False,
-        default=uuid4,
     )
     air_date = Column(
         Date(),
@@ -263,8 +240,6 @@ class Character(Base):
     __tablename__ = "characters"
     order_by = CharacterOrderBy
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-
     name = Column(
         VARCHAR(
             length=128,
@@ -288,15 +263,6 @@ class Character(Base):
             CharacterSpecies,
         ),
         nullable=False,
-    )
-    uuid = Column(
-        COLUMN_UUID(
-            as_uuid=True,
-        ),
-        primary_key=False,
-        unique=True,
-        nullable=False,
-        default=uuid4,
     )
     image = Column(
         ImageType(
