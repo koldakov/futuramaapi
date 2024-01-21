@@ -4,6 +4,7 @@ from typing import List, Type, override
 from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
 from sqlalchemy import (
+    Boolean,
     Column,
     Date,
     ForeignKey,
@@ -329,3 +330,58 @@ class Character(Base):
 
 class CharacterDoesNotExist(ModelDoesNotExist):
     """Character does not exist."""
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    name = Column(
+        VARCHAR(
+            length=64,
+        ),
+        nullable=False,
+    )
+    surname = Column(
+        VARCHAR(
+            length=64,
+        ),
+        nullable=False,
+    )
+    middle_name = Column(
+        VARCHAR(
+            length=64,
+        ),
+        nullable=True,
+    )
+    email = Column(
+        VARCHAR(
+            length=320,
+        ),
+        nullable=False,
+        unique=True,
+    )
+    username = Column(
+        VARCHAR(
+            length=64,
+        ),
+        nullable=False,
+        unique=True,
+    )
+    password = Column(
+        VARCHAR(
+            length=128,
+        ),
+        nullable=False,
+    )
+    is_confirmed = Column(
+        Boolean,
+        default=False,
+    )
+    is_subscribed = Column(
+        Boolean,
+        default=True,
+    )
+
+
+class UserDoesNotExist(ModelDoesNotExist):
+    """User does not exist."""
