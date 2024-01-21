@@ -1,6 +1,5 @@
 from enum import Enum
 from typing import List, Type, override
-from uuid import uuid4
 
 from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
@@ -10,7 +9,6 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     SmallInteger,
-    UUID as COLUMN_UUID,
     VARCHAR,
     select,
 )
