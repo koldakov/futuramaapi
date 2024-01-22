@@ -13,14 +13,12 @@ async def process_get_root(
     session: AsyncSession,
     /,
 ) -> Response:
-    cursor: Result = await session.execute(
-        select(CharacterModel).order_by("id").limit(6)
-    )
+    characters = await CharacterModel.filter(session, limit=6)
     return templates.TemplateResponse(
         "index.html",
         {
             "request": request,
-            "characters": cursor.scalars().all(),
+            "characters": characters,
         },
     )
 
