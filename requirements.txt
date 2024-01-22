@@ -9,6 +9,8 @@ certifi==2023.11.17
 cfgv==3.4.0
 click==8.1.7
 distlib==0.3.7
+dnspython==2.5.0
+email-validator==2.1.0.post1
 fastapi==0.104.1
 fastapi-pagination==0.12.13
 fastapi-storages==0.2.1
