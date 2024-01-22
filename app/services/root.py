@@ -1,7 +1,5 @@
 from fastapi import Request
 from fastapi.responses import Response
-from sqlalchemy import select
-from sqlalchemy.engine.result import Result
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.models import Character as CharacterModel
