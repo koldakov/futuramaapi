@@ -2,9 +2,10 @@ from enum import Enum
 from typing import List, Any, Sequence, Tuple, Type
 from uuid import uuid4
 
+from asyncpg.exceptions import UniqueViolationError
 from sqlalchemy import Column, DateTime, Row, UUID as COLUMN_UUID, select
 from sqlalchemy.engine.result import Result
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import Mapped, declarative_base, mapped_column, selectinload
 from sqlalchemy.orm.attributes import InstrumentedAttribute
@@ -28,9 +29,14 @@ class ModelDoesNotExist(Exception):
     """Model Does Not Exist."""
 
 
+class ModelAlreadyExist(Exception):
+    """Model Already Exists"""
+
+
 class Base[T, U, F, O](_Base):
     __abstract__ = True
     order_by: U = OrderBy
+    model_already_exists = ModelAlreadyExist
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
@@ -165,3 +171,23 @@ class Base[T, U, F, O](_Base):
     async def count(cls, session: AsyncSession) -> int:
         res = await session.execute(func.count(cls.id))
         return res.scalar()
+
+    @classmethod
+    async def add(
+        cls,
+        session: AsyncSession,
+        body,
+        /,
+        *,
+        commit: bool = True,
+    ) -> T:
+        obj: T = cls(**body.model_dump())
+        session.add(obj)
+        if commit is True:
+            try:
+                await session.commit()
+            except IntegrityError as err:
+                if err.orig.sqlstate == UniqueViolationError.sqlstate:
+                    raise cls.model_already_exists() from None
+                raise
+        return obj

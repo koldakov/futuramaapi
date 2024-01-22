@@ -21,7 +21,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 from sqlalchemy.sql.elements import BinaryExpression
 
 from app.configs import settings
-from app.repositories.base import Base, ModelDoesNotExist
+from app.repositories.base import Base, ModelAlreadyExist, ModelDoesNotExist
 
 
 def to_camel(
@@ -332,8 +332,13 @@ class CharacterDoesNotExist(ModelDoesNotExist):
     """Character does not exist."""
 
 
+class UserAlreadyExists(ModelAlreadyExist):
+    """User does not exist."""
+
+
 class User(Base):
     __tablename__ = "users"
+    model_already_exists = UserAlreadyExists
 
     name = Column(
         VARCHAR(
