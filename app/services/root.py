@@ -2,7 +2,7 @@ from fastapi import Request
 from fastapi.responses import Response
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from app.repositories.models import Character as CharacterModel
+from app.repositories.models import Character as CharacterModel, User as UserModel
 from app.templates import templates
 
 
@@ -12,11 +12,13 @@ async def process_get_root(
     /,
 ) -> Response:
     characters = await CharacterModel.filter(session, limit=6)
+    user_count = await UserModel.count(session)
     return templates.TemplateResponse(
         "index.html",
         {
             "request": request,
             "characters": characters,
+            "user_count": user_count,
         },
     )
 
