@@ -387,6 +387,20 @@ class User(Base):
         default=True,
     )
 
+    @classmethod
+    @override
+    async def get(
+        cls,
+        session: AsyncSession,
+        id_: int,
+        /,
+    ) -> "User":
+        cursor: Result = await session.execute(select(User).where(User.id == id_))
+        try:
+            return cursor.scalars().one()
+        except NoResultFound as err:
+            raise UserDoesNotExist() from err
+
 
 class UserDoesNotExist(ModelDoesNotExist):
     """User does not exist."""
