@@ -119,6 +119,7 @@ class Settings(BaseModel):
     project_root: Path = Path(__file__).parent.parent.resolve()
     static: Path = Path("static")
     trusted_host: str = get_env_var("TRUSTED_HOST", cast=str)
+    secret_key: str = get_env_var("SECRET_KEY", cast=str)
 
 
 settings = Settings()

@@ -13,6 +13,7 @@ from app.routers.episodes import router as episodes_router
 from app.routers.notifications import router as notifications_router
 from app.routers.root import router as root_router
 from app.routers.seasons import router as seasons_router
+from app.routers.tokens import router as tokens_router
 from app.routers.users import router as users_router
 
 mimetypes.add_type("image/webp", ".webp")
@@ -65,6 +66,11 @@ app.include_router(
 app.include_router(
     users_router,
     tags=["users"],
+    prefix="/api",
+)
+app.include_router(
+    tokens_router,
+    tags=["tokens"],
     prefix="/api",
 )
 
