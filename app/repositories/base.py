@@ -74,10 +74,14 @@ class Base[T, U, F, O](_Base):
     async def get(
         cls,
         session: AsyncSession,
-        id_: int,
+        val: int | str,
         /,
+        *,
+        field: InstrumentedAttribute = None,
     ) -> T:
-        cursor: Result = await session.execute(select(cls).where(cls.id == id_))
+        if field is None:
+            field = cls.id
+        cursor: Result = await session.execute(select(cls).where(field == val))
         try:
             return cursor.scalars().one()
         except NoResultFound as err:
