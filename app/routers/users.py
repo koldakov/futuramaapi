@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from typing import Annotated
 
 from app.repositories.sessions import get_async_session
+from app.services.auth import oauth2_scheme
 from app.services.security import OAuth2JWTBearer, TokenData
 from app.services.users import (
     User,
@@ -12,7 +13,6 @@ from app.services.users import (
 )
 
 router = APIRouter(prefix="/users")
-oauth2_scheme = OAuth2JWTBearer(tokenUrl="token")
 
 
 @router.post(
