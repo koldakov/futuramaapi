@@ -41,3 +41,11 @@ async def process_token_auth_user(
             TokenData(uuid=str(user.uuid)).model_dump(by_alias=True)
         )
     )
+
+
+async def process_refresh_token_auth_user(data: TokenData) -> Token:
+    return Token(
+        access_token=generate_jwt_signature(
+            TokenData(**data.model_dump()).model_dump(by_alias=True)
+        )
+    )
