@@ -4,7 +4,7 @@ from typing import Annotated
 
 from app.repositories.sessions import get_async_session
 from app.services.auth import oauth2_scheme
-from app.services.security import OAuth2JWTBearer, TokenData
+from app.services.security import TokenData
 from app.services.users import (
     User,
     UserAdd,
