@@ -58,7 +58,7 @@ class User(UserBase):
     created_at: datetime = Field(alias="createdAt")
 
 
-async def process_add_user(body: UserAdd, session: AsyncSession, /):
+async def process_add_user(body: UserAdd, session: AsyncSession, /) -> User:
     body.password = hasher.encode(body.password)
     try:
         user: UserModel = await UserModel.add(session, body)

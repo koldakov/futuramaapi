@@ -53,7 +53,7 @@ def decode_jwt_signature(
     /,
     *,
     algorithms: List[str] = None,
-):
+) -> dict:
     if algorithms is None:
         algorithms = ["HS256"]
 
