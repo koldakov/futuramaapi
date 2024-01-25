@@ -33,6 +33,14 @@ async def token_auth_user(
     form_data: Annotated[OAuth2PasswordRequestJson, Depends()],
     session: AsyncSession = Depends(get_async_session),
 ) -> Token:
+    """Authenticate user.
+
+    JSON Web Token (JWT) authentication is a popular method for securing web applications and APIs.
+    It enables the exchange of digitally signed tokens between a client (user) and a server,
+    to authenticate and authorize users.
+
+    Use a token in a response to get secured stored data of your user.
+    """
     return await process_token_auth_user(session, form_data)
 
 
