@@ -59,7 +59,7 @@ def decode_jwt_signature(
 
     try:
         return jwt.decode(token, settings.secret_key, algorithms=algorithms)
-    except (exceptions.JWSError, exceptions.JWSSignatureError):
+    except (exceptions.JWSError, exceptions.JWSSignatureError, exceptions.JWTError):
         raise FatalSignatureError()
     except exceptions.ExpiredSignatureError:
         raise SignatureExpiredError()
