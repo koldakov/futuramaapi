@@ -1,5 +1,5 @@
 from copy import deepcopy
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import List, Optional
 
 from fastapi import HTTPException, Request, status
@@ -29,7 +29,7 @@ def generate_jwt_signature(
 
     cleaned_payload.update(
         {
-            "exp": datetime.now() + timedelta(seconds=expiration_time),
+            "exp": datetime.now(UTC) + timedelta(seconds=expiration_time),
         }
     )
 
