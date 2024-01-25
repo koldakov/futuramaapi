@@ -1,8 +1,10 @@
 from copy import deepcopy
 from datetime import datetime, timedelta
-from typing import List
+from typing import List, Optional
 
+from fastapi import HTTPException, Request, status
 from fastapi.param_functions import Body
+from fastapi.security import OAuth2PasswordBearer
 from jose import exceptions, jwt
 from pydantic import BaseModel
 from typing_extensions import Annotated, Doc
@@ -94,3 +96,20 @@ class OAuth2PasswordRequestJson:
     ):
         self.username = username
         self.password = password
+
+
+class OAuth2JWTBearer(OAuth2PasswordBearer):
+    async def __call__(self, request: Request) -> Optional[str | TokenData]:
+        param = await super().__call__(request)
+        try:
+            decoded_token: dict = decode_jwt_signature(param)
+        except SignatureExpiredError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token expired",
+            )
+        except FatalSignatureError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+            )
+        return TokenData(**decoded_token)

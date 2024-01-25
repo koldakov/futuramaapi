@@ -4,8 +4,13 @@ from fastapi import HTTPException, status
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from app.repositories.models import User as UserModel, UserAlreadyExists
+from app.repositories.models import (
+    User as UserModel,
+    UserAlreadyExists,
+    UserDoesNotExist,
+)
 from app.services.hashers import hasher
+from app.services.security import TokenData
 
 
 class UserBase(BaseModel):
@@ -62,4 +67,12 @@ async def process_add_user(body: UserAdd, session: AsyncSession, /):
             detail="User with username or email already exists",
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         )
+    return User.model_validate(user)
+
+
+async def process_get_me(token: TokenData, session: AsyncSession, /) -> User:
+    try:
+        user: UserModel = await UserModel.get(session, token.uuid, field=UserModel.uuid)
+    except UserDoesNotExist:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     return User.model_validate(user)

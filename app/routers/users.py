@@ -1,14 +1,18 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio.session import AsyncSession
+from typing import Annotated
 
 from app.repositories.sessions import get_async_session
+from app.services.security import OAuth2JWTBearer, TokenData
 from app.services.users import (
     User,
     UserAdd,
     process_add_user,
+    process_get_me,
 )
 
 router = APIRouter(prefix="/users")
+oauth2_scheme = OAuth2JWTBearer(tokenUrl="token")
 
 
 @router.post(
@@ -32,3 +36,20 @@ async def add_user(
     However, if there are a lot of spam requests, the endpoint will be blocked or limited.
     """
     return await process_add_user(body, session)
+
+
+@router.get(
+    "/me",
+    response_model=User,
+    name="user_me",
+)
+async def get_me(
+    token: Annotated[TokenData, Depends(oauth2_scheme)],
+    session: AsyncSession = Depends(get_async_session),
+) -> User:
+    """Get user details.
+
+    Retrieve authenticated user profile information, including username, email, and account details.
+    Personalize user experiences within the application using the JSON response containing user-specific data.
+    """
+    return await process_get_me(token, session)
