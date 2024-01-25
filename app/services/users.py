@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from fastapi import HTTPException, status
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.models import (
@@ -49,7 +49,10 @@ class UserBase(BaseModel):
 
 
 class UserAdd(UserBase):
-    ...
+    @field_validator("password", mode="before")
+    @classmethod
+    def hash_password(cls, value: str) -> str:
+        return hasher.encode(value)
 
 
 class User(UserBase):
@@ -59,7 +62,6 @@ class User(UserBase):
 
 
 async def process_add_user(body: UserAdd, session: AsyncSession, /) -> User:
-    body.password = hasher.encode(body.password)
     try:
         user: UserModel = await UserModel.add(session, body)
     except UserAlreadyExists:
