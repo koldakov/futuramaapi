@@ -1,13 +1,7 @@
-from copy import deepcopy
-from datetime import datetime, timedelta
-from typing import List
-
 from fastapi import HTTPException, status
-from jose import exceptions, jwt
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from app.configs import settings
 from app.repositories.models import User as UserModel, UserDoesNotExist
 from app.services.hashers import hasher
 from app.services.security import (
