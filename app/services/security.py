@@ -1,6 +1,7 @@
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 from typing import List, Optional
+from uuid import UUID
 
 from fastapi import HTTPException, Request, status
 from fastapi.param_functions import Body
@@ -15,7 +16,7 @@ DEFAULT_JWT_EXPIRATION_TIME: int = 15 * 60
 
 
 class TokenData(BaseModel):
-    uuid: str
+    uuid: UUID
 
 
 def generate_jwt_signature(

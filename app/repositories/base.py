@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import List, Any, Sequence, Tuple, Type
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from asyncpg.exceptions import UniqueViolationError
 from sqlalchemy import Column, DateTime, Row, UUID as COLUMN_UUID, select
@@ -74,7 +74,7 @@ class Base[T, U, F, O](_Base):
     async def get(
         cls,
         session: AsyncSession,
-        val: int | str,
+        val: int | str | UUID,
         /,
         *,
         field: InstrumentedAttribute = None,

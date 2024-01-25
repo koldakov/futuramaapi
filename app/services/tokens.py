@@ -1,3 +1,5 @@
+from json import loads
+
 from fastapi import HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.ext.asyncio.session import AsyncSession
@@ -38,7 +40,7 @@ async def process_token_auth_user(
 
     return Token(
         access_token=generate_jwt_signature(
-            TokenData(uuid=str(user.uuid)).model_dump(by_alias=True)
+            loads(TokenData(uuid=user.uuid).model_dump_json(by_alias=True))
         )
     )
 
@@ -46,6 +48,6 @@ async def process_token_auth_user(
 async def process_refresh_token_auth_user(data: TokenData) -> Token:
     return Token(
         access_token=generate_jwt_signature(
-            TokenData(**data.model_dump()).model_dump(by_alias=True)
+            loads(TokenData(**data.model_dump()).model_dump_json(by_alias=True))
         )
     )

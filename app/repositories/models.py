@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import List, Type, override
+from uuid import UUID
 
 from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
@@ -132,7 +133,7 @@ class Season(Base):
     async def get(
         cls,
         session: AsyncSession,
-        val: int | str,
+        val: int | str | UUID,
         /,
         *,
         field: InstrumentedAttribute = None,
@@ -216,7 +217,7 @@ class Episode(Base):
     async def get(
         cls,
         session: AsyncSession,
-        val: int | str,
+        val: int | str | UUID,
         /,
         *,
         field: InstrumentedAttribute = None,
@@ -289,7 +290,7 @@ class Character(Base):
     async def get(
         cls,
         session: AsyncSession,
-        val: int | str,
+        val: int | str | UUID,
         /,
         *,
         field: InstrumentedAttribute = None,
@@ -405,7 +406,7 @@ class User(Base):
     async def get(
         cls,
         session: AsyncSession,
-        val: int | str,
+        val: int | str | UUID,
         /,
         *,
         field: InstrumentedAttribute = None,
