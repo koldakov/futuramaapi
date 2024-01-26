@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from app.repositories.sessions import get_async_session
 from app.services.auth import oauth2_scheme
 from app.services.security import (
+    AccessTokenData,
     OAuth2PasswordRequestJson,
-    TokenData,
     UnauthorizedResponse,
 )
 from app.services.tokens import (
@@ -55,7 +55,7 @@ async def token_auth_user(
     name="user_token_auth_refresh",
 )
 async def refresh_token_auth_user(
-    token: Annotated[TokenData, Depends(oauth2_scheme)],
+    token: Annotated[AccessTokenData, Depends(oauth2_scheme)],
 ) -> Token:
     """Refresh JWT.
 

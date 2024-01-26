@@ -4,7 +4,7 @@ from typing import Annotated
 
 from app.repositories.sessions import get_async_session
 from app.services.auth import oauth2_scheme
-from app.services.security import TokenData
+from app.services.security import AccessTokenData
 from app.services.users import (
     User,
     UserAdd,
@@ -44,7 +44,7 @@ async def add_user(
     name="user_me",
 )
 async def get_me(
-    token: Annotated[TokenData, Depends(oauth2_scheme)],
+    token: Annotated[AccessTokenData, Depends(oauth2_scheme)],
     session: AsyncSession = Depends(get_async_session),
 ) -> User:
     """Get user details.

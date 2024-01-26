@@ -8,7 +8,7 @@ from app.repositories.models import User as UserModel, UserDoesNotExist
 from app.services.hashers import hasher
 from app.services.security import (
     OAuth2PasswordRequestJson,
-    TokenData,
+    AccessTokenData,
     generate_jwt_signature,
 )
 
@@ -40,14 +40,14 @@ async def process_token_auth_user(
 
     return Token(
         access_token=generate_jwt_signature(
-            loads(TokenData(uuid=user.uuid).model_dump_json(by_alias=True))
+            loads(AccessTokenData(uuid=user.uuid).model_dump_json(by_alias=True))
         )
     )
 
 
-async def process_refresh_token_auth_user(data: TokenData) -> Token:
+async def process_refresh_token_auth_user(data: AccessTokenData) -> Token:
     return Token(
         access_token=generate_jwt_signature(
-            loads(TokenData(**data.model_dump()).model_dump_json(by_alias=True))
+            loads(AccessTokenData(**data.model_dump()).model_dump_json(by_alias=True))
         )
     )

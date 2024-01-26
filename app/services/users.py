@@ -10,7 +10,7 @@ from app.repositories.models import (
     UserDoesNotExist,
 )
 from app.services.hashers import hasher
-from app.services.security import TokenData
+from app.services.security import AccessTokenData
 
 
 class UserBase(BaseModel):
@@ -72,7 +72,7 @@ async def process_add_user(body: UserAdd, session: AsyncSession, /) -> User:
     return User.model_validate(user)
 
 
-async def process_get_me(token: TokenData, session: AsyncSession, /) -> User:
+async def process_get_me(token: AccessTokenData, session: AsyncSession, /) -> User:
     try:
         user: UserModel = await UserModel.get(session, token.uuid, field=UserModel.uuid)
     except UserDoesNotExist:

@@ -15,7 +15,7 @@ from app.configs import settings
 DEFAULT_JWT_EXPIRATION_TIME: int = 15 * 60
 
 
-class TokenData(BaseModel):
+class AccessTokenData(BaseModel):
     uuid: UUID
 
 
@@ -100,7 +100,7 @@ class OAuth2PasswordRequestJson:
 
 
 class OAuth2JWTBearer(OAuth2PasswordBearer):
-    async def __call__(self, request: Request) -> Optional[str | TokenData]:
+    async def __call__(self, request: Request) -> Optional[str | AccessTokenData]:
         param = await super().__call__(request)
         try:
             decoded_token: dict = decode_jwt_signature(param)
@@ -113,4 +113,4 @@ class OAuth2JWTBearer(OAuth2PasswordBearer):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
             )
-        return TokenData(**decoded_token)
+        return AccessTokenData(**decoded_token)
