@@ -4,9 +4,8 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.sessions import get_async_session
-from app.services.auth import oauth2_refresh_scheme, oauth2_scheme
+from app.services.auth import oauth2_refresh_scheme
 from app.services.security import (
-    AccessTokenData,
     OAuth2PasswordRequestJson,
     RefreshTokenData,
     UnauthorizedResponse,
