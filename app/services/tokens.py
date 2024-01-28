@@ -1,4 +1,5 @@
 from json import loads
+from uuid import uuid4
 
 from fastapi import HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field
@@ -9,12 +10,15 @@ from app.services.hashers import hasher
 from app.services.security import (
     OAuth2PasswordRequestJson,
     AccessTokenData,
+    RefreshTokenData,
+    REFRESH_JWT_EXPIRATION_TIME,
     generate_jwt_signature,
 )
 
 
 class Token(BaseModel):
     access_token: str = Field(alias="accessToken")
+    refresh_token: str = Field(alias="refreshToken")
 
     model_config = ConfigDict(
         from_attributes=True,
@@ -41,12 +45,25 @@ async def process_token_auth_user(
     return Token(
         access_token=generate_jwt_signature(
             loads(AccessTokenData(uuid=user.uuid).model_dump_json(by_alias=True))
-        )
+        ),
+        refresh_token=generate_jwt_signature(
+            loads(
+                RefreshTokenData(
+                    uuid=user.uuid,
+                    nonce=uuid4().hex,
+                ).model_dump_json(by_alias=True)
+            ),
+            expiration_time=REFRESH_JWT_EXPIRATION_TIME,
+        ),
     )
 
 
-async def process_refresh_token_auth_user(data: AccessTokenData) -> Token:
-    return Token(
+class RefreshToken(BaseModel):
+    access_token: str
+
+
+async def process_refresh_token_auth_user(data: RefreshTokenData) -> RefreshToken:
+    return RefreshToken(
         access_token=generate_jwt_signature(
             loads(AccessTokenData(**data.model_dump()).model_dump_json(by_alias=True))
         )

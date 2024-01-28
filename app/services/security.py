@@ -1,5 +1,6 @@
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
+from enum import Enum
 from typing import List, Optional
 from uuid import UUID
 
@@ -7,16 +8,33 @@ from fastapi import HTTPException, Request, status
 from fastapi.param_functions import Body
 from fastapi.security import OAuth2PasswordBearer
 from jose import exceptions, jwt
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, ValidationError
 from typing_extensions import Annotated, Doc
 
 from app.configs import settings
 
 DEFAULT_JWT_EXPIRATION_TIME: int = 15 * 60
+REFRESH_JWT_EXPIRATION_TIME: int = 60 * 60 * 24 * 21
 
 
-class AccessTokenData(BaseModel):
+class TokenType(Enum):
+    REFRESH = "REFRESH"
+    ACCESS = "ACCESS"
+
+
+class TokenBase(BaseModel):
+    type: TokenType
+
+
+class AccessTokenData(TokenBase):
     uuid: UUID
+    type: TokenType = TokenType.ACCESS
+
+
+class RefreshTokenData(TokenBase):
+    nonce: str = Field(min_length=32, max_length=32)
+    uuid: UUID
+    type: TokenType = TokenType.REFRESH
 
 
 def generate_jwt_signature(
@@ -99,8 +117,13 @@ class OAuth2PasswordRequestJson:
         self.password = password
 
 
-class OAuth2JWTBearer(OAuth2PasswordBearer):
-    async def __call__(self, request: Request) -> Optional[str | AccessTokenData]:
+class OAuth2JWTBearerBase[T](OAuth2PasswordBearer):
+    _model: T = None
+
+    def extra_checks(self, model):
+        raise NotImplementedError()
+
+    async def __call__(self, request: Request) -> Optional[str | T]:
         param = await super().__call__(request)
         try:
             decoded_token: dict = decode_jwt_signature(param)
@@ -113,4 +136,25 @@ class OAuth2JWTBearer(OAuth2PasswordBearer):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
             )
-        return AccessTokenData(**decoded_token)
+        try:
+            model = self._model(**decoded_token)
+        except ValidationError:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        self.extra_checks(model)
+        return model
+
+
+class OAuth2JWTBearer(OAuth2JWTBearerBase):
+    _model = AccessTokenData
+
+    def extra_checks(self, model):
+        if model.type != TokenType.ACCESS:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+
+class OAuth2JWTBearerRefresh(OAuth2JWTBearerBase):
+    _model = RefreshTokenData
+
+    def extra_checks(self, model):
+        if model.type != TokenType.REFRESH:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)

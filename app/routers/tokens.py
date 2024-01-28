@@ -4,13 +4,15 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.sessions import get_async_session
-from app.services.auth import oauth2_scheme
+from app.services.auth import oauth2_refresh_scheme, oauth2_scheme
 from app.services.security import (
     AccessTokenData,
     OAuth2PasswordRequestJson,
+    RefreshTokenData,
     UnauthorizedResponse,
 )
 from app.services.tokens import (
+    RefreshToken,
     Token,
     process_refresh_token_auth_user,
     process_token_auth_user,
@@ -51,12 +53,12 @@ async def token_auth_user(
             "model": UnauthorizedResponse,
         },
     },
-    response_model=Token,
+    response_model=RefreshToken,
     name="user_token_auth_refresh",
 )
 async def refresh_token_auth_user(
-    token: Annotated[AccessTokenData, Depends(oauth2_scheme)],
-) -> Token:
+    token: Annotated[RefreshTokenData, Depends(oauth2_refresh_scheme)],
+) -> RefreshToken:
     """Refresh JWT.
 
     The Refresh JWT Token endpoint extends the lifespan of JSON Web Tokens (JWTs) without requiring user
