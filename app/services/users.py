@@ -16,7 +16,13 @@ from app.repositories.models import (
 )
 from app.services.emails import ConfirmationBody, send_confirmation
 from app.services.hashers import hasher
-from app.services.security import AccessTokenData, generate_jwt_signature
+from app.services.security import (
+    AccessTokenData,
+    FatalSignatureError,
+    SignatureExpiredError,
+    decode_jwt_signature,
+    generate_jwt_signature,
+)
 
 
 class UserBase(BaseModel):
@@ -122,4 +128,39 @@ async def process_get_me(token: AccessTokenData, session: AsyncSession, /) -> Us
         user: UserModel = await UserModel.get(session, token.uuid, field=UserModel.uuid)
     except UserDoesNotExist:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    return User.model_validate(user)
+
+
+def _get_uuid(signature: str, /) -> UUID:
+    try:
+        decoded_signature = decode_jwt_signature(signature)
+    except SignatureExpiredError:
+        raise HTTPException(
+            detail="Token has expired",
+            status_code=status.HTTP_401_UNAUTHORIZED,
+        )
+    except FatalSignatureError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        uuid = decoded_signature["uuid"]
+    except KeyError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+    return UUID(uuid)
+
+
+async def process_activate(signature: str, session: AsyncSession, /) -> User:
+    uuid = _get_uuid(signature)
+    try:
+        user: UserModel = await UserModel.get(session, uuid, field=UserModel.uuid)
+    except UserDoesNotExist:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    if user.is_confirmed:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+    user.is_confirmed = True
+    session.add(user)
+    await session.commit()
+
     return User.model_validate(user)

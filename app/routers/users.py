@@ -8,6 +8,7 @@ from app.services.security import AccessTokenData
 from app.services.users import (
     User,
     UserAdd,
+    process_activate,
     process_add_user,
     process_get_me,
 )
@@ -53,3 +54,20 @@ async def get_me(
     Personalize user experiences within the application using the JSON response containing user-specific data.
     """
     return await process_get_me(token, session)
+
+
+@router.get(
+    "/activate",
+    response_model=User,
+    name="activate_user",
+)
+async def activate(
+    sig: str,
+    session: AsyncSession = Depends(get_async_session),
+) -> User:
+    """Get user details.
+
+    Retrieve authenticated user profile information, including username, email, and account details.
+    Personalize user experiences within the application using the JSON response containing user-specific data.
+    """
+    return await process_activate(sig, session)
