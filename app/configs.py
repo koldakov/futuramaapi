@@ -6,7 +6,7 @@ from json.decoder import JSONDecodeError
 from os import environ
 from typing import Dict, List, Type, TypedDict, Unpack
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class _ExtraSettingArg(TypedDict):
@@ -113,6 +113,22 @@ def get_env_var[T](
     return parse(cast, setting, separator, **extra)
 
 
+class EmailSettings(BaseModel):
+    default_from: EmailStr = get_env_var("EMAIL_FROM_DEFAULT")
+    host_user: str = get_env_var("EMAIL_HOST_USER")
+    host: str = get_env_var("EMAIL_HOST")
+    api_key: str = get_env_var("EMAIL_API_KEY")
+    port: int = 587
+    from_name: str = "FuturamaAPI"
+    start_tls: bool = True
+    ssl_tls: bool = False
+    use_credentials: bool = True
+    validate_certs: bool = True
+
+
+email_settings = EmailSettings()
+
+
 class Settings(BaseModel):
     allow_origins: List = get_env_var("ALLOW_ORIGINS", cast=List)
     database_url: str = get_env_var("DATABASE_URL", cast=str, async_=True, db_url=True)
@@ -120,6 +136,19 @@ class Settings(BaseModel):
     static: Path = Path("static")
     trusted_host: str = get_env_var("TRUSTED_HOST", cast=str)
     secret_key: str = get_env_var("SECRET_KEY", cast=str)
+    email: EmailSettings = email_settings
 
 
 settings = Settings()
+
+
+class FeatureFlags(BaseModel):
+    activate_users: bool = get_env_var(
+        "ACTIVATE_USERS",
+        cast=bool,
+        required=False,
+        default=False,
+    )
+
+
+feature_flags = FeatureFlags()

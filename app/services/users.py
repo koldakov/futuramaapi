@@ -1,16 +1,22 @@
 from datetime import datetime
+from gettext import gettext as _
+from json import dumps, loads
+from urllib.parse import urlencode
+from uuid import UUID
 
 from fastapi import HTTPException, status
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, HttpUrl, field_validator
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
+from app.configs import feature_flags, settings
 from app.repositories.models import (
     User as UserModel,
     UserAlreadyExists,
     UserDoesNotExist,
 )
+from app.services.emails import ConfirmationBody, send_confirmation
 from app.services.hashers import hasher
-from app.services.security import AccessTokenData
+from app.services.security import AccessTokenData, generate_jwt_signature
 
 
 class UserBase(BaseModel):
@@ -61,6 +67,39 @@ class User(UserBase):
     created_at: datetime = Field(alias="createdAt")
 
 
+def _get_signature(uuid: UUID):
+    return generate_jwt_signature(
+        loads(
+            dumps(
+                {
+                    "uuid": uuid,
+                },
+                default=str,
+            )
+        )
+    )
+
+
+def get_confirmation_body(user: UserModel, /) -> ConfirmationBody:
+    url = HttpUrl.build(
+        scheme="https",
+        host=settings.trusted_host,
+        path="api/users/activate",
+        query=urlencode(
+            {
+                "sig": _get_signature(user.uuid),
+            }
+        ),
+    )
+    return ConfirmationBody(
+        url=url,
+        user={
+            "name": user.name,
+            "surname": user.surname,
+        },
+    )
+
+
 async def process_add_user(body: UserAdd, session: AsyncSession, /) -> User:
     try:
         user: UserModel = await UserModel.add(session, body)
@@ -68,6 +107,12 @@ async def process_add_user(body: UserAdd, session: AsyncSession, /) -> User:
         raise HTTPException(
             detail="User with username or email already exists",
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        )
+    if feature_flags.activate_users:
+        await send_confirmation(
+            [user.email],
+            _("FuturamaAPI - Account Activation"),
+            get_confirmation_body(user),
         )
     return User.model_validate(user)
 
