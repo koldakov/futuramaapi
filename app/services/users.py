@@ -73,6 +73,9 @@ class User(UserBase):
     created_at: datetime = Field(alias="createdAt")
 
 
+EXPIRATION_72_HOURS = 60 * 60 * 72
+
+
 def _get_signature(uuid: UUID):
     return generate_jwt_signature(
         loads(
@@ -82,7 +85,8 @@ def _get_signature(uuid: UUID):
                 },
                 default=str,
             )
-        )
+        ),
+        expiration_time=EXPIRATION_72_HOURS,
     )
 
 
