@@ -160,7 +160,6 @@ async def process_activate(signature: str, session: AsyncSession, /) -> User:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     user.is_confirmed = True
-    session.add(user)
     await session.commit()
 
     return User.model_validate(user)
