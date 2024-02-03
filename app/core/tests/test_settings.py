@@ -3,7 +3,7 @@ from typing import Dict
 
 import pytest
 
-from app.configs import parse
+from app.core.settings import parse
 
 
 class TestParse:

@@ -11,7 +11,7 @@ from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
 import sqlalchemy as sa
 
-from app.configs import settings
+from app.core import settings
 
 
 # revision identifiers, used by Alembic.

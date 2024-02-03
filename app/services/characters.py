@@ -8,7 +8,7 @@ from fastapi_storages import StorageImage
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from app.configs import settings
+from app.core import settings
 from app.repositories.base import OrderByDirection
 from app.repositories.models import Character as CharacterModel
 from app.repositories.models import (

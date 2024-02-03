@@ -3,7 +3,7 @@ from typing import List
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import BaseModel, HttpUrl, EmailStr
 
-from app.configs import settings
+from app.core import settings
 
 conf = ConnectionConfig(
     MAIL_USERNAME=settings.email.host_user,

@@ -9,7 +9,7 @@ from fastapi import HTTPException, status
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, HttpUrl, field_validator
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from app.configs import feature_flags, settings
+from app.core import feature_flags, settings
 from app.repositories.models import (
     User as UserModel,
     UserAlreadyExists,

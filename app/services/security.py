@@ -11,7 +11,7 @@ from jose import exceptions, jwt
 from pydantic import BaseModel, Field, ValidationError
 from typing_extensions import Annotated, Doc
 
-from app.configs import settings
+from app.core import settings
 
 DEFAULT_JWT_EXPIRATION_TIME: int = 15 * 60
 REFRESH_JWT_EXPIRATION_TIME: int = 60 * 60 * 24 * 21

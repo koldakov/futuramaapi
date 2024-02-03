@@ -6,7 +6,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-from app.configs import settings
+from app.core import settings
 from app.repositories import models  # noqa: F401, do not remove.
 from app.repositories.base import Base
 

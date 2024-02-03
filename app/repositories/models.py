@@ -22,7 +22,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import BinaryExpression
 
-from app.configs import settings
+from app.core import settings
 from app.repositories.base import Base, ModelAlreadyExist, ModelDoesNotExist
 
 

@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import add_pagination
 
-from app.configs import settings
+from app.core import settings
 from app.graph_ql.routers import router as graphql_router
 from app.routers.callbacks import router as callbacks_router
 from app.routers.characters import router as characters_router
