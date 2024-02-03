@@ -1,6 +1,7 @@
 from datetime import datetime
 from gettext import gettext as _
 from json import dumps, loads
+from typing import Dict
 from urllib.parse import urlencode
 from uuid import UUID
 
@@ -60,11 +61,15 @@ class UserBase(BaseModel):
     )
 
 
-class UserAdd(UserBase):
+class PasswordHashMixin:
     @field_validator("password", mode="before")
     @classmethod
     def hash_password(cls, value: str) -> str:
         return hasher.encode(value)
+
+
+class UserAdd(UserBase, PasswordHashMixin):
+    ...
 
 
 class User(UserBase):
@@ -167,3 +172,55 @@ async def process_activate(signature: str, session: AsyncSession, /) -> User:
     await session.commit()
 
     return User.model_validate(user)
+
+
+class UserUpdate(BaseModel, PasswordHashMixin):
+    name: str | None = Field(
+        min_length=1,
+        max_length=64,
+        default=None,
+    )
+    surname: str | None = Field(
+        min_length=1,
+        max_length=64,
+        default=None,
+    )
+    middle_name: str | None = Field(
+        default=None,
+        alias="middleName",
+        min_length=1,
+        max_length=64,
+    )
+    password: str | None = Field(
+        default=None,
+        min_length=8,
+        max_length=128,
+    )
+    is_subscribed: bool | None = Field(
+        default=None,
+        alias="isSubscribed",
+    )
+
+    model_config = ConfigDict(
+        from_attributes=True,
+        populate_by_name=True,
+    )
+
+
+async def process_update(
+    token: AccessTokenData,
+    request_user: UserUpdate,
+    session: AsyncSession,
+    /,
+) -> User:
+    request_user_dict: Dict = request_user.model_dump(exclude_none=True)
+    if not request_user_dict:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    try:
+        user: UserModel = await UserModel.get(session, token.uuid, field=UserModel.uuid)
+    except UserDoesNotExist:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    for field, value in request_user_dict.items():
+        setattr(user, field, value)
+    await session.commit()
+    return user

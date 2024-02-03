@@ -8,9 +8,11 @@ from app.services.security import AccessTokenData
 from app.services.users import (
     User,
     UserAdd,
+    UserUpdate,
     process_activate,
     process_add_user,
     process_get_me,
+    process_update,
 )
 
 router = APIRouter(prefix="/users")
@@ -71,3 +73,21 @@ async def activate(
     Personalize user experiences within the application using the JSON response containing user-specific data.
     """
     return await process_activate(sig, session)
+
+
+@router.put(
+    "/",
+    response_model=User,
+    name="update_user",
+)
+async def update(
+    user: UserUpdate,
+    token: Annotated[AccessTokenData, Depends(oauth2_scheme)],
+    session: AsyncSession = Depends(get_async_session),
+) -> User:
+    """Update user details.
+
+    This endpoint is crucial for users to manage and maintain accurate profile information,
+    often including authentication and authorization checks for security.
+    """
+    return await process_update(token, user, session)
