@@ -149,6 +149,12 @@ class FeatureFlags(BaseModel):
         required=False,
         default=False,
     )
+    enable_https_redirect: bool = get_env_var(
+        "ENABLE_HTTPS_REDIRECT",
+        cast=bool,
+        required=False,
+        default=False,
+    )
 
 
 feature_flags = FeatureFlags()

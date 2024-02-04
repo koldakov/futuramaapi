@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import add_pagination
 
-from app.core import settings
+from app.core import feature_flags, settings
 from app.graph_ql.routers import router as graphql_router
 from app.routers.callbacks import router as callbacks_router
 from app.routers.characters import router as characters_router
@@ -15,6 +15,7 @@ from app.routers.root import router as root_router
 from app.routers.seasons import router as seasons_router
 from app.routers.tokens import router as tokens_router
 from app.routers.users import router as users_router
+from app.middlewares.secure import HTTPSRedirectMiddleware
 
 mimetypes.add_type("image/webp", ".webp")
 
@@ -22,6 +23,9 @@ app = FastAPI(
     docs_url=None,
     redoc_url=None,
 )
+
+if feature_flags.enable_https_redirect:
+    app.add_middleware(HTTPSRedirectMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
