@@ -14,9 +14,9 @@ async def process_get_root(
     characters = await CharacterModel.filter(session, limit=6)
     user_count = await UserModel.count(session)
     return templates.TemplateResponse(
+        request,
         "index.html",
         {
-            "request": request,
             "characters": characters,
             "user_count": user_count,
         },
@@ -28,8 +28,6 @@ async def process_about(
     /,
 ) -> Response:
     return templates.TemplateResponse(
+        request,
         "about.html",
-        {
-            "request": request,
-        },
     )
