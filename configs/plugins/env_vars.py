@@ -8,8 +8,8 @@ def pytest_load_initial_conftests(args, early_config, parser):
     with open(".env.template") as file:
         data = file.read()
 
-    for line in data.split():
-        if line.startswith("#"):
+    for line in data.splitlines():
+        if not line.strip() or line.startswith("#"):
             continue
 
         key, value = line.split()[0].split("=", 1)
