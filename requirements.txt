@@ -11,7 +11,7 @@ certifi==2023.11.17
 cffi==1.16.0
 cfgv==3.4.0
 click==8.1.7
-cryptography==42.0.0
+cryptography==42.0.4
 distlib==0.3.7
 dnspython==2.5.0
 ecdsa==0.18.0
