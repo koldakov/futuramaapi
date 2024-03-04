@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import HTTPException, Request, status
 from fastapi_pagination import Page
@@ -22,7 +22,7 @@ from app.repositories.models import (
 )
 
 
-def build_url(*, path: str = None):
+def build_url(*, path: str | None = None):
     path = f"{settings.static}/{path}" if path else f"{settings.static}"
     return HttpUrl.build(
         scheme="https",
@@ -32,13 +32,13 @@ def build_url(*, path: str = None):
 
 
 class Character(BaseModel):
-    id: int
+    id: int  # noqa: A003
     name: str
     gender: CharacterGender
     status: CharacterStatus
     species: CharacterSpecies
     created_at: datetime = Field(alias="createdAt")
-    image: Optional[HttpUrl]
+    image: HttpUrl | None = None
 
     @field_validator("image", mode="before")
     @classmethod
@@ -56,11 +56,11 @@ class Character(BaseModel):
         """
         if value is None:
             return None
-        return build_url(path=value._name)  # noqa
+        return build_url(path=value._name)
 
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
-    def __init__(self, request: Request = None, **data: Any):
+    def __init__(self, request: Request | None = None, **data: Any):
         self.request = request
         super().__init__(**data)
 
@@ -73,7 +73,7 @@ async def get_character(
     try:
         character: CharacterModel = await CharacterModel.get(session, character_id)
     except CharacterDoesNotExist:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND) from None
     return Character.model_validate(character)
 
 
@@ -85,16 +85,16 @@ async def process_get_character(
     return await get_character(character_id, session)
 
 
-async def process_get_characters(
+async def process_get_characters(  # noqa: PLR0913
     session: AsyncSession,
     /,
     *,
-    gender: Optional[CharacterGenderFilter] = None,
-    character_status: Optional[CharacterStatusFilter] = None,
-    species: Optional[CharacterSpeciesFilter] = None,
-    order_by: Optional[CharacterModel.order_by] = None,
-    direction: Optional[OrderByDirection] = None,
-    query: Optional[str] = None,
+    gender: CharacterGenderFilter | None = None,
+    character_status: CharacterStatusFilter | None = None,
+    species: CharacterSpeciesFilter | None = None,
+    order_by: CharacterModel.order_by | None = None,
+    direction: OrderByDirection | None = None,
+    query: str | None = None,
 ) -> Page[Character]:
     return await paginate(
         session,

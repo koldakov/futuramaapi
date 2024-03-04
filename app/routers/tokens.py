@@ -32,7 +32,7 @@ router = APIRouter(prefix="/tokens")
 )
 async def token_auth_user(
     form_data: Annotated[OAuth2PasswordRequestJson, Depends()],
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Token:
     """Authenticate user.
 

@@ -1,21 +1,20 @@
 from enum import Enum
-from typing import List, Type, override
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
 from sqlalchemy import (
+    VARCHAR,
     Boolean,
     Column,
     Date,
     ForeignKey,
     Integer,
     SmallInteger,
-    VARCHAR,
     select,
 )
 from sqlalchemy.dialects.postgresql import ENUM  # TODO: engine agnostic.
-from sqlalchemy.engine.result import Result
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
@@ -25,31 +24,29 @@ from sqlalchemy.sql.elements import BinaryExpression
 from app.core import settings
 from app.repositories.base import Base, ModelAlreadyExist, ModelDoesNotExist
 
+if TYPE_CHECKING:
+    from sqlalchemy.engine.result import Result
+
 
 def to_camel(
     val: str,
 ):
-    return "".join(
-        [
-            word if idx == 0 else word.capitalize()
-            for idx, word in enumerate(val.lower().split("_"))
-        ]
-    )
+    return "".join([word if idx == 0 else word.capitalize() for idx, word in enumerate(val.lower().split("_"))])
 
 
-def generate_inverted_enum[T: Type[Enum]](
+def generate_inverted_enum(
     name: str,
-    proto_enum: T,
+    proto_enum: type[Enum],
     /,
-) -> T:
+) -> Enum:
     return Enum(name, {f"NOT_{i.name}": f"!{i.value}" for i in [*proto_enum]})
 
 
-def generate_filter_enum[T: Type[Enum]](
+def generate_filter_enum(
     name: str,
-    enums: List[T],
-) -> T:
-    unpacked_enums: [List[T]] = [val for _e in enums for val in _e]
+    enums,
+) -> Enum:
+    unpacked_enums: list[Enum] = [val for _e in enums for val in _e]
     return Enum(name, {e.name: to_camel(e.value) for e in unpacked_enums})
 
 
@@ -124,12 +121,11 @@ class Season(Base):
     __tablename__ = "seasons"
 
     # Mappers
-    episodes: Mapped[List["Episode"]] = relationship(
+    episodes: Mapped[list["Episode"]] = relationship(
         back_populates="season",
     )
 
     @classmethod
-    @override
     async def get(
         cls,
         session: AsyncSession,
@@ -140,10 +136,8 @@ class Season(Base):
     ) -> "Season":
         if field is None:
             field = Season.id
-        cursor: Result = await session.execute(
-            select(Season)
-            .where(field == val)
-            .options(selectinload(Season.episodes))
+        cursor: "Result" = await session.execute(
+            select(Season).where(field == val).options(selectinload(Season.episodes))
         )
         try:
             return cursor.scalars().one()
@@ -158,7 +152,7 @@ class SeasonDoesNotExist(ModelDoesNotExist):
 class EpisodeCharacterAssociation(Base):
     __tablename__ = "episode_character_association"
 
-    id = None
+    id = None  # noqa: A003
     created_at = None
     uuid = None
     episode_id: Mapped[int] = mapped_column(
@@ -207,13 +201,12 @@ class Episode(Base):
         back_populates="episodes",
     )
 
-    characters: Mapped[List["Character"]] = relationship(
+    characters: Mapped[list["Character"]] = relationship(
         secondary="episode_character_association",
         back_populates="episodes",
     )
 
     @classmethod
-    @override
     async def get(
         cls,
         session: AsyncSession,
@@ -224,10 +217,8 @@ class Episode(Base):
     ) -> "Episode":
         if field is None:
             field = Episode.id
-        cursor: Result = await session.execute(
-            select(Episode)
-            .where(field == val)
-            .options(selectinload(Episode.season))
+        cursor: "Result" = await session.execute(
+            select(Episode).where(field == val).options(selectinload(Episode.season))
         )
         try:
             return cursor.scalars().one()
@@ -280,13 +271,12 @@ class Character(Base):
     )
 
     # Mappers
-    episodes: Mapped[List["Episode"]] = relationship(
+    episodes: Mapped[list["Episode"]] = relationship(
         secondary="episode_character_association",
         back_populates="characters",
     )
 
     @classmethod
-    @override
     async def get(
         cls,
         session: AsyncSession,
@@ -297,20 +287,17 @@ class Character(Base):
     ) -> "Character":
         if field is None:
             field = Character.id
-        cursor: Result = await session.execute(
-            select(Character).where(field == val)
-        )
+        cursor: "Result" = await session.execute(select(Character).where(field == val))
         try:
             return cursor.scalars().one()
         except NoResultFound as err:
             raise CharacterDoesNotExist() from err
 
     @classmethod
-    @override
-    def get_cond_list(cls, **kwargs) -> List[BinaryExpression]:
-        gender: CharacterGenderFilter | None = kwargs.get("gender")
-        character_status: CharacterStatusFilter | None = kwargs.get("character_status")
-        species: CharacterSpeciesFilter | None = kwargs.get("species")
+    def get_cond_list(cls, **kwargs) -> list[BinaryExpression]:
+        gender: CharacterGenderFilter | None = kwargs.get("gender")  # type: ignore[valid-type]
+        character_status: CharacterStatusFilter | None = kwargs.get("character_status")  # type: ignore[valid-type]
+        species: CharacterSpeciesFilter | None = kwargs.get("species")  # type: ignore[valid-type]
         query: str | None = kwargs.get("query")
         cond_list = []
         if gender is not None:
@@ -402,7 +389,6 @@ class User(Base):
     )
 
     @classmethod
-    @override
     async def get(
         cls,
         session: AsyncSession,
@@ -413,7 +399,7 @@ class User(Base):
     ) -> "User":
         if field is None:
             field = User.id
-        cursor: Result = await session.execute(select(User).where(field == val))
+        cursor: "Result" = await session.execute(select(User).where(field == val))
         try:
             return cursor.scalars().one()
         except NoResultFound as err:

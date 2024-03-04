@@ -1,6 +1,7 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from typing import Annotated
 
 from app.repositories.sessions import get_async_session
 from app.services.auth import oauth2_scheme
@@ -26,7 +27,7 @@ router = APIRouter(prefix="/users")
 )
 async def add_user(
     body: UserAdd,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> User:
     """Create User.
 
@@ -48,7 +49,7 @@ async def add_user(
 )
 async def get_me(
     token: Annotated[AccessTokenData, Depends(oauth2_scheme)],
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> User:
     """Get user details.
 
@@ -65,7 +66,7 @@ async def get_me(
 )
 async def activate(
     sig: str,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> User:
     """Get user details.
 
@@ -83,7 +84,7 @@ async def activate(
 async def update(
     user: UserUpdate,
     token: Annotated[AccessTokenData, Depends(oauth2_scheme)],
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> User:
     """Update user details.
 

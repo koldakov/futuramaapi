@@ -1,7 +1,6 @@
 from datetime import datetime
 from gettext import gettext as _
 from json import dumps, loads
-from typing import Dict
 from urllib.parse import urlencode
 from uuid import UUID
 
@@ -12,6 +11,8 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from app.core import feature_flags, settings
 from app.repositories.models import (
     User as UserModel,
+)
+from app.repositories.models import (
     UserAlreadyExists,
     UserDoesNotExist,
 )
@@ -73,7 +74,7 @@ class UserAdd(UserBase, PasswordHashMixin):
 
 
 class User(UserBase):
-    id: int
+    id: int  # noqa: A003
     is_confirmed: bool = Field(alias="isConfirmed")
     created_at: datetime = Field(alias="createdAt")
 
@@ -122,7 +123,7 @@ async def process_add_user(body: UserAdd, session: AsyncSession, /) -> User:
         raise HTTPException(
             detail="User with username or email already exists",
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        )
+        ) from None
     if feature_flags.activate_users:
         await send_confirmation(
             [user.email],
@@ -136,7 +137,7 @@ async def process_get_me(token: AccessTokenData, session: AsyncSession, /) -> Us
     try:
         user: UserModel = await UserModel.get(session, token.uuid, field=UserModel.uuid)
     except UserDoesNotExist:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
     return User.model_validate(user)
 
 
@@ -147,14 +148,14 @@ def _get_uuid(signature: str, /) -> UUID:
         raise HTTPException(
             detail="Token has expired",
             status_code=status.HTTP_401_UNAUTHORIZED,
-        )
+        ) from None
     except FatalSignatureError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
 
     try:
         uuid = decoded_signature["uuid"]
     except KeyError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
 
     return UUID(uuid)
 
@@ -164,9 +165,9 @@ async def process_activate(signature: str, session: AsyncSession, /) -> User:
     try:
         user: UserModel = await UserModel.get(session, uuid, field=UserModel.uuid)
     except UserDoesNotExist:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
     if user.is_confirmed:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
 
     user.is_confirmed = True
     await session.commit()
@@ -213,13 +214,13 @@ async def process_update(
     session: AsyncSession,
     /,
 ) -> User:
-    request_user_dict: Dict = request_user.model_dump(exclude_none=True)
+    request_user_dict: dict = request_user.model_dump(exclude_none=True)
     if not request_user_dict:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
     try:
         user: UserModel = await UserModel.get(session, token.uuid, field=UserModel.uuid)
     except UserDoesNotExist:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
     for field, value in request_user_dict.items():
         setattr(user, field, value)
     await session.commit()

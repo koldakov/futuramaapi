@@ -2,10 +2,15 @@ import base64
 import hashlib
 import math
 import secrets
+from collections.abc import Callable
 
 from pydantic import BaseModel
 
 RANDOM_STRING_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+
+class HasherBaseException(Exception):
+    """Hasher Base Exception."""
 
 
 def pbkdf2(
@@ -14,8 +19,8 @@ def pbkdf2(
     iterations: int,
     /,
     *,
-    dk_len: int = 0,
-    digest=None,
+    dk_len: int | None = 0,
+    digest: Callable | None = None,
 ):
     if digest is None:
         digest = hashlib.sha256
@@ -42,13 +47,13 @@ def get_random_string(
 
 class DecodedPassword(BaseModel):
     algorithm: str
-    hash: str
+    hash: str  # noqa: A003
     iterations: int
     salt: str
 
 
 class PasswordHasherBase:
-    algorithm = None
+    algorithm: str | None = None
     library = None
     salt_entropy = 128
     separator = "."
@@ -66,11 +71,22 @@ class PasswordHasherBase:
         if not salt or self.separator in salt:
             raise ValueError() from None
 
-    def encode(self, password, salt, /) -> str:
+    def encode(
+        self,
+        password: str,
+        /,
+        *,
+        salt: str | None = None,
+        iterations: int | None = None,
+    ) -> str:
         raise NotImplementedError()
 
     def decode(self, encoded, /) -> DecodedPassword:
         raise NotImplementedError()
+
+
+class HashMismatch(HasherBaseException):
+    """Hash Mismatch"""
 
 
 class PasswordHasherPBKDF2(PasswordHasherBase):
@@ -83,20 +99,29 @@ class PasswordHasherPBKDF2(PasswordHasherBase):
         password: str,
         /,
         *,
-        salt: str = None,
-        iterations: int = None,
+        salt: str | None = None,
+        iterations: int | None = None,
     ) -> str:
-        if not salt:
+        if salt is None:
             salt = self.salt()
         self._check_encode_args(password, salt)
-        iterations = iterations or self.iterations
-        hash_ = pbkdf2(password.encode(), salt.encode(), iterations, digest=self.digest)
+
+        if iterations is None:
+            iterations = self.iterations
+
+        hash_ = pbkdf2(
+            password.encode(),
+            salt.encode(),
+            iterations,
+            digest=getattr(self, "digest"),  # noqa: B009 Dirty hack, all questions to mypy.
+        )
         hash_ = base64.b64encode(hash_).decode("ascii").strip()
         return f"{self.algorithm}{self.separator}{iterations}{self.separator}{salt}{self.separator}{hash_}"
 
     def decode(self, encoded, /) -> DecodedPassword:
         algorithm, iterations, salt, hash_ = encoded.split(self.separator, 3)
-        assert algorithm == self.algorithm
+        if algorithm != self.algorithm:
+            raise HashMismatch() from None
         return DecodedPassword(
             algorithm=algorithm,
             hash=hash_,

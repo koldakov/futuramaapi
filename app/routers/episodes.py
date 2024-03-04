@@ -20,7 +20,7 @@ router = APIRouter(prefix="/episodes")
 )
 async def get_episode(
     episode_id: int,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Episode:
     """Retrieve specific episode.
 
@@ -41,7 +41,7 @@ async def get_episode(
     name="episodes",
 )
 async def get_episodes(
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Page[Episode]:
     """Retrieve episodes.
 

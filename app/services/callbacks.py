@@ -1,7 +1,6 @@
-from asyncio import sleep
 import json
+from asyncio import sleep
 from random import randint
-from typing import Union
 
 from fastapi import BackgroundTasks
 from httpx import AsyncClient, Response
@@ -10,10 +9,20 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.models import (
     Character as CharacterModel,
+)
+from app.repositories.models import (
     CharacterDoesNotExist as CharacterDoesNotExistException,
+)
+from app.repositories.models import (
     Episode as EpisodeModel,
+)
+from app.repositories.models import (
     EpisodeDoesNotExist as EpisodeDoesNotExistException,
+)
+from app.repositories.models import (
     Season as SeasonModel,
+)
+from app.repositories.models import (
     SeasonDoesNotExist as SeasonDoesNotExistException,
 )
 from app.services.characters import Character
@@ -41,7 +50,7 @@ class CallbackResponse(BaseModel):
 
 
 class _ObjectDoesNotExist(BaseModel):
-    id: int = Field(
+    id: int = Field(  # noqa: A003
         description="Requested object ID.",
     )
     detail: str = Field(
@@ -56,23 +65,23 @@ class CharacterDoesNotExist(_ObjectDoesNotExist):
 
 
 class _ObjectType(BaseModel):
-    type: str = Field(
+    type: str = Field(  # noqa: A003
         description="Requested Object type.",
     )
 
 
 class CharacterCallbackResponse(_ObjectType):
-    item: Union[Character, CharacterDoesNotExist]
+    item: Character | CharacterDoesNotExist
 
 
 async def _get_character_or_not_found_object(
     id_: int,
     session: AsyncSession,
     /,
-) -> Union[Character, CharacterDoesNotExist]:
-    character: Union[Character, CharacterDoesNotExist]
+) -> Character | CharacterDoesNotExist:
+    character: Character | CharacterDoesNotExist
     try:
-        character: CharacterModel = await CharacterModel.get(session, id_)
+        character = await CharacterModel.get(session, id_)
     except CharacterDoesNotExistException:
         character = CharacterDoesNotExist(
             id=id_,
@@ -98,10 +107,7 @@ async def callback_characters_background_task(
     /,
 ):
     await sleep(response.delay)
-    character: Union[
-        Character,
-        CharacterDoesNotExist,
-    ] = await _get_character_or_not_found_object(character_id, session)
+    character: Character | CharacterDoesNotExist = await _get_character_or_not_found_object(character_id, session)
     body = CharacterCallbackResponse(
         type=Character.__name__,
         item=character,
@@ -116,7 +122,7 @@ async def process_characters_callback(
     background_tasks: BackgroundTasks,
     /,
 ) -> CallbackResponse:
-    response: CallbackResponse = CallbackResponse(delay=randint(MIN_DELAY, MAX_DELAY))
+    response: CallbackResponse = CallbackResponse(delay=randint(MIN_DELAY, MAX_DELAY))  # noqa: S311
     background_tasks.add_task(
         callback_characters_background_task,
         character_id,
@@ -135,10 +141,10 @@ async def _get_episode_or_not_found_object(
     id_: int,
     session: AsyncSession,
     /,
-) -> Union[Episode, EpisodeDoesNotExist]:
-    episode: Union[Episode, EpisodeDoesNotExist]
+) -> Episode | EpisodeDoesNotExist:
+    episode: Episode | EpisodeDoesNotExist
     try:
-        episode: EpisodeModel = await EpisodeModel.get(session, id_)
+        episode = await EpisodeModel.get(session, id_)
     except EpisodeDoesNotExistException:
         episode = EpisodeDoesNotExist(
             id=id_,
@@ -148,7 +154,7 @@ async def _get_episode_or_not_found_object(
 
 
 class EpisodeCallbackResponse(_ObjectType):
-    item: Union[Episode, EpisodeDoesNotExist]
+    item: Episode | EpisodeDoesNotExist
 
 
 async def callback_episodes_background_task(
@@ -159,10 +165,7 @@ async def callback_episodes_background_task(
     /,
 ):
     await sleep(response.delay)
-    episode: Union[
-        Episode,
-        EpisodeDoesNotExist,
-    ] = await _get_episode_or_not_found_object(episode_id, session)
+    episode: Episode | EpisodeDoesNotExist = await _get_episode_or_not_found_object(episode_id, session)
     body = EpisodeCallbackResponse(
         type=Episode.__name__,
         item=episode,
@@ -176,7 +179,7 @@ async def process_episodes_callback(
     session,
     background_tasks,
 ) -> CallbackResponse:
-    response: CallbackResponse = CallbackResponse(delay=randint(MIN_DELAY, MAX_DELAY))
+    response: CallbackResponse = CallbackResponse(delay=randint(MIN_DELAY, MAX_DELAY))  # noqa: S311
     background_tasks.add_task(
         callback_episodes_background_task,
         episode_id,
@@ -196,10 +199,10 @@ async def _get_season_or_not_found_object(
     id_: int,
     session: AsyncSession,
     /,
-) -> Union[Season, SeasonDoesNotExist]:
-    season: Union[Season, SeasonDoesNotExist]
+) -> Season | SeasonDoesNotExist:
+    season: Season | SeasonDoesNotExist
     try:
-        season: SeasonModel = await SeasonModel.get(session, id_)
+        season = await SeasonModel.get(session, id_)
     except SeasonDoesNotExistException:
         season = SeasonDoesNotExist(
             id=id_,
@@ -209,7 +212,7 @@ async def _get_season_or_not_found_object(
 
 
 class SeasonCallbackResponse(_ObjectType):
-    item: Union[Season, SeasonDoesNotExist]
+    item: Season | SeasonDoesNotExist
 
 
 async def callback_seasons_background_task(
@@ -220,10 +223,7 @@ async def callback_seasons_background_task(
     /,
 ):
     await sleep(response.delay)
-    season: Union[
-        Season,
-        SeasonDoesNotExist,
-    ] = await _get_season_or_not_found_object(season_id, session)
+    season: Season | SeasonDoesNotExist = await _get_season_or_not_found_object(season_id, session)
     body = SeasonCallbackResponse(
         type=Season.__name__,
         item=season,
@@ -237,7 +237,7 @@ async def process_seasons_callback(
     session,
     background_tasks,
 ) -> CallbackResponse:
-    response: CallbackResponse = CallbackResponse(delay=randint(MIN_DELAY, MAX_DELAY))
+    response: CallbackResponse = CallbackResponse(delay=randint(MIN_DELAY, MAX_DELAY))  # noqa: S311
     background_tasks.add_task(
         callback_seasons_background_task,
         season_id,

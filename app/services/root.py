@@ -2,7 +2,8 @@ from fastapi import Request
 from fastapi.responses import Response
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from app.repositories.models import Character as CharacterModel, User as UserModel
+from app.repositories.models import Character as CharacterModel
+from app.repositories.models import User as UserModel
 from app.templates import templates
 
 

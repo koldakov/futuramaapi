@@ -1,9 +1,12 @@
 import gettext
+from typing import TYPE_CHECKING
 
-from fastapi import Request
 from fastapi.templating import Jinja2Templates
 from jinja2 import pass_context
-from starlette.datastructures import URL
+
+if TYPE_CHECKING:
+    from fastapi import Request
+    from starlette.datastructures import URL
 
 try:
     gnu_translations = gettext.translation(
@@ -12,13 +15,13 @@ try:
         languages=["en_US"],
     )
 except FileNotFoundError:
-    raise RuntimeError("Please compile messages first")
+    raise RuntimeError("Please compile messages first") from None
 
 
 @pass_context
 def relative_path_for(context: dict, name: str, /, **path_params) -> str:
-    request: Request = context["request"]
-    http_url: URL = request.url_for(name, **path_params)
+    request: "Request" = context["request"]
+    http_url: "URL" = request.url_for(name, **path_params)
     return http_url.path
 
 

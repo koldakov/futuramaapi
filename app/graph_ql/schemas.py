@@ -1,33 +1,41 @@
-from typing import Any, List
+from typing import Any
 
 import strawberry
 
 from app.repositories.models import (
     Character as CharacterModel,
+)
+from app.repositories.models import (
     CharacterDoesNotExist,
     CharacterGender,
+    CharacterGenderFilter,
     CharacterSpecies,
+    CharacterSpeciesFilter,
     CharacterStatus,
-    Episode as EpisodeModel,
+    CharacterStatusFilter,
     EpisodeDoesNotExist,
-    Season as SeasonModel,
     SeasonDoesNotExist,
 )
 from app.repositories.models import (
-    CharacterGenderFilter,
-    CharacterSpeciesFilter,
-    CharacterStatusFilter,
+    Episode as EpisodeModel,
+)
+from app.repositories.models import (
+    Season as SeasonModel,
 )
 from app.repositories.sessions import get_async_session_ctx
 from app.services.base import EpisodeBase as EpisodeBaseSchema
 from app.services.characters import Character as CharacterSchema
 from app.services.episodes import (
     Episode as EpisodeSchema,
+)
+from app.services.episodes import (
     SeasonEpisode as SeasonEpisodeSchema,
 )
 from app.services.seasons import (
-    Season as SeasonSchema,
     EpisodeSeason as EpisodeSeasonSchema,
+)
+from app.services.seasons import (
+    Season as SeasonSchema,
 )
 
 
@@ -49,11 +57,11 @@ class OffsetViolation(CharacterQueryException):
 
 @strawberry.experimental.pydantic.type(model=CharacterSchema)
 class Character:
-    id: strawberry.auto
+    id: strawberry.auto  # noqa: A003
     name: strawberry.auto
-    gender: strawberry.enum(CharacterGender)
-    status: strawberry.enum(CharacterStatus)
-    species: strawberry.enum(CharacterSpecies)
+    gender: strawberry.enum(CharacterGender)  # type: ignore
+    status: strawberry.enum(CharacterStatus)  # type: ignore
+    species: strawberry.enum(CharacterSpecies)  # type: ignore
     created_at: strawberry.auto
     image: strawberry.auto
 
@@ -63,7 +71,7 @@ class PageBase:
     limit: int
     offset: int
     total: int
-    edges: List[Any]
+    edges: list[Any]
 
     @staticmethod
     def get_schema_class():
@@ -78,19 +86,16 @@ class PageBase:
         schema_class = cls.get_schema_class()
         edge_class = cls.get_edge_class()
         return cls(
-            limit=limit,
-            offset=offset,
-            total=total,
-            edges=[
-                edge_class.from_pydantic(schema_class.model_validate(edge))
-                for edge in edges
-            ],
+            limit=limit,  # type: ignore
+            offset=offset,  # type: ignore
+            total=total,  # type: ignore
+            edges=[edge_class.from_pydantic(schema_class.model_validate(edge)) for edge in edges],  # type: ignore
         )
 
 
 @strawberry.type
 class Characters(PageBase):
-    edges: List[Character]
+    edges: list[Character]
 
     @staticmethod
     def get_schema_class():
@@ -122,7 +127,7 @@ class Episode(EpisodeBase):
 
 @strawberry.experimental.pydantic.type(model=EpisodeSeasonSchema)
 class EpisodeSeason(EpisodeBase):
-    id: strawberry.auto
+    id: strawberry.auto  # noqa: A003
     name: strawberry.auto
     broadcast_number: strawberry.auto
     production_code: strawberry.auto
@@ -130,7 +135,7 @@ class EpisodeSeason(EpisodeBase):
 
 @strawberry.type
 class Episodes(PageBase):
-    edges: List[Episode]
+    edges: list[Episode]
 
     @staticmethod
     def get_schema_class():
@@ -143,20 +148,18 @@ class Episodes(PageBase):
 
 @strawberry.experimental.pydantic.type(model=SeasonSchema)
 class Season:
-    id: strawberry.auto
-    episodes: List[EpisodeSeason]
+    id: strawberry.auto  # noqa: A003
+    episodes: list[EpisodeSeason]
 
 
 def validate_limit(limit: int, min_: int, max_: int, /) -> None:
     if not min_ <= limit <= max_:
-        raise LimitViolation(
-            f"Limit can be more than {min_} and less than {max_}"
-        ) from None
+        raise LimitViolation(f"Limit can be more than {min_} and less than {max_}") from None
 
 
 @strawberry.type
 class Seasons(PageBase):
-    edges: List[Season]
+    edges: list[Season]
 
     @staticmethod
     def get_schema_class():
@@ -179,18 +182,22 @@ class Query:
                 )
             except CharacterDoesNotExist:
                 return None
-        return Character.from_pydantic(CharacterSchema.model_validate(character))
+        return Character.from_pydantic(CharacterSchema.model_validate(character))  # type: ignore
 
     @strawberry.field()
-    async def characters(
+    async def characters(  # noqa: PLR0913
         self,
         *,
         limit: int | None = 50,
         offset: int | None = 0,
-        gender: strawberry.enum(CharacterGenderFilter) | None = None,
-        status: strawberry.enum(CharacterStatusFilter) | None = None,
-        species: strawberry.enum(CharacterSpeciesFilter) | None = None,
+        gender: strawberry.enum(CharacterGenderFilter) | None = None,  # type: ignore
+        status: strawberry.enum(CharacterStatusFilter) | None = None,  # type: ignore
+        species: strawberry.enum(CharacterSpeciesFilter) | None = None,  # type: ignore
     ) -> Characters:
+        if limit is None:
+            limit = 50
+        if offset is None:
+            offset = 0
         # For some reason self does not work under strawberry decorator,
         # so class attrs can't be used. Please find another way.
         _min_l: int = 1
@@ -221,7 +228,7 @@ class Query:
                 )
             except EpisodeDoesNotExist:
                 return None
-        return Episode.from_pydantic(EpisodeSchema.model_validate(episode))
+        return Episode.from_pydantic(EpisodeSchema.model_validate(episode))  # type: ignore
 
     @strawberry.field()
     async def episodes(
@@ -230,6 +237,10 @@ class Query:
         limit: int | None = 50,
         offset: int | None = 0,
     ) -> Episodes:
+        if limit is None:
+            limit = 50
+        if offset is None:
+            offset = 0
         validate_limit(limit, 1, 50)
         async with get_async_session_ctx() as session:
             total: int = await CharacterModel.count(session)
@@ -249,7 +260,7 @@ class Query:
                 season: SeasonModel = await SeasonModel.get(session, season_id)
             except SeasonDoesNotExist:
                 return None
-        return Season.from_pydantic(SeasonSchema.model_validate(season))
+        return Season.from_pydantic(SeasonSchema.model_validate(season))  # type: ignore
 
     @strawberry.field()
     async def seasons(
@@ -258,6 +269,10 @@ class Query:
         limit: int | None = 50,
         offset: int | None = 0,
     ) -> Seasons:
+        if limit is None:
+            limit = 50
+        if offset is None:
+            offset = 0
         validate_limit(limit, 1, 50)
         async with get_async_session_ctx() as session:
             total: int = await SeasonModel.count(session)

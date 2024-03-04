@@ -28,7 +28,7 @@ async def get_health() -> Response:
 )
 async def get_root(
     request: Request,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Response:
     return await process_get_root(request, session)
 

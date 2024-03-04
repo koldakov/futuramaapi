@@ -4,17 +4,18 @@ Revision ID: 1353be8a56b8
 Revises: d413d1284339
 Create Date: 2023-12-02 18:33:01.171361
 """
-from typing import Sequence, Union
+from collections.abc import Sequence
 
-from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
+from alembic import op
+
 # revision identifiers, used by Alembic.
 revision: str = "1353be8a56b8"
-down_revision: Union[str, None] = "d413d1284339"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "d413d1284339"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:

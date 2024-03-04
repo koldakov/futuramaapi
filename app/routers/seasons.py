@@ -20,7 +20,7 @@ router = APIRouter(prefix="/seasons")
 )
 async def get_season(
     season_id: int,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Season:
     """Retrieve specific season.
 
@@ -39,7 +39,7 @@ async def get_season(
     name="seasons",
 )
 async def get_seasons(
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Page[Season]:
     """Retrieve specific seasons.
 

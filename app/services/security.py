@@ -1,7 +1,7 @@
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 from enum import Enum
-from typing import List, Optional
+from typing import Annotated
 from uuid import UUID
 
 from fastapi import HTTPException, Request, status
@@ -9,7 +9,7 @@ from fastapi.param_functions import Body
 from fastapi.security import OAuth2PasswordBearer
 from jose import exceptions, jwt
 from pydantic import BaseModel, Field, ValidationError
-from typing_extensions import Annotated, Doc
+from typing_extensions import Doc
 
 from app.core import settings
 
@@ -23,18 +23,18 @@ class TokenType(Enum):
 
 
 class TokenBase(BaseModel):
-    type: TokenType
+    type: TokenType  # noqa: A003
 
 
 class AccessTokenData(TokenBase):
     uuid: UUID
-    type: TokenType = TokenType.ACCESS
+    type: TokenType = TokenType.ACCESS  # noqa: A003
 
 
 class RefreshTokenData(TokenBase):
     nonce: str = Field(min_length=32, max_length=32)
     uuid: UUID
-    type: TokenType = TokenType.REFRESH
+    type: TokenType = TokenType.REFRESH  # noqa: A003
 
 
 def generate_jwt_signature(
@@ -71,7 +71,7 @@ def decode_jwt_signature(
     token: str,
     /,
     *,
-    algorithms: List[str] = None,
+    algorithms: list[str] | None = None,
 ) -> dict:
     if algorithms is None:
         algorithms = ["HS256"]
@@ -79,9 +79,9 @@ def decode_jwt_signature(
     try:
         return jwt.decode(token, settings.secret_key, algorithms=algorithms)
     except (exceptions.JWSError, exceptions.JWSSignatureError, exceptions.JWTError):
-        raise FatalSignatureError()
+        raise FatalSignatureError() from None
     except exceptions.ExpiredSignatureError:
-        raise SignatureExpiredError()
+        raise SignatureExpiredError() from None
 
 
 class UnauthorizedResponse(BaseModel):
@@ -117,13 +117,15 @@ class OAuth2PasswordRequestJson:
         self.password = password
 
 
-class OAuth2JWTBearerBase[T](OAuth2PasswordBearer):
-    _model: T = None
+class OAuth2JWTBearerBase(OAuth2PasswordBearer):
+    _model: type[BaseModel] | None = None
 
     def extra_checks(self, model):
-        raise NotImplementedError()
+        raise NotImplementedError() from None
 
-    async def __call__(self, request: Request) -> Optional[str | T]:
+    async def __call__(self, request: Request) -> str | BaseModel | None:
+        if self._model is None:
+            raise ValueError("model is not defined")
         param = await super().__call__(request)
         try:
             decoded_token: dict = decode_jwt_signature(param)
@@ -131,30 +133,30 @@ class OAuth2JWTBearerBase[T](OAuth2PasswordBearer):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token expired",
-            )
+            ) from None
         except FatalSignatureError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-            )
+            ) from None
         try:
             model = self._model(**decoded_token)
         except ValidationError:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
         self.extra_checks(model)
         return model
 
 
 class OAuth2JWTBearer(OAuth2JWTBearerBase):
-    _model = AccessTokenData
+    _model: type[BaseModel] | None = AccessTokenData
 
     def extra_checks(self, model):
         if model.type != TokenType.ACCESS:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
 
 
 class OAuth2JWTBearerRefresh(OAuth2JWTBearerBase):
-    _model = RefreshTokenData
+    _model: type[BaseModel] | None = RefreshTokenData
 
     def extra_checks(self, model):
         if model.type != TokenType.REFRESH:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None

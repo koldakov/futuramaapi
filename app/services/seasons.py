@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import HTTPException, status
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
@@ -8,6 +6,8 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.models import (
     Season as SeasonModel,
+)
+from app.repositories.models import (
     SeasonDoesNotExist,
 )
 from app.services.base import EpisodeBase
@@ -18,8 +18,8 @@ class EpisodeSeason(EpisodeBase):
 
 
 class Season(BaseModel):
-    id: int
-    episodes: List[EpisodeSeason]
+    id: int  # noqa: A003
+    episodes: list[EpisodeSeason]
 
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
@@ -32,7 +32,7 @@ async def process_get_season(
     try:
         season: SeasonModel = await SeasonModel.get(session, season_id)
     except SeasonDoesNotExist:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND) from None
     return Season.model_validate(season)
 
 

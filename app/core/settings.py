@@ -1,7 +1,6 @@
 from pathlib import Path
-from urllib.parse import ParseResult, urlparse
-
 from typing import Any
+from urllib.parse import ParseResult, urlparse
 
 from pydantic import EmailStr, Field, PostgresDsn
 from pydantic.fields import FieldInfo
@@ -69,7 +68,7 @@ class Settings(BaseSettings):
     email: EmailSettings = email_settings
 
     @classmethod
-    def settings_customise_sources(
+    def settings_customise_sources(  # noqa: PLR0913
         cls,
         settings_cls: type[BaseSettings],
         init_settings: PydanticBaseSettingsSource,

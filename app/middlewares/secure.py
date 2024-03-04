@@ -1,5 +1,3 @@
-from typing import Dict
-
 from starlette import status
 from starlette.datastructures import URL
 from starlette.responses import RedirectResponse
@@ -17,7 +15,7 @@ class HTTPSRedirectMiddleware:
     def __init__(self, app: ASGIApp) -> None:
         self.app = app
 
-    def is_secure(self, headers: Dict):
+    def is_secure(self, headers: dict):
         try:
             host: str = headers["host"]
         except KeyError:
@@ -31,24 +29,16 @@ class HTTPSRedirectMiddleware:
         except KeyError:
             return False
 
-        if (
-            host == settings.trusted_host
-            and proto in ("https", "wss")
-            and int(port) == self.https_port
-        ):
+        if host == settings.trusted_host and proto in ("https", "wss") and int(port) == self.https_port:
             return True
         return False
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        headers: Dict = {h[0].decode().lower(): h[1].decode() for h in scope["headers"]}
+        headers: dict = {h[0].decode().lower(): h[1].decode() for h in scope["headers"]}
         if not self.is_secure(headers):
             url = URL(scope=scope)
             redirect_scheme = {"http": "https", "ws": "wss"}[url.scheme]
-            netloc = (
-                url.hostname
-                if url.port in (self.http_port, self.https_port)
-                else url.netloc
-            )
+            netloc = url.hostname if url.port in (self.http_port, self.https_port) else url.netloc
             url = url.replace(scheme=redirect_scheme, netloc=netloc)
             response = RedirectResponse(
                 url,

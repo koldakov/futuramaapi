@@ -3,8 +3,8 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.sessions import get_async_session
 from app.services.callbacks import (
-    CallbackResponse,
     CallbackRequest,
+    CallbackResponse,
     CharacterCallbackResponse,
     EpisodeCallbackResponse,
     SeasonCallbackResponse,
@@ -39,7 +39,7 @@ async def create_characters_callback_request(
     character_id: int,
     character_request: CallbackRequest,
     background_tasks: BackgroundTasks,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> CallbackResponse:
     """Create a request to get a character by ID.
 
@@ -49,9 +49,7 @@ async def create_characters_callback_request(
     * Receive a delay after which the callback will be sent.
     * Receive a notification back to the API, as a callback.
     """
-    return await process_characters_callback(
-        character_id, character_request, session, background_tasks
-    )
+    return await process_characters_callback(character_id, character_request, session, background_tasks)
 
 
 _episodes_callbacks_router = APIRouter()
@@ -78,7 +76,7 @@ async def create_episodes_callback_request(
     episode_id: int,
     episode_request: CallbackRequest,
     background_tasks: BackgroundTasks,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> CallbackResponse:
     """Create a request to get an episode by ID.
 
@@ -88,9 +86,7 @@ async def create_episodes_callback_request(
     * Receive a delay after which the callback will be sent.
     * Receive a notification back to the API, as a callback.
     """
-    return await process_episodes_callback(
-        episode_id, episode_request, session, background_tasks
-    )
+    return await process_episodes_callback(episode_id, episode_request, session, background_tasks)
 
 
 # Season related endpoints.
@@ -118,7 +114,7 @@ async def create_seasons_callback_request(
     season_id: int,
     season_request: CallbackRequest,
     background_tasks: BackgroundTasks,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> CallbackResponse:
     """Create a request to get a season by ID.
 
@@ -128,6 +124,4 @@ async def create_seasons_callback_request(
     * Receive a delay after which the callback will be sent.
     * Receive a notification back to the API, as a callback.
     """
-    return await process_seasons_callback(
-        season_id, season_request, session, background_tasks
-    )
+    return await process_seasons_callback(season_id, season_request, session, background_tasks)

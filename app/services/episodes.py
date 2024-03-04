@@ -8,13 +8,15 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.repositories.models import (
     Episode as EpisodeModel,
+)
+from app.repositories.models import (
     EpisodeDoesNotExist,
 )
 from app.services.base import EpisodeBase
 
 
 class SeasonEpisode(BaseModel):
-    id: int
+    id: int  # noqa: A003
 
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
@@ -27,7 +29,7 @@ class Episode(EpisodeBase):
 
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
-    @computed_field(
+    @computed_field(  # type: ignore[misc]
         alias="broadcastCode",
         examples=[
             "S01E01",
@@ -47,7 +49,7 @@ async def get_episode(
     try:
         episode: EpisodeModel = await EpisodeModel.get(session, episode_id)
     except EpisodeDoesNotExist:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND) from None
     return Episode.model_validate(episode)
 
 

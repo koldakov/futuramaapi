@@ -5,13 +5,14 @@ from fastapi import HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from app.repositories.models import User as UserModel, UserDoesNotExist
+from app.repositories.models import User as UserModel
+from app.repositories.models import UserDoesNotExist
 from app.services.hashers import hasher
 from app.services.security import (
-    OAuth2PasswordRequestJson,
-    AccessTokenData,
-    RefreshTokenData,
     REFRESH_JWT_EXPIRATION_TIME,
+    AccessTokenData,
+    OAuth2PasswordRequestJson,
+    RefreshTokenData,
     generate_jwt_signature,
 )
 
@@ -38,13 +39,15 @@ async def process_token_auth_user(
             field=UserModel.username,
         )
     except UserDoesNotExist:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
     if not hasher.verify(data.password, user.password):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
 
     return Token(
         access_token=generate_jwt_signature(
-            loads(AccessTokenData(uuid=user.uuid).model_dump_json(by_alias=True))
+            loads(
+                AccessTokenData(uuid=user.uuid).model_dump_json(by_alias=True),
+            ),
         ),
         refresh_token=generate_jwt_signature(
             loads(
@@ -65,6 +68,8 @@ class RefreshToken(BaseModel):
 async def process_refresh_token_auth_user(data: RefreshTokenData) -> RefreshToken:
     return RefreshToken(
         access_token=generate_jwt_signature(
-            loads(AccessTokenData(**data.model_dump()).model_dump_json(by_alias=True))
+            loads(
+                AccessTokenData(**data.model_dump()).model_dump_json(by_alias=True),
+            ),
         )
     )

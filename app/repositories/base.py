@@ -1,18 +1,20 @@
+from collections.abc import Sequence
 from enum import Enum
-from typing import List, Any, Sequence, Tuple, Type
+from typing import TYPE_CHECKING, Any, Self
 from uuid import UUID, uuid4
 
 from asyncpg.exceptions import UniqueViolationError
-from sqlalchemy import Column, DateTime, Row, UUID as COLUMN_UUID, select
-from sqlalchemy.engine.result import Result
+from sqlalchemy import UUID as COLUMN_UUID
+from sqlalchemy import Column, DateTime, Row, select
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from sqlalchemy.orm import Mapped, declarative_base, mapped_column, selectinload
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, selectinload
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql import func
 from sqlalchemy.sql.elements import BinaryExpression, UnaryExpression
 
-_Base = declarative_base()
+if TYPE_CHECKING:
+    from sqlalchemy.engine.result import Result
 
 
 class OrderByDirection(Enum):
@@ -33,12 +35,15 @@ class ModelAlreadyExist(Exception):
     """Model Already Exists"""
 
 
-class Base[T, U, F, O](_Base):
+class Base(DeclarativeBase):
     __abstract__ = True
-    order_by: U = OrderBy
-    model_already_exists = ModelAlreadyExist
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    order_by = OrderBy
+
+    model_already_exists: type[ModelAlreadyExist] = ModelAlreadyExist
+    model_does_not_exist: type[ModelDoesNotExist] = ModelDoesNotExist
+
+    id: Mapped[int] = mapped_column(primary_key=True)  # noqa: A003
 
     created_at = Column(
         DateTime(
@@ -60,15 +65,11 @@ class Base[T, U, F, O](_Base):
     def to_dict(
         self,
         *,
-        exclude: List = None,
+        exclude: list[str] | None = None,
     ) -> dict:
         if exclude is None:
             exclude = []
-        return {
-            k: v
-            for k, v in self.__dict__.items()
-            if not str(k).startswith("_") and str(k) not in exclude
-        }
+        return {k: v for k, v in self.__dict__.items() if not str(k).startswith("_") and str(k) not in exclude}
 
     @classmethod
     async def get(
@@ -77,20 +78,21 @@ class Base[T, U, F, O](_Base):
         val: int | str | UUID,
         /,
         *,
-        field: InstrumentedAttribute = None,
-    ) -> T:
+        field: InstrumentedAttribute | None = None,
+    ) -> Self:
         if field is None:
             field = cls.id
-        cursor: Result = await session.execute(select(cls).where(field == val))
+        statement = select(cls).where(field == val)
+        cursor: Result = await session.execute(statement)
         try:
             return cursor.scalars().one()
-        except NoResultFound as err:
-            raise ModelDoesNotExist() from err
+        except NoResultFound:
+            raise cls.model_does_not_exist() from None
 
     @staticmethod
     def filter_obj_to_cond(
-        obj: F,
-        orig: O,
+        obj,
+        orig,
         model_field: Column[str | Enum],
         /,
     ) -> BinaryExpression:
@@ -99,14 +101,14 @@ class Base[T, U, F, O](_Base):
         return model_field == orig[obj.name]
 
     @classmethod
-    def get_filter_statement(
+    def get_filter_statement(  # noqa: PLR0913
         cls,
         *,
-        limit: int = None,
-        order_by: Type[Enum] = OrderBy.ID,
-        order_by_direction: OrderByDirection = OrderByDirection.ASC,
-        select_in_load: InstrumentedAttribute = None,
-        offset: int = None,
+        limit: int | None = None,
+        order_by=OrderBy.ID,
+        order_by_direction=OrderByDirection.ASC,
+        select_in_load: InstrumentedAttribute | None = None,
+        offset: int | None = None,
         **kwargs,
     ):
         statement = select(cls)
@@ -116,7 +118,7 @@ class Base[T, U, F, O](_Base):
                 direction=order_by_direction,
             )
         )
-        cond_list: List = cls.get_cond_list(**kwargs)
+        cond_list: list = cls.get_cond_list(**kwargs)
         if cond_list:
             statement = statement.where(*cond_list)
         if select_in_load is not None:
@@ -128,21 +130,21 @@ class Base[T, U, F, O](_Base):
         return statement
 
     @classmethod
-    def get_cond_list(cls, **kwargs) -> List[BinaryExpression]:
+    def get_cond_list(cls, **kwargs) -> list[BinaryExpression]:
         return []
 
     @classmethod
-    async def filter(
+    async def filter(  # noqa: A003, PLR0913
         cls,
         session: AsyncSession,
         /,
         *,
-        limit: int = None,
-        order_by: Type[Enum] = None,
-        order_by_direction: OrderByDirection = OrderByDirection.ASC,
-        select_in_load: InstrumentedAttribute = None,
+        limit: int | None = None,
+        order_by=None,
+        order_by_direction=OrderByDirection.ASC,
+        select_in_load: InstrumentedAttribute | None = None,
         **kwargs,
-    ) -> Sequence[Row[Tuple[Any, ...] | Any]]:
+    ) -> Sequence[Row[tuple[Any, ...] | Any]]:
         if order_by is None:
             order_by = cls.order_by.ID
         statement = cls.get_filter_statement(
@@ -159,8 +161,8 @@ class Base[T, U, F, O](_Base):
     def get_order_by(
         cls,
         *,
-        field: U = OrderBy.ID,
-        direction: OrderByDirection = OrderByDirection.ASC,
+        field=OrderBy.ID,
+        direction=OrderByDirection.ASC,
     ) -> UnaryExpression:
         _field: InstrumentedAttribute
         if field is None:
@@ -180,12 +182,20 @@ class Base[T, U, F, O](_Base):
     async def add(
         cls,
         session: AsyncSession,
-        body,
+        data,
         /,
         *,
         commit: bool = True,
-    ) -> T:
-        obj: T = cls(**body.model_dump())
+        extra_fields: dict[
+            str,
+            Any,
+        ]
+        | None = None,
+    ) -> Self:
+        obj: Self = cls(**data.model_dump())
+        if extra_fields is not None:
+            for name, value in extra_fields.items():
+                setattr(obj, name, value)
         session.add(obj)
         if commit is True:
             try:

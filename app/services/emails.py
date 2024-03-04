@@ -1,7 +1,5 @@
-from typing import List
-
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-from pydantic import BaseModel, HttpUrl, EmailStr
+from pydantic import BaseModel, EmailStr, HttpUrl
 
 from app.core import settings
 
@@ -34,7 +32,7 @@ class ConfirmationBody(BaseModel):
 
 
 async def send_confirmation(
-    emails: List[EmailStr],
+    emails: list[EmailStr],
     subject: str,
     template_body: ConfirmationBody,
     /,

@@ -1,4 +1,4 @@
-from typing import Annotated, Optional
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, status
 from fastapi_pagination import Page
@@ -7,6 +7,8 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from app.repositories.base import OrderByDirection
 from app.repositories.models import (
     Character as CharacterModel,
+)
+from app.repositories.models import (
     CharacterGenderFilter,
     CharacterSpeciesFilter,
     CharacterStatusFilter,
@@ -29,7 +31,7 @@ router = APIRouter(prefix="/characters")
 )
 async def get_character(
     character_id: int,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Character:
     """Retrieve specific character.
 
@@ -49,30 +51,30 @@ async def get_character(
     response_model=Page[Character],
     name="characters",
 )
-async def get_characters(
-    gender: Optional[CharacterGenderFilter] = None,
+async def get_characters(  # noqa: PLR0913
+    gender: CharacterGenderFilter | None = None,
     character_status: Annotated[
-        Optional[CharacterStatusFilter],
+        CharacterStatusFilter | None,
         Query(alias="status"),
     ] = None,
-    species: Optional[CharacterSpeciesFilter] = None,
+    species: CharacterSpeciesFilter | None = None,
     order_by: Annotated[
-        Optional[CharacterModel.order_by],
+        CharacterModel.order_by | None,
         Query(alias="orderBy"),
     ] = CharacterModel.order_by.ID,
     direction: Annotated[
-        Optional[OrderByDirection],
+        OrderByDirection | None,
         Query(alias="orderByDirection"),
     ] = OrderByDirection.ASC,
     query: Annotated[
-        str,
+        str | None,
         Query(
             alias="query",
             description="Name search query.",
             max_length=128,
         ),
     ] = None,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Page[Character]:
     """Retrieve characters.
 

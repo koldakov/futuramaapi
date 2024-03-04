@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Request, status
-from sse_starlette.sse import EventSourceResponse
 from sqlalchemy.ext.asyncio.session import AsyncSession
+from sse_starlette.sse import EventSourceResponse
 
 from app.repositories.sessions import get_async_session
 from app.services.notifications import CharacterMove, process_character_sse
@@ -23,7 +23,7 @@ router = APIRouter(
 async def character_sse(
     character_id: int,
     request: Request,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> EventSourceResponse:
     """Retrieve character path.
 
