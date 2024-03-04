@@ -1,123 +1,25 @@
 from pathlib import Path
 from urllib.parse import ParseResult, urlparse
 
-from json import loads
-from json.decoder import JSONDecodeError
-from os import environ
-from typing import Dict, List, Type, TypedDict, Unpack
+from typing import Any
 
-from pydantic import BaseModel, EmailStr
-
-
-class _ExtraSettingArg(TypedDict):
-    async_: bool
-    db_url: bool
-
-
-def parse[T](
-    cast: Type[T],
-    setting: str,
-    separator: str,
-    /,
-    **extra: Unpack[_ExtraSettingArg],
-) -> T:
-    if cast is str:
-        return _parse_str(setting, **extra)
-    elif cast is bool:
-        return _parse_bool(setting)
-    elif cast in (list, List):
-        return _parse_list(setting, separator)
-    elif cast in (dict, Dict):
-        return _parse_dict(setting)
-    raise NotImplementedError(f'Cast is not implemented. cast="{cast}"') from None
+from pydantic import EmailStr, Field, PostgresDsn
+from pydantic.fields import FieldInfo
+from pydantic_settings import (
+    BaseSettings,
+    EnvSettingsSource,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+)
 
 
-def _parse_str(setting: str, /, **extra: Unpack[_ExtraSettingArg]):
-    try:
-        is_db = extra["db_url"]
-    except KeyError:
-        return setting
-    if is_db:
-        return _fix_db_url(setting, **extra)
-    return setting
-
-
-def _fix_db_url(url: str, /, **extra: Unpack[_ExtraSettingArg]):
-    db_url = urlparse(url)
-    try:
-        async_ = extra["async_"] or False
-    except KeyError:
-        async_ = False
-    if db_url.scheme.split("+")[0] in ["postgres", "postgresql"]:
-        return _fix_postgres_url(db_url, is_async=async_)
-    raise NotImplementedError() from None
-
-
-def _fix_postgres_url(url: ParseResult, /, *, is_async: bool = False):
-    if is_async:
-        return url._replace(scheme="postgresql+asyncpg").geturl()
-    return url._replace(scheme="postgresql").geturl()
-
-
-def _parse_list(setting: str, separator: str, /) -> List:
-    return [
-        _setting for _setting in "".join(setting.split()).split(separator) if _setting
-    ]
-
-
-def _parse_dict(setting: str, /) -> Dict:
-    try:
-        return loads(setting)
-    except JSONDecodeError as err:
-        raise RuntimeError() from err
-
-
-def _parse_bool(setting: str, /) -> bool:
-    if setting.lower() in (
-        "on",
-        "true",
-        "1",
-        "ok",
-        "y",
-        "yes",
-    ):
-        return True
-    return False
-
-
-def _parse_int(setting: str, /) -> int:
-    try:
-        return int(setting)
-    except ValueError:
-        raise NotImplementedError(
-            f'Can\'t cast variable to int. variable="{setting}"'
-        ) from None
-
-
-def get_env_var[T](
-    var: str,
-    /,
-    *,
-    cast: Type[T] = str,
-    separator: str = ",",
-    required=True,
-    default: T = None,
-    **extra: Unpack[_ExtraSettingArg],
-) -> T:
-    try:
-        setting = environ[var]
-    except KeyError:
-        if not required:
-            return default
-        raise RuntimeError(f'Missing environment variable. variable="{var}"') from None
-    return parse(cast, setting, separator, **extra)
-
-
-class EmailSettings(BaseModel):
-    default_from: EmailStr = get_env_var("EMAIL_FROM_DEFAULT")
-    host_user: str = get_env_var("EMAIL_HOST_USER")
-    host: str = get_env_var("EMAIL_HOST")
-    api_key: str = get_env_var("EMAIL_API_KEY")
+class EmailSettings(BaseSettings):
+    default_from: EmailStr = Field(
+        alias="EMAIL_FROM_DEFAULT",
+    )
+    host_user: str
+    host: str
+    api_key: str
     port: int = 587
     from_name: str = "FuturamaAPI"
     start_tls: bool = True
@@ -125,36 +27,65 @@ class EmailSettings(BaseModel):
     use_credentials: bool = True
     validate_certs: bool = True
 
+    model_config = SettingsConfigDict(
+        env_prefix="email_",
+    )
+
 
 email_settings = EmailSettings()
 
 
-class Settings(BaseModel):
-    allow_origins: List = get_env_var("ALLOW_ORIGINS", cast=List)
-    database_url: str = get_env_var("DATABASE_URL", cast=str, async_=True, db_url=True)
+def _parse_list(value: str) -> list[str]:
+    return [str(x).strip() for x in value.split(",")]
+
+
+def _fix_postgres_url(url: str, /) -> str:
+    db_url: ParseResult = urlparse(url)
+    return db_url._replace(scheme="postgresql+asyncpg").geturl()
+
+
+class _EnvSource(EnvSettingsSource):
+    def prepare_field_value(
+        self,
+        field_name: str,
+        field: FieldInfo,
+        value: Any,
+        value_is_complex: bool,
+    ) -> Any:
+        if field_name == "allow_origins":
+            return _parse_list(value)
+        if field_name == "database_url":
+            return PostgresDsn(_fix_postgres_url(value))
+        return super().prepare_field_value(field_name, field, value, value_is_complex)
+
+
+class Settings(BaseSettings):
+    allow_origins: list[str]
+    database_url: PostgresDsn
     project_root: Path = Path(__file__).parent.parent.parent.resolve()
     static: Path = Path("static")
-    trusted_host: str = get_env_var("TRUSTED_HOST", cast=str)
-    secret_key: str = get_env_var("SECRET_KEY", cast=str)
+    trusted_host: str
+    secret_key: str
     email: EmailSettings = email_settings
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        return (_EnvSource(settings_cls),)
 
 
 settings = Settings()
 
 
-class FeatureFlags(BaseModel):
-    activate_users: bool = get_env_var(
-        "ACTIVATE_USERS",
-        cast=bool,
-        required=False,
-        default=False,
-    )
-    enable_https_redirect: bool = get_env_var(
-        "ENABLE_HTTPS_REDIRECT",
-        cast=bool,
-        required=False,
-        default=False,
-    )
+class FeatureFlags(BaseSettings):
+    activate_users: bool = False
+    enable_https_redirect: bool = False
 
 
 feature_flags = FeatureFlags()
