@@ -25,9 +25,9 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install ruff pytest
         python -m pip install -r requirements.txt
-    - name: Ruff
+    - name: Code style
       run: |
-        ruff --output-format=github .
+        pre-commit run --all-files
     - name: Pytest
       run: |
         make tests
