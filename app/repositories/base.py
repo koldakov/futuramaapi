@@ -62,15 +62,6 @@ class Base(DeclarativeBase):
         default=uuid4,
     )
 
-    def to_dict(
-        self,
-        *,
-        exclude: list[str] | None = None,
-    ) -> dict:
-        if exclude is None:
-            exclude = []
-        return {k: v for k, v in self.__dict__.items() if not str(k).startswith("_") and str(k) not in exclude}
-
     @classmethod
     async def get(
         cls,
