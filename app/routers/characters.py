@@ -46,7 +46,7 @@ async def get_character(
 
 
 @router.get(
-    "/",
+    "",
     status_code=status.HTTP_200_OK,
     response_model=Page[Character],
     name="characters",

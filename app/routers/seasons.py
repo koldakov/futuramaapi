@@ -33,7 +33,7 @@ async def get_season(
 
 
 @router.get(
-    "/",
+    "",
     status_code=status.HTTP_200_OK,
     response_model=Page[Season],
     name="seasons",
