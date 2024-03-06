@@ -11,4 +11,4 @@ make messages-compile
 # Migrations
 alembic upgrade head
 
-hypercorn -b :$PORT app.main:app
+hypercorn -b :$PORT -k uvloop app.main:app
