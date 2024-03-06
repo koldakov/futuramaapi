@@ -1,9 +1,13 @@
+import logging
+
 from starlette import status
 from starlette.datastructures import URL
 from starlette.responses import RedirectResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 from app.core import settings
+
+logger = logging.getLogger(__name__)
 
 
 class HTTPSRedirectMiddleware:
@@ -19,14 +23,17 @@ class HTTPSRedirectMiddleware:
         try:
             host: str = headers["host"]
         except KeyError:
+            logger.info("Host not found in headers")
             return False
         try:
             proto: str = headers[self.proto_header]
         except KeyError:
+            logger.info("x-forwarded-proto not found in headers")
             return False
         try:
             port: str = headers[self.port_header]
         except KeyError:
+            logger.info("x-forwarded-port not found in headers")
             return False
 
         if host == settings.trusted_host and proto in ("https", "wss") and int(port) == self.https_port:
