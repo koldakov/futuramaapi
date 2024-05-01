@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Ivan Koldakov">
-    <title>{% block titile %}{{ _("FB00002") }}{% endblock %} | {{ _("FB00001") }}</title>
+    <title>{% block title %}Welcome{% endblock %} | Futurama API</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ relative_path_for('static', path='/css/base.css') }}" rel="stylesheet">
     {% block extra_styles %}{% endblock %}
@@ -22,7 +22,7 @@
             class="navbar-brand"
             href="{{ relative_path_for('root') }}"
           >
-            {{ _( "FB00001" ) }}
+            Futurama API
           </a>
           <button
             class="navbar-toggler"
@@ -51,15 +51,15 @@
                   class="nav-link{% if active_page == 'about' %} active{% endif %}"
                   aria-current="page"
                   href="{{ relative_path_for('about') }}"
-                >{{ _( "FB00012" ) }}</a>
+                >About</a>
               </li>
               <li
                 class="nav-item"
               >
                <a
                 class="nav-link"
-                href="/api/graphql"
-               >{{ _( "FB00011" ) }}</a>
+                href="/graphql"
+               >GraphQL</a>
               </li>
             </ul>
           </div>
@@ -74,7 +74,7 @@
         <h1
           class="display-4 fw-bold"
         >
-          {{ _( "FB00001" ) }}
+          Futurama API
         </h1>
         <div
           class="col-lg-6 mx-auto"
@@ -84,15 +84,30 @@
           >
             <a
               href="{{ relative_path_for('redoc_html') }}"
-              class="btn btn-danger"
+              class="btn btn-danger me-1"
               role="button"
-            >{{ _( "FB00003" ) }}
+              target="_blank"
+            >Documentation
+            </a>
+            <a
+              href="{{ relative_path_for('swagger') }}"
+              class="btn btn-success me-1"
+              role="button"
+              target="_blank"
+            >Swagger Playground
+            </a>
+            <a
+              href="/graphql"
+              class="btn btn-warning me-1"
+              role="button"
+              target="_blank"
+            >GraphQL
             </a>
           </div>
           <div
             class="d-grid d-sm-flex justify-content-sm-center mb-5"
           >
-            {{ _("Join our community today! Already, %(user_count)s have registered, and we're excited to welcome even more members.")|format(user_count=user_count) }}
+            {{ "Join our community today! Already, %(user_count)s have registered, and we're excited to welcome even more members."|format(user_count=user_count) }}
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@
 {% set active_page = "index" %}
 
 {% block main_content %}
+{% if characters %}
 <div
   class="album py-5 bg-light"
 >
@@ -13,52 +14,53 @@
       class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"
     >
     {% for character in characters %}
-    <div
-      class="col"
-    >
       <div
-        class="card shadow-sm"
+        class="col"
       >
-        <img
-          alt="{{ character.name }}"
-          src="{{ '/static/' + character.image._name }}"
-        />
         <div
-          class="card-body"
+          class="card shadow-sm"
         >
-          <p
-            class="card-text"
-          >
-            {{ _("FB00004") }}: {{ character.gender.value|capitalize }}.
-            <br />
-            {{ _("FB00005") }}: {{ character.status.value|capitalize }}.
-          </p>
+          <img
+            alt="{{ character.name }}"
+            src="{{ character.image.path }}"
+          />
           <div
-            class="d-flex justify-content-between align-items-center"
+            class="card-body"
           >
+            <p
+              class="card-text"
+            >
+              Gender: {{ character.gender.value|capitalize }}.
+              <br />
+              Status: {{ character.status.value|capitalize }}.
+            </p>
             <div
-              class="btn-group"
+              class="d-flex justify-content-between align-items-center"
             >
-              <a
-                href='{{ relative_path_for("character", character_id=character.id) }}'
-                class="btn btn-sm btn-outline-secondary"
-                role="button"
-                target="_blank"
+              <div
+                class="btn-group"
               >
-                {{ _("FB00006") }}
-              </a>
+                <a
+                  href='{{ relative_path_for("character", character_id=character.id) }}'
+                  class="btn btn-sm btn-outline-secondary"
+                  role="button"
+                  target="_blank"
+                >
+                  View
+                </a>
+              </div>
+              <small
+                class="text-muted"
+              >
+                {{ character.name }}
+              </small>
             </div>
-            <small
-              class="text-muted"
-            >
-              {{ character.name }}
-            </small>
           </div>
         </div>
       </div>
-    </div>
     {% endfor %}
     </div>
   </div>
 </div>
+{% endif %}
 {% endblock %}
