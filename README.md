@@ -58,8 +58,8 @@ If you create models in a new file please import it in env.py.
 Because alembic does not detect child classes.
 
 ```commandline
-alembic revision --autogenerate -m "Revision Name"
-alembic upgrade head
+poetry run alembic revision --autogenerate -m "Revision Name"
+poetry run alembic upgrade head
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -72,7 +72,7 @@ export $(cat .env | xargs)
 # Compile tranlations
 make messages-compile
 # Run hypercorn server
-hypercorn --reload app.main:app
+hypercorn --reload futuramaapi.main:app
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>

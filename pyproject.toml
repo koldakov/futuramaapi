@@ -1,12 +1,38 @@
-[project]
-name = "FuturamaAPI"
-requires-python = ">= 3.12"
+[tool.poetry]
+name = "futuramaapi"
+version = "1.0.0"
+description = "Inspired REST and GraphQL API based on TV show Futurama"
+authors = ["Ivan Koldakov <coldie322@gmail.com>"]
+readme = "README.md"
 
-[tool.pytest.ini_options]
-addopts = "-ra -p configs.plugins.env_vars"
-pythonpath = [
-    "."
-]
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.111.0"
+hypercorn = {extras = ["uvloop"], version = "^0.16.0"}
+sqlalchemy = "^2.0.29"
+pydantic-settings = "^2.2.1"
+alembic = "^1.13.1"
+pydantic = {extras = ["email"], version = "^2.7.1"}
+fastapi-storages = "^0.3.0"
+asyncpg = "^0.29.0"
+pillow = "^10.3.0"
+fastapi-pagination = "^0.12.24"
+anyio = "^4.3.0"
+sse-starlette = "^2.1.0"
+pydash = "^8.0.1"
+pyjwt = "^2.8.0"
+fastapi-mail = {extras = ["httpx"], version = "^1.4.1"}
+strawberry-graphql = "^0.230.0"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.7.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
@@ -42,7 +68,7 @@ exclude = [
 
 fix = true
 show-fixes = true
-show-source = true
+output-format = "full"
 
 line-length = 120
 indent-width = 4
@@ -111,7 +137,7 @@ line-ending = "auto"
 # enabled.
 # docstring-code-line-length = "dynamic"
 
-[tool.ruff.mccabe]
+[tool.ruff.lint.mccabe]
 max-complexity = 10
 
 [tool.ruff.lint.extend-per-file-ignores]
@@ -125,7 +151,6 @@ follow_imports = "skip"
 ignore_missing_imports = true
 check_untyped_defs = true
 files = [
-    "app",
-    "alembic",
-    "configs",
+    "futuramaapi",
+    "tests",
 ]

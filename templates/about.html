@@ -2,7 +2,7 @@
 
 {% set active_page = "about" %}
 
-{% block titile %}{{ _("FB00012") }}{% endblock %} | {{ _("FB00001") }}
+{% block titile %}About{% endblock %} | Futurama API
 
 {% block main_info %}{% endblock %}
 
@@ -10,10 +10,9 @@
 <div
   class="container px-5 my-3"
 >
-  <h1>{{ _("FB00012") }}</h1>
-  <h2>{{ _("What is this?") }}</h2>
+  <h1>About</h1>
+  <h2>What is this?</h2>
   <p>
-    {% trans %}
     Welcome to
     <a
       href="https://www.hulu.com/series/futurama-85bf4cc1-cd8b-4469-ad87-7289217a0b74"
@@ -22,14 +21,15 @@
     Created with the intention of providing a learning playground for enthusiasts like you,
     FuturamaAPI opens the door for exploration and experimentation with new technologies.
     Dive into the world of Futurama, study, and try out the latest in web development.
-    {% endtrans %}
   </p>
   <p>
-    {{ _("Check our") }}
-    <a href="{{ relative_path_for('redoc_html') }}">{{ _("documentation") }}</a> {{ _("to get started.") }}
+    Check our
+    <a href="{{ relative_path_for('redoc_html') }}" target="_blank">documentation</a> to get started.
   </p>
-  <h2>{{ _("Key Features") }}</h2>
-  {% trans %}
+  <p>
+    Or you can start with <a href="{{ relative_path_for('swagger') }}" target="_blank">Swagger Playground</a>.
+  </p>
+  <h2>Key Features</h2>
   <div>
     <h3>Comprehensive Access</h3>
     <p>
@@ -43,18 +43,14 @@
     <h3>Documentation</h3>
     <p>Get started quickly by checking out our documentation for a seamless learning experience.</p>
   </div>
-  {% endtrans %}
-  <h2>{{ _("Why?") }}</h2>
-  {% trans %}
+  <h2>Why?</h2>
   <p>
     FuturamaAPI was born out of the idea that even lesser-known TV shows deserve dedicated projects.
     It's a space to have fun with Futurama and simultaneously push the boundaries of technology.
     Embrace the challenge and discover the possibilities with FastAPI, SSE, WebSockets, GraphQL, Hypercorn,
     HTTP/2.0, and more.
   </p>
-  {% endtrans %}
-  <h2>{{ _("Technical Stack?") }}</h2>
-  {% trans %}
+  <h2>Technical Stack?</h2>
   <p>Futurama is powered by a robust technical stack, including</p>
   <ul>
     <li>Python</li>
@@ -65,32 +61,25 @@
     <li>Alembic for Migrations</li>
     <li>Strawberry for GraphQL</li>
   </ul>
-  {% endtrans %}
-  <h2>{{ _("Can I contribute?") }}</h2>
-  {% trans %}
+  <h2>Can I contribute?</h2>
   <p>
     Absolutely! Feel free to contribute to the project.
     <a href="https://github.com/koldakov/futuramaapi/" target="_blank">Here is the link</a> to get started.
     Whether you're a seasoned developer or just starting, your contributions are valuable.
   </p>
-  {% endtrans %}
-  <h2>{{ _("Design?") }}</h2>
-  {% trans %}
+  <h2>Design?</h2>
   <p>
     Admittedly, design is not my strong suit. If you have HTML skills and a passion for design,
     please consider creating a
     <a href="https://github.com/koldakov/futuramaapi/" target="_blank">pull request for this project.</a>
     Any help is greatly appreciated.
   </p>
-  {% endtrans %}
-  <h2>{{ _("Who are you?") }}</h2>
-  {% trans %}
+  <h2>Who are you?</h2>
   <p>
     I'm <a href="https://koldakov.com" target="_blank">Ivan Koldakov</a>,
     a Python developer and enthusiast.
     Connect with me on <a href="https://linkedin.com/in/aiv/" target="_blank">LinkedIn</a>
     to stay in the loop and share your thoughts.
   </p>
-  {% endtrans %}
 </div>
 {% endblock %}
