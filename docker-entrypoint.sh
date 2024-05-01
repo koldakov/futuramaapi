@@ -5,10 +5,7 @@ then
   PORT=8080
 fi
 
-# locale
-make messages-compile
-
 # Migrations
-alembic upgrade head
+make migrate
 
-hypercorn -b :$PORT -k uvloop app.main:app
+poetry run hypercorn -b :$PORT -k uvloop futuramaapi.main:app
