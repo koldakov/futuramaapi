@@ -23,11 +23,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install ruff pytest
-        python -m pip install -r requirements.txt
+        make install-dev
     - name: Code style
       run: |
-        pre-commit run --all-files
+        poetry run pre-commit run --all-files
     - name: Pytest
       run: |
-        make tests
+        make test
