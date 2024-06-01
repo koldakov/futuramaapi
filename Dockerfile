@@ -10,15 +10,9 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 ARG APP_USER=qworpa
 ARG WORK_DIR=/app
 
-# Install OS dependencies
-COPY install-dependencies.sh /tmp
-RUN . /tmp/install-dependencies.sh
-
-# Install python environ
-RUN python3 -m venv $VIRTUAL_ENV
-COPY requirements.txt /tmp
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+# Install dependencies
+RUN apt-get update
+RUN apt-get -y install make
 
 # Add user
 RUN groupadd \
@@ -36,11 +30,11 @@ WORKDIR ${WORK_DIR}
 
 EXPOSE 8000
 
+# Install project
+RUN make install
+
 # Set project user
 USER ${APP_USER}:${APP_USER}
-
-# Compile messages
-RUN cd ${WORK_DIR}; make messages-compile
 
 # Main launch command
 CMD ["./docker-entrypoint.sh"]
