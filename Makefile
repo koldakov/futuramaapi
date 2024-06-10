@@ -10,15 +10,7 @@ install-dev: # Install DEV/TEST Environ and dependencies
 	@echo "Installing poetry"
 	@$(PYTHON) -m pip install poetry
 	@echo "Installing dependencies"
-	@$(PYTHON) -m poetry install
-
-install: # Install Environ and dependencies
-	@echo "Upgrading pip"
-	@$(PYTHON) -m pip install --upgrade pip
-	@echo "Installing poetry"
-	@$(PYTHON) -m pip install poetry
-	@echo "Installing dependencies"
-	@$(PYTHON) -m poetry install --without dev --without test
+	@poetry install
 
 test: # Run tests
 	@poetry run $(PYTHON) -m pytest
