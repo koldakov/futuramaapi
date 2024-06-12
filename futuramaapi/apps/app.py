@@ -1,4 +1,5 @@
 import mimetypes
+from abc import ABC, abstractmethod
 from collections.abc import Generator
 from contextlib import asynccontextmanager
 from typing import Any
@@ -7,6 +8,7 @@ from fastapi import FastAPI
 from fastapi.routing import APIRouter
 from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import add_pagination
+from starlette.applications import Starlette
 
 from futuramaapi.__version__ import __version__
 from futuramaapi.core import feature_flags, settings
@@ -17,7 +19,9 @@ from futuramaapi.repositories.session import session_manager
 mimetypes.add_type("image/webp", ".webp")
 
 
-class FuturamaAPI:
+class BaseAPI(ABC):
+    version: str = __version__
+
     def __init__(
         self,
         routers: list[APIRouter],
@@ -33,6 +37,30 @@ class FuturamaAPI:
         )
 
         self.build()
+
+    @abstractmethod
+    def get_app(
+        self,
+        lifespan: Generator[Any, Any, None] | Any | None,
+        /,
+    ) -> Starlette: ...
+
+    @abstractmethod
+    def build(self) -> None: ...
+
+
+class FuturamaAPI(BaseAPI):
+    def get_app(
+        self,
+        lifespan: Generator[Any, Any, None] | Any | None,
+        /,
+    ) -> Starlette:
+        return FastAPI(
+            docs_url=None,
+            redoc_url=None,
+            lifespan=lifespan,
+            version=self.version,
+        )
 
     def _add_middlewares(self) -> None:
         if feature_flags.enable_https_redirect:
