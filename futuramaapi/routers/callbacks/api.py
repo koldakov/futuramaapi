@@ -34,7 +34,7 @@ def character_callback(
     "/characters/{character_id}",
     status_code=status.HTTP_201_CREATED,
     response_model=CallbackResponse,
-    name="character",
+    name="character_callback",
     callbacks=_characters_callbacks_router.routes,
 )
 async def create_characters_callback_request(
@@ -71,7 +71,7 @@ def episodes_callback(
     "/episodes/{episode_id}",
     status_code=status.HTTP_201_CREATED,
     response_model=CallbackResponse,
-    name="episode",
+    name="episode_callback",
     callbacks=_episodes_callbacks_router.routes,
 )
 async def create_episodes_callback_request(
@@ -109,7 +109,7 @@ def seasons_callback(
     "/seasons/{season_id}",
     status_code=status.HTTP_201_CREATED,
     response_model=CallbackResponse,
-    name="season",
+    name="season_callback",
     callbacks=_seasons_callbacks_router.routes,
 )
 async def create_seasons_callback_request(
