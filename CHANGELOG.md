@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2024-06-13
+
+### Fixed
+
+- View URL on index page
+
 ## [1.0.2] - 2024-06-12
 
 ### Fixed
@@ -46,6 +52,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - GraphQL: Season selection by id
 - GraphQL: Paginated (Edged) seasons selection
 
+[1.0.3]: https://github.com/koldakov/futuramaapi/releases/tag/1.0.3
 [1.0.2]: https://github.com/koldakov/futuramaapi/releases/tag/1.0.2
 [1.0.1]: https://github.com/koldakov/futuramaapi/releases/tag/1.0.1
 [1.0.0]: https://github.com/koldakov/futuramaapi/releases/tag/1.0.0
