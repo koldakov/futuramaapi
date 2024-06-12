@@ -14,6 +14,7 @@ from pydantic.main import IncEx
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from starlette.templating import _TemplateResponse
 
+from futuramaapi.__version__ import __version__
 from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.helpers.templates import templates
@@ -208,7 +209,10 @@ class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
     template_name: ClassVar[str]
 
     def get_context(self) -> dict:
-        return self.model_dump()
+        return {
+            **self.model_dump(),
+            "version": __version__,
+        }
 
     def get_response(
         self,
