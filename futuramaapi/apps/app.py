@@ -8,6 +8,7 @@ from fastapi.routing import APIRouter
 from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import add_pagination
 
+from futuramaapi.__version__ import __version__
 from futuramaapi.core import feature_flags, settings
 from futuramaapi.middlewares.cors import CORSMiddleware
 from futuramaapi.middlewares.secure import HTTPSRedirectMiddleware
@@ -28,6 +29,7 @@ class FuturamaAPI:
             docs_url=None,
             redoc_url=None,
             lifespan=lifespan,
+            version=__version__,
         )
 
         self.build()
