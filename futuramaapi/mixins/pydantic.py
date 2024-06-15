@@ -10,6 +10,7 @@ from fastapi import Request
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
+from pydantic import EmailStr
 from pydantic.main import IncEx
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from starlette.templating import _TemplateResponse
@@ -98,9 +99,14 @@ class BaseModelDatabaseMixin[Model: BaseModel](ABC, _PydanticSanityCheck):  # ty
         return await cls.model.count(session)
 
     @classmethod
-    async def get(cls, session: AsyncSession, id_: int, /) -> Self:
+    async def get(cls, session: AsyncSession, id_: int | EmailStr, /) -> Self:
+        kwargs: dict = {}
+        if isinstance(id_, str | EmailStr):
+            kwargs = {
+                "field": cls.model.email,
+            }
         try:
-            obj: Base = await cls.model.get(session, id_)
+            obj: Base = await cls.model.get(session, id_, **kwargs)
         except ModelDoesNotExistError as err:
             logger.info(
                 "Model already exists",
