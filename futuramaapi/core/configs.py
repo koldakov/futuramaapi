@@ -57,12 +57,15 @@ class EmailSettings(BaseSettings):
     def get_message_schema(
         subject: str,
         emails: list[EmailStr],
-        template_body: BaseModel,
+        template_body: BaseModel | dict,
     ) -> MessageSchema:
+        body: dict = template_body
+        if isinstance(template_body, BaseModel):
+            body = template_body.model_dump()
         return MessageSchema(
             subject=subject,
             recipients=emails,
-            template_body=template_body.model_dump(),
+            template_body=body,
             subtype=MessageType.html,
         )
 
@@ -70,7 +73,7 @@ class EmailSettings(BaseSettings):
         self,
         emails: list[EmailStr],
         subject: str,
-        template_body: BaseModel,
+        template_body: BaseModel | dict,
         template_name: str,
         /,
     ):
