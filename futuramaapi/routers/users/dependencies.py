@@ -26,7 +26,7 @@ async def _get_user_from_token(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
 
     try:
-        user: User = await User.get(session, decoded_token.id)
+        user: User = await User.get(session, decoded_token.user.id)
     except ModelNotFoundError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
 

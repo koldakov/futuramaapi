@@ -103,7 +103,12 @@ class UserActivateRequest(BaseModel):
 class ConfirmationBody(BaseModel, TemplateBodyMixin):
     @property
     def signature(self) -> str:
-        return DecodedUserToken(type="access", id=self.user.id).tokenize(self.expiration_time)
+        return DecodedUserToken(
+            type="access",
+            user={
+                "id": self.user.id,
+            },
+        ).tokenize(self.expiration_time)
 
     @model_validator(mode="after")
     def build_confirmation_url(self) -> Self:
@@ -196,7 +201,12 @@ class PasswordResetBody(BaseModel, TemplateBodyMixin):
 
     @property
     def signature(self) -> str:
-        return DecodedUserToken(type="access", id=self.user.id).tokenize(self.expiration_time)
+        return DecodedUserToken(
+            type="access",
+            user={
+                "id": self.user.id,
+            },
+        ).tokenize(self.expiration_time)
 
     @model_validator(mode="after")
     def build_confirmation_url(self) -> Self:

@@ -14,11 +14,14 @@ class _DecodedTokenBase(BaseTokenModel):
 
 
 class DecodedUserToken(_DecodedTokenBase, BaseModelTokenMixin):
-    id: int
+    class _User(BaseModel):
+        id: int
+
+    user: _User
 
     @classmethod
     def from_user(cls, user: "User", type_: Literal["access", "refresh"], /) -> Self:
-        return cls(type=type_, **user.model_dump())
+        return cls(type=type_, user=user.model_dump())
 
     @classmethod
     def decode(
