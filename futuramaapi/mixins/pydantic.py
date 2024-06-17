@@ -10,7 +10,7 @@ from fastapi import Request
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
-from pydantic import EmailStr
+from pydantic import EmailStr, HttpUrl, model_validator
 from pydantic.main import IncEx
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from starlette.templating import _TemplateResponse
@@ -24,6 +24,8 @@ from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError
 
 if TYPE_CHECKING:
     from sqlalchemy import Select
+
+    from futuramaapi.routers.users.schemas import User
 
 logger = logging.getLogger(__name__)
 
@@ -241,3 +243,31 @@ class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
     @classmethod
     @abstractmethod
     async def from_request(cls, session: AsyncSession, request: Request, /) -> Self: ...
+
+
+class TemplateBodyMixin(ABC, _PydanticSanityCheck):
+    class _User(BaseModel):
+        id: int
+        name: str
+        surname: str
+
+    user: _User
+    url: HttpUrl = HttpUrl.build(
+        scheme="https",
+        host=settings.trusted_host,
+    )
+    expiration_time: ClassVar[int] = 3 * 24 * 60 * 60
+
+    @abstractmethod
+    @model_validator(mode="after")
+    def build_confirmation_url(self) -> Self: ...
+
+    @property
+    @abstractmethod
+    def signature(self) -> str: ...
+
+    @classmethod
+    def from_user(cls, user: "User", /) -> Self:
+        return cls(  # type: ignore[call-arg]
+            user=user.model_dump(),
+        )
