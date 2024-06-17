@@ -73,6 +73,7 @@ async def get_me(
 
 @router.get(
     "/activate",
+    include_in_schema=False,
     responses={
         status.HTTP_401_UNAUTHORIZED: {
             "model": UnauthorizedResponse,
