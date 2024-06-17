@@ -69,10 +69,10 @@ poetry run alembic upgrade head
 ```commandline
 # Export variables
 export $(cat .env | xargs)
-# Compile tranlations
-make messages-compile
-# Run hypercorn server
-hypercorn --reload futuramaapi.main:app
+# Install project
+make install
+# Run server
+bash docker-entrypoint.sh
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
