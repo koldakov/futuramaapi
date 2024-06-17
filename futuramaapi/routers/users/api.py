@@ -139,7 +139,7 @@ async def resend_user_confirmation(
         await user.send_confirmation_email()
     except UserAlreadyActivatedError:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="User already activated.",
         ) from None
 
