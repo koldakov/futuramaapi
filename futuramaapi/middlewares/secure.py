@@ -1,4 +1,5 @@
 import logging
+from typing import ClassVar
 
 from starlette import status
 from starlette.datastructures import URL
@@ -15,6 +16,10 @@ logger = logging.getLogger(__name__)
 class HTTPSRedirectMiddleware(BaseHTTPMiddleware):
     https_port: int = 443
     http_port: int = 80
+    insecure_to_secure: ClassVar[dict[str, str]] = {
+        "http": "https",
+        "ws": "wss",
+    }
 
     def is_secure(self, headers: dict):
         try:
@@ -39,7 +44,7 @@ class HTTPSRedirectMiddleware(BaseHTTPMiddleware):
 
     def _fix_url(self, scope: Scope, /):
         url = URL(scope=scope)
-        redirect_scheme = {"http": "https", "ws": "wss"}[url.scheme]
+        redirect_scheme = self.insecure_to_secure[url.scheme]
         netloc = url.hostname if url.port in (self.http_port, self.https_port) else url.netloc
         return url.replace(scheme=redirect_scheme, netloc=netloc)
 
