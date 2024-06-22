@@ -95,6 +95,7 @@ class CallbackResponse(BaseModel):
             requested_object,
             id_,
         )
+        await session.close()
         await callback_response.send_callback(request.callback_url)
 
     @classmethod
