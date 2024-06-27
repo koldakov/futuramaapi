@@ -20,7 +20,7 @@ from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.helpers.templates import templates
 from futuramaapi.repositories.base import Base, FilterStatementKwargs, ModelAlreadyExistsError, ModelDoesNotExistError
-from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError
+from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError, UpdateArgsNotDefined
 
 if TYPE_CHECKING:
     from sqlalchemy import Select
@@ -164,8 +164,13 @@ class BaseModelDatabaseMixin[Model: BaseModel](ABC, _PydanticSanityCheck):  # ty
             raise ModelExistsError() from None
         return cls.model_validate(obj)
 
-    async def update(self, session: AsyncSession, data: BaseModel, /, **kwargs) -> None:
-        data_dict: dict[str, str] = data.to_dict(by_alias=False, reveal_secrets=True, exclude_unset=True)
+    async def update(self, session: AsyncSession, data: BaseModel | None, /, **kwargs) -> None:
+        if data is None and not kwargs:
+            raise UpdateArgsNotDefined() from None
+
+        data_dict: dict[str, str] = {}
+        if data is not None:
+            data_dict = data.to_dict(by_alias=False, reveal_secrets=True, exclude_unset=True)
         if kwargs:
             data_dict.update(kwargs)
         obj: Base = await self.model.update(session, self.id, data_dict)

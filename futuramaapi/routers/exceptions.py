@@ -9,6 +9,9 @@ class ModelNotFoundError(Exception): ...
 class ModelExistsError(Exception): ...
 
 
+class UpdateArgsNotDefined(Exception): ...
+
+
 class NotFoundResponse(BaseModel):
     detail: str = Field("Not Found")
 
