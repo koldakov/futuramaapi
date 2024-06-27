@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any, ClassVar, Self
 
 from fastapi import Request
-from pydantic import EmailStr, Field, HttpUrl, SecretStr, field_validator, model_validator
+from pydantic import EmailStr, Field, HttpUrl, SecretStr, computed_field, field_validator, model_validator
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.core import feature_flags, settings
@@ -14,8 +14,8 @@ from futuramaapi.mixins.pydantic import (
     TemplateBodyMixin,
 )
 from futuramaapi.repositories.base import ModelDoesNotExistError
-from futuramaapi.repositories.models import UserModel
-from futuramaapi.routers.exceptions import ModelNotFoundError
+from futuramaapi.repositories.models import LinkModel, UserModel
+from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError
 from futuramaapi.routers.tokens.schemas import DecodedUserToken
 
 
@@ -258,3 +258,54 @@ class PasswordChange(BaseModel, BaseModelTemplateMixin):
     @classmethod
     async def from_request(cls, session: AsyncSession, request: Request, /) -> Self:
         raise NotImplementedError() from None
+
+
+class Link(BaseModel, BaseModelDatabaseMixin):
+    model: ClassVar[type[LinkModel]] = LinkModel
+
+    url: HttpUrl = Field(
+        examples=[
+            "https://example.com",
+        ],
+    )
+    shortened: str = Field(
+        examples=[
+            "LWlWthH",
+        ],
+    )
+    created_at: datetime
+    counter: int
+
+    @computed_field(  # type: ignore[misc]
+        examples=[
+            settings.build_url(path="LWlWthH", is_static=False).unicode_string(),
+        ],
+        return_type=str,
+    )
+    @property
+    def shortened_url(self) -> str:
+        return settings.build_url(path=self.shortened, is_static=False).unicode_string()
+
+    @classmethod
+    async def create(
+        cls,
+        session: AsyncSession,
+        data: BaseModel,
+        /,
+        extra_fields: dict[
+            str,
+            Any,
+        ]
+        | None = None,
+    ) -> Self:
+        for _ in range(3):
+            try:
+                return await super().create(session, data, extra_fields=extra_fields)
+            except ModelExistsError:
+                continue
+
+        raise ModelExistsError() from None
+
+
+class LinkCreateRequest(BaseModel):
+    url: HttpUrl

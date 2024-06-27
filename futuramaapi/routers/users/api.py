@@ -8,6 +8,8 @@ from futuramaapi.routers.exceptions import ModelExistsError, UnauthorizedRespons
 
 from .dependencies import from_form_signature, from_signature, from_token, password_from_form_data
 from .schemas import (
+    Link,
+    LinkCreateRequest,
     PasswordChange,
     User,
     UserAlreadyActivatedError,
@@ -197,3 +199,22 @@ async def change_user_password(
 ) -> None:
     """Change user password."""
     await user.update(session, data, is_confirmed=True)
+
+
+@router.post(
+    "/links",
+    name="generate_user_link",
+)
+async def create_user_link(
+    data: LinkCreateRequest,
+    user: Annotated[User, Depends(from_token)],
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
+) -> Link:
+    """Generate shortened URL."""
+    return await Link.create(
+        session,
+        data,
+        extra_fields={
+            "user_id": user.id,
+        },
+    )
