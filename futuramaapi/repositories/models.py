@@ -1,9 +1,11 @@
 from enum import Enum
+from functools import partial
 
 from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
 from sqlalchemy import (
     VARCHAR,
+    BigInteger,
     Boolean,
     Column,
     Date,
@@ -17,6 +19,7 @@ from sqlalchemy.orm.strategy_options import Load
 from sqlalchemy.sql.elements import BinaryExpression
 
 from futuramaapi.core import settings
+from futuramaapi.helpers.hashers import hasher
 from futuramaapi.repositories.base import Base
 
 
@@ -226,3 +229,60 @@ class UserModel(Base):
         Boolean,
         default=True,
     )
+    links: Mapped[list["LinkModel"]] = relationship(
+        back_populates="user",
+    )
+
+    @staticmethod
+    def get_select_in_load() -> list[Load]:
+        return [selectinload(UserModel.links)]
+
+
+class LinkModel(Base):
+    __tablename__ = "links"
+
+    shortened_length: int = 7
+
+    url = Column(
+        VARCHAR(
+            length=4096,
+        ),
+        nullable=False,
+    )
+    shortened = Column(
+        VARCHAR(
+            length=128,
+        ),
+        nullable=False,
+        unique=True,
+        default=partial(
+            hasher.get_random_string,
+            shortened_length,
+        ),
+    )
+    counter = Column(
+        BigInteger,
+        nullable=False,
+        default=0,
+    )
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+    )
+    user: Mapped["UserModel"] = relationship(
+        back_populates="links",
+    )
+
+    @classmethod
+    def get_cond_list(cls, **kwargs) -> list[BinaryExpression]:
+        user: UserModel | None = kwargs.get("user")
+
+        cond_list: list[BinaryExpression] = []
+        if user is not None:
+            cond_list.append(cls.user_id == user.id)
+
+        return cond_list
+
+    @staticmethod
+    def get_select_in_load() -> list[Load]:
+        return [selectinload(LinkModel.user)]
