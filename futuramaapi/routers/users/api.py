@@ -1,8 +1,10 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
+from futuramaapi.repositories.base import FilterStatementKwargs
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.exceptions import ModelExistsError, UnauthorizedResponse
 
@@ -218,3 +220,24 @@ async def create_user_link(
             "user_id": user.id,
         },
     )
+
+
+@router.get(
+    "/links",
+    status_code=status.HTTP_200_OK,
+    response_model=Page[Link],
+    name="user_links",
+)
+async def get_user_links(
+    user: Annotated[User, Depends(from_token)],
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
+) -> Page[Link]:
+    """Retrieve user links."""
+    filter_params: FilterStatementKwargs = FilterStatementKwargs(
+        offset=0,
+        limit=20,
+        extra={
+            "user": user,
+        },
+    )
+    return await Link.paginate(session, filter_params=filter_params)
