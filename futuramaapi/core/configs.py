@@ -137,8 +137,16 @@ class Settings(BaseSettings):
     ) -> tuple[PydanticBaseSettingsSource, ...]:
         return (_EnvSource(settings_cls),)
 
-    def build_url(self, *, path: str | None = None) -> HttpUrl:
-        path = f"{self.static}/{path}" if path else f"{self.static}"
+    def build_url(
+        self,
+        *,
+        path: str | None = None,
+        is_static: bool = True,
+    ) -> HttpUrl:
+        path = path if path is not None else ""
+        if is_static is True:
+            path = f"{self.static}/{path}" if path else f"{self.static}"
+
         return HttpUrl.build(
             scheme="https",
             host=self.trusted_host,
