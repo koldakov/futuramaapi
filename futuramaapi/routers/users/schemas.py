@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import ClassVar, Self
+from typing import Any, ClassVar, Self
 
 from fastapi import Request
 from pydantic import EmailStr, Field, HttpUrl, SecretStr, field_validator, model_validator
@@ -176,8 +176,18 @@ class User(UserBase, BaseModelDatabaseMixin):
         )
 
     @classmethod
-    async def create(cls, session: AsyncSession, data: BaseModel, /) -> Self:
-        user: Self = await super().create(session, data)
+    async def create(
+        cls,
+        session: AsyncSession,
+        data: BaseModel,
+        /,
+        extra_fields: dict[
+            str,
+            Any,
+        ]
+        | None = None,
+    ) -> Self:
+        user: Self = await super().create(session, data, extra_fields=extra_fields)
         await user.send_confirmation_email()
         return user
 

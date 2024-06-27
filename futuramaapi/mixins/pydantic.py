@@ -140,9 +140,19 @@ class BaseModelDatabaseMixin[Model: BaseModel](ABC, _PydanticSanityCheck):  # ty
         )
 
     @classmethod
-    async def create(cls, session: AsyncSession, data: BaseModel, /) -> Self:
+    async def create(
+        cls,
+        session: AsyncSession,
+        data: BaseModel,
+        /,
+        extra_fields: dict[
+            str,
+            Any,
+        ]
+        | None = None,
+    ) -> Self:
         try:
-            obj: Base = await cls.model.create(session, data)
+            obj: Base = await cls.model.create(session, data, extra_fields=extra_fields)
         except ModelAlreadyExistsError as err:
             logger.info(
                 "Model already exists",
