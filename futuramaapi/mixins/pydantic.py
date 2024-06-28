@@ -4,15 +4,17 @@ from abc import ABC, abstractmethod
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self
+from uuid import UUID
 
 import jwt
 from fastapi import Request
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
-from pydantic import EmailStr, HttpUrl, model_validator
+from pydantic import HttpUrl, model_validator
 from pydantic.main import IncEx
 from sqlalchemy.ext.asyncio.session import AsyncSession
+from sqlalchemy.orm.attributes import InstrumentedAttribute
 from starlette.templating import _TemplateResponse
 
 from futuramaapi.__version__ import __version__
@@ -101,19 +103,21 @@ class BaseModelDatabaseMixin[Model: BaseModel](ABC, _PydanticSanityCheck):  # ty
         return await cls.model.count(session)
 
     @classmethod
-    async def get(cls, session: AsyncSession, id_: int | EmailStr, /) -> Self:
-        kwargs: dict = {}
-        if isinstance(id_, str | EmailStr):
-            kwargs = {
-                "field": cls.model.email,
-            }
+    async def get(
+        cls,
+        session: AsyncSession,
+        val: int | str | UUID,
+        /,
+        *,
+        field: InstrumentedAttribute | None = None,
+    ) -> Self:
         try:
-            obj: Base = await cls.model.get(session, id_, **kwargs)
+            obj: Base = await cls.model.get(session, val, field=field)
         except ModelDoesNotExistError as err:
             logger.info(
-                "Model already exists",
+                "Model does not exist",
                 extra={
-                    "id": id_,
+                    "value": val,
                     "err": err,
                 },
             )

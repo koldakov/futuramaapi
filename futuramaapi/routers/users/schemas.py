@@ -13,7 +13,6 @@ from futuramaapi.mixins.pydantic import (
     BaseModelTokenMixin,
     TemplateBodyMixin,
 )
-from futuramaapi.repositories.base import ModelDoesNotExistError
 from futuramaapi.repositories.models import LinkModel, UserModel
 from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError
 from futuramaapi.routers.tokens.schemas import DecodedUserToken
@@ -134,19 +133,8 @@ class User(UserBase, BaseModelDatabaseMixin):
             raise UserPasswordError() from None
 
     @classmethod
-    async def from_username(cls, session: AsyncSession, username: str, /) -> Self:
-        try:
-            obj: UserModel = await cls.model.get(session, username, field=UserModel.username)
-        except ModelDoesNotExistError:
-            raise ModelNotFoundError() from None
-        return cls.model_validate(obj)
-
-    @classmethod
     async def auth(cls, session: AsyncSession, username: str, password: str, /) -> Self:
-        try:
-            user: User = await User.from_username(session, username)
-        except ModelNotFoundError:
-            raise
+        user: User = await User.get(session, username, field=UserModel.username)
 
         try:
             user.verify_password(password)
@@ -237,7 +225,7 @@ class UserPasswordChangeRequest(BaseTokenModel, BaseModelTokenMixin):
             return
 
         try:
-            user: User = await User.get(session, self.email)
+            user: User = await User.get(session, self.email, field=UserModel.email)
         except ModelNotFoundError:
             return
 
