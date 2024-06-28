@@ -1,5 +1,5 @@
 from enum import Enum
-from functools import partial
+from functools import lru_cache, partial
 
 from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
@@ -238,8 +238,29 @@ class UserModel(Base):
         return [selectinload(UserModel.links)]
 
 
+def _generate_shortened(length: int, /) -> str:
+    shortened: str
+    while True:
+        shortened = hasher.get_random_string(length)
+        if LinkModel.is_shortened_allowed(shortened):
+            return shortened
+
+
+@lru_cache
+def _get_forbidden_shortened() -> set[str]:
+    from futuramaapi.apps.app import futurama_api
+
+    return futurama_api.urls
+
+
 class LinkModel(Base):
     __tablename__ = "links"
+
+    @staticmethod
+    def is_shortened_allowed(shortened: str, /) -> bool:
+        if shortened in _get_forbidden_shortened():
+            return False
+        return True
 
     shortened_length: int = 7
 
@@ -256,7 +277,7 @@ class LinkModel(Base):
         nullable=False,
         unique=True,
         default=partial(
-            hasher.get_random_string,
+            _generate_shortened,
             shortened_length,
         ),
     )
