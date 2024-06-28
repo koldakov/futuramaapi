@@ -2,7 +2,7 @@ import mimetypes
 from abc import ABC, abstractmethod
 from collections.abc import Generator
 from contextlib import asynccontextmanager
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fastapi import FastAPI
 from fastapi.routing import APIRouter
@@ -15,6 +15,9 @@ from futuramaapi.core import feature_flags, settings
 from futuramaapi.middlewares.cors import CORSMiddleware
 from futuramaapi.middlewares.secure import HTTPSRedirectMiddleware
 from futuramaapi.repositories.session import session_manager
+
+if TYPE_CHECKING:
+    from starlette.routing import Route, WebSocketRoute
 
 mimetypes.add_type("image/webp", ".webp")
 
@@ -91,6 +94,17 @@ class FuturamaAPI(BaseAPI):
         self._add_static()
 
         add_pagination(self.app)
+
+    @property
+    def urls(self) -> set[str]:
+        route: APIRouter | Route | WebSocketRoute
+        result: str
+        urls: set[str] = set()
+        for route in self.app.routes:
+            result = route.path.split("/")[1]
+            if result:
+                urls.add(result)
+        return urls
 
 
 @asynccontextmanager
