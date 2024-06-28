@@ -13,7 +13,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.orm.strategy_options import Load
 from sqlalchemy.sql import func
-from sqlalchemy.sql.elements import BinaryExpression, UnaryExpression
+from sqlalchemy.sql.elements import BinaryExpression, ColumnElement, UnaryExpression
 
 from futuramaapi.helpers.pydantic import BaseModel
 
@@ -94,12 +94,17 @@ class Base(DeclarativeBase):
         /,
         *,
         field: InstrumentedAttribute | None = None,
+        extra_where: list[ColumnElement[bool]] | None = None,
     ) -> Self:
         options: list[Load] = cls.get_options()
         if field is None:
             field = cls.id
 
-        statement: Select = select(cls).where(field == val)
+        where_cond: list = [field == val]
+        if extra_where is not None:
+            where_cond.extend(extra_where)
+
+        statement: Select = select(cls).where(*where_cond)
         if options:
             statement = statement.options(*options)
 

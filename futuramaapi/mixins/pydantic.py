@@ -15,6 +15,7 @@ from pydantic import HttpUrl, model_validator
 from pydantic.main import IncEx
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm.attributes import InstrumentedAttribute
+from sqlalchemy.sql.elements import ColumnElement
 from starlette.templating import _TemplateResponse
 
 from futuramaapi.__version__ import __version__
@@ -110,9 +111,10 @@ class BaseModelDatabaseMixin[Model: BaseModel](ABC, _PydanticSanityCheck):  # ty
         /,
         *,
         field: InstrumentedAttribute | None = None,
+        extra_where: list[ColumnElement[bool]] | None = None,
     ) -> Self:
         try:
-            obj: Base = await cls.model.get(session, val, field=field)
+            obj: Base = await cls.model.get(session, val, field=field, extra_where=extra_where)
         except ModelDoesNotExistError as err:
             logger.info(
                 "Model does not exist",
