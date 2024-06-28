@@ -1,9 +1,12 @@
+from operator import add
+
 from fastapi import APIRouter, Depends, Request, Response, status
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.repositories.session import get_async_session
+from futuramaapi.routers.users.schemas import Link
 
 from .schemas import About, Root
 
@@ -80,3 +83,21 @@ async def about(
 ) -> Response:
     obj: About = await About.from_request(session, request)
     return obj.get_response(request)
+
+
+@router.get(
+    "/{shortened}",
+    include_in_schema=False,
+    name="user_link_redirect",
+)
+async def user_link_redirect(
+    shortened: str,
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
+) -> RedirectResponse:
+    link: Link = await Link.get(session, shortened, field=Link.model.shortened)
+    await link.update(
+        session,
+        None,
+        counter=add(link.counter, 1),
+    )
+    return RedirectResponse(link.url)
