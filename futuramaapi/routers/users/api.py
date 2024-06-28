@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.repositories.base import FilterStatementKwargs
 from futuramaapi.repositories.session import get_async_session
-from futuramaapi.routers.exceptions import ModelExistsError, UnauthorizedResponse
+from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError, UnauthorizedResponse
 
 from .dependencies import from_form_signature, from_signature, from_token, password_from_form_data
 from .schemas import (
@@ -241,3 +241,28 @@ async def get_user_links(
         },
     )
     return await Link.paginate(session, filter_params=filter_params)
+
+
+@router.get(
+    "/links/{link_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=Link,
+    name="user_link",
+)
+async def get_user_link(
+    link_id: int,
+    user: Annotated[User, Depends(from_token)],
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
+) -> Link:
+    try:
+        link: Link = await Link.get(
+            session,
+            link_id,
+            extra_where=[Link.model.user_id == user.id],
+        )
+    except ModelNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Not Found",
+        ) from None
+    return link
