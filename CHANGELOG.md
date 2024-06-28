@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.8] - 2024-05-28
+
+### Added
+
+- Shortened URLs generation. Sign-up and generate shortened URLs like https://futuramaapi.com/AAAAAAA.
+For now auto generation available only
+- Paginated shortened URLs retrieve
+- Link retrieve by link id
+
+### Security
+
+- Improved the code
+
 ## [1.0.7] - 2024-05-24
 
 ### Fixed
@@ -77,6 +90,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - GraphQL: Season selection by id
 - GraphQL: Paginated (Edged) seasons selection
 
+[1.0.8]: https://github.com/koldakov/futuramaapi/releases/tag/1.0.8
 [1.0.7]: https://github.com/koldakov/futuramaapi/releases/tag/1.0.7
 [1.0.6]: https://github.com/koldakov/futuramaapi/releases/tag/1.0.6
 [1.0.5]: https://github.com/koldakov/futuramaapi/releases/tag/1.0.5
