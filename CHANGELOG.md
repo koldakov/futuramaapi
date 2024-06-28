@@ -4,38 +4,38 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.7] - 2024-06-24
+## [1.0.7] - 2024-05-24
 
 ### Fixed
 
 - Callback can cause server errors
 
-## [1.0.6] - 2024-06-18
+## [1.0.6] - 2024-05-18
 
 ### Security
 
 - Updated libraries. This addresses the following vulnerability:
   - [CVE-2024-37891](https://nvd.nist.gov/vuln/detail/CVE-2024-37891).
 
-## [1.0.5] - 2024-06-17
+## [1.0.5] - 2024-05-17
 
 ### Improved
 
 - Documentation
 
-## [1.0.4] - 2024-06-17
+## [1.0.4] - 2024-05-17
 
 ### Added
 
 - Password reset feature
 
-## [1.0.3] - 2024-06-13
+## [1.0.3] - 2024-05-13
 
 ### Fixed
 
 - View URL on index page
 
-## [1.0.2] - 2024-06-12
+## [1.0.2] - 2024-05-12
 
 ### Fixed
 
@@ -45,14 +45,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Code base
 
-## [1.0.1] - 2024-06-12
+## [1.0.1] - 2024-05-12
 
 ### Added
 
 - Button spacing for mobile
 - FuturamaAPI version to header
 
-## [1.0.0] - 2024-06-01
+## [1.0.0] - 2024-05-01
 
 ### Added
 
