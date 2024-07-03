@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2024-06-04
+
+### Added
+
+- Secret messages generation that can be shown only once
+
 ## [1.0.8] - 2024-05-28
 
 ### Added
@@ -90,6 +96,7 @@ For now auto generation available only
 - GraphQL: Season selection by id
 - GraphQL: Paginated (Edged) seasons selection
 
+[1.1.0]: https://github.com/koldakov/futuramaapi/releases/tag/1.1.0
 [1.0.8]: https://github.com/koldakov/futuramaapi/releases/tag/1.0.8
 [1.0.7]: https://github.com/koldakov/futuramaapi/releases/tag/1.0.7
 [1.0.6]: https://github.com/koldakov/futuramaapi/releases/tag/1.0.6
