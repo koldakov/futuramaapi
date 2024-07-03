@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from .callbacks import router as callbacks_router
 from .characters import router as characters_router
+from .crypto import router as crypto_router
 from .episodes import router as episodes_router
 from .graphql import router as graphql_router
 from .notifications import router as notification_router
@@ -20,6 +21,7 @@ api_router = APIRouter(prefix="/api")
 
 api_router.include_router(callbacks_router)
 api_router.include_router(characters_router)
+api_router.include_router(crypto_router)
 api_router.include_router(episodes_router)
 api_router.include_router(notification_router)
 api_router.include_router(seasons_router)
