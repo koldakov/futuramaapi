@@ -4,6 +4,8 @@ from functools import lru_cache, partial
 from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
 from sqlalchemy import (
+    BIGINT,
+    TEXT,
     VARCHAR,
     BigInteger,
     Boolean,
@@ -307,3 +309,36 @@ class LinkModel(Base):
     @staticmethod
     def get_select_in_load() -> list[Load]:
         return [selectinload(LinkModel.user)]
+
+
+class SecretMessageModel(Base):
+    __tablename__ = "secret_messages"
+
+    url_length: int = 128
+
+    text = Column(
+        TEXT,
+        nullable=False,
+    )
+    visit_counter = Column(
+        BIGINT,
+        nullable=False,
+        default=0,
+    )
+    ip_address = Column(
+        VARCHAR(
+            length=64,
+        ),
+        nullable=False,
+    )
+    url = Column(
+        VARCHAR(
+            length=128,
+        ),
+        unique=True,
+        default=partial(
+            hasher.get_random_string,
+            url_length,
+        ),
+        nullable=False,
+    )
