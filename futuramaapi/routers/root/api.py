@@ -1,11 +1,12 @@
 from operator import add
 
-from fastapi import APIRouter, Depends, Request, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.responses import FileResponse, RedirectResponse
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.repositories.session import get_async_session
+from futuramaapi.routers.exceptions import ModelNotFoundError
 from futuramaapi.routers.users.schemas import Link
 
 from .schemas import About, Root
@@ -94,7 +95,13 @@ async def user_link_redirect(
     shortened: str,
     session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> RedirectResponse:
-    link: Link = await Link.get(session, shortened, field=Link.model.shortened)
+    try:
+        link: Link = await Link.get(session, shortened, field=Link.model.shortened)
+    except ModelNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Not Found",
+        ) from None
     await link.update(
         session,
         None,
