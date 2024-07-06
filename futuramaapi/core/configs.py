@@ -1,7 +1,10 @@
+from base64 import urlsafe_b64encode
+from functools import cached_property
 from pathlib import Path
 from typing import Any
 from urllib.parse import ParseResult, urlparse
 
+from cryptography.fernet import Fernet
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, PostgresDsn
 from pydantic.fields import FieldInfo
@@ -125,6 +128,10 @@ class Settings(BaseSettings):
     trusted_host: str
     secret_key: str
     email: EmailSettings = email_settings
+
+    @cached_property
+    def fernet(self) -> Fernet:
+        return Fernet(urlsafe_b64encode(self.secret_key.encode().ljust(32)[:32]))
 
     @classmethod
     def settings_customise_sources(  # noqa: PLR0913
