@@ -3,15 +3,18 @@ import uuid
 from typing import Any, ClassVar
 
 import pydash
+from cryptography.fernet import Fernet
 from pydantic import BaseModel as BaseModelOrig
 from pydantic import ConfigDict, Field, SecretStr
 from pydash import camel_case
 
+from futuramaapi.core import settings
 from futuramaapi.helpers.hashers import PasswordHasherBase, hasher
 
 
 class BaseModel(BaseModelOrig):
     hasher: ClassVar[PasswordHasherBase] = hasher
+    encryptor: ClassVar[Fernet] = settings.fernet
 
     model_config = ConfigDict(
         from_attributes=True,
