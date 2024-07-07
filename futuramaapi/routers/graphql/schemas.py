@@ -129,7 +129,6 @@ class Query:
         self,
         info: Info,
         character_id: int,
-        /,
     ) -> Character | None:
         return await Character.get(info.context.session, character_id)
 
@@ -141,8 +140,6 @@ class Query:
     async def characters(  # noqa: PLR0913
         self,
         info: Info,
-        /,
-        *,
         limit: int | None = 50,
         offset: int | None = 0,
         gender: GenderFilter | None = None,
@@ -166,7 +163,6 @@ class Query:
         self,
         info: Info,
         episode_id: int,
-        /,
     ) -> Episode | None:
         return await Episode.get(info.context.session, episode_id)
 
@@ -194,7 +190,6 @@ class Query:
         self,
         info: Info,
         season_id: int,
-        /,
     ) -> Season | None:
         return await Season.get(info.context.session, season_id)
 
