@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2024-07-07
+
+### Fixed
+
+- GraphQL API for Character, Characters, Episode and Season
+
 ## [1.1.2] - 2024-07-06
 
 ### Fixed
@@ -114,6 +120,7 @@ For now auto generation available only
 - GraphQL: Season selection by id
 - GraphQL: Paginated (Edged) seasons selection
 
+[1.1.3]: https://github.com/koldakov/futuramaapi/releases/tag/1.1.3
 [1.1.2]: https://github.com/koldakov/futuramaapi/releases/tag/1.1.2
 [1.1.1]: https://github.com/koldakov/futuramaapi/releases/tag/1.1.1
 [1.1.0]: https://github.com/koldakov/futuramaapi/releases/tag/1.1.0
