@@ -134,7 +134,10 @@ class User(UserBase, BaseModelDatabaseMixin):
 
     @classmethod
     async def auth(cls, session: AsyncSession, username: str, password: str, /) -> Self:
-        user: User = await User.get(session, username, field=UserModel.username)
+        try:
+            user: User = await User.get(session, username, field=UserModel.username)
+        except ModelNotFoundError:
+            raise
 
         try:
             user.verify_password(password)

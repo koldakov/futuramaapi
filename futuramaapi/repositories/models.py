@@ -1,3 +1,4 @@
+from datetime import UTC, datetime, timedelta
 from enum import Enum
 from functools import lru_cache, partial
 
@@ -235,7 +236,7 @@ class UserModel(Base):
         back_populates="user",
     )
 
-    active_sessions: Mapped[list["AuthSession"]] = relationship(
+    active_sessions: Mapped[list["AuthSessionModel"]] = relationship(
         back_populates="user",
     )
 
@@ -351,10 +352,11 @@ class SecretMessageModel(Base):
     )
 
 
-class AuthSession(Base):
+class AuthSessionModel(Base):
     __tablename__ = "auth_sessions"
 
     key_length: int = 32
+    cookie_expiration_time: int = 14 * 24 * 60 * 60
 
     key = Column(
         VARCHAR(
@@ -374,6 +376,11 @@ class AuthSession(Base):
         ),
         nullable=False,
     )
+    expired = Column(
+        Boolean,
+        default=False,
+        nullable=False,
+    )
 
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id"),
@@ -382,6 +389,14 @@ class AuthSession(Base):
         back_populates="active_sessions",
     )
 
+    @property
+    def valid(self) -> bool:
+        if self.expired:
+            return False
+
+        final_date = self.created_at.replace(tzinfo=UTC) + timedelta(seconds=self.cookie_expiration_time)
+        return final_date > datetime.now(tz=UTC)
+
     @staticmethod
     def get_select_in_load() -> list[Load]:
-        return [selectinload(AuthSession.user)]
+        return [selectinload(AuthSessionModel.user)]

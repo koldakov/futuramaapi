@@ -51,6 +51,11 @@ def upgrade() -> None:
             sa.UUID(),
             nullable=False,
         ),
+        sa.Column(
+            "expired",
+            sa.Boolean(),
+            nullable=False,
+        ),
         sa.ForeignKeyConstraint(
             ["user_id"],
             ["users.id"],
