@@ -138,6 +138,10 @@ class User(UserBase, BaseModelDatabaseMixin):
         if not self.hasher.verify(password, self.password.get_secret_value()):
             raise UserPasswordError() from None
 
+    @property
+    def full_name(self) -> str:
+        return f"{self.name} {self.surname}"
+
     @classmethod
     async def from_cookie_session_id(cls, session: AsyncSession, session_id: str, /) -> Self:
         # Fuck it, I'm tired mapping SQL models to Pydantic model

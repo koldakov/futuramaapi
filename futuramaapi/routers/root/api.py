@@ -128,7 +128,7 @@ async def auth_user(
     return response
 
 
-@router.get(
+@router.post(
     "/logout",
     include_in_schema=False,
     name="user_logout",
