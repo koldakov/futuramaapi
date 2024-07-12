@@ -15,8 +15,11 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     SmallInteger,
+    Update,
+    update,
 )
 from sqlalchemy.dialects.postgresql import ENUM  # TODO: engine agnostic.
+from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 from sqlalchemy.orm.strategy_options import Load
 from sqlalchemy.sql.elements import BinaryExpression
@@ -400,3 +403,10 @@ class AuthSessionModel(Base):
     @staticmethod
     def get_select_in_load() -> list[Load]:
         return [selectinload(AuthSessionModel.user)]
+
+    @classmethod
+    async def do_expire(cls, session: AsyncSession, key: str, /) -> None:
+        statement: Update = update(AuthSessionModel).where(AuthSessionModel.key == key).values(expired=True)
+
+        await session.execute(statement)
+        await session.commit()
