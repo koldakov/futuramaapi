@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% set active_page = "user_auth" %}
+
+{% block titile %}Password Reset{% endblock %} | Futurama API
+
+{% block main_info %}{% endblock %}
+
+{% block main_content %}
+<div
+  class="container px-5 my-3"
+>
+  <h1>Sign In</h1>
+  <form
+    method="POST"
+    action="/auth"
+  >
+    <div
+      class="mb-3"
+    >
+      <label
+        for="username"
+        class="form-label"
+      >Username
+      </label>
+      <input
+        type="text"
+        name="username"
+        class="form-control"
+        id="username"
+        autofocus
+      />
+    </div>
+    <div
+      class="mb-3"
+    >
+      <label
+        for="password"
+        class="form-label"
+      >Password
+      </label>
+      <input
+        type="password"
+        name="password"
+        class="form-control"
+        id="password"
+      />
+    </div>
+    <button
+      type="submit"
+      class="btn btn-primary"
+    >Submit
+    </button>
+  </form>
+</div>
+{% endblock %}

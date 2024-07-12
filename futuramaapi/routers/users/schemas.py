@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any, ClassVar, Self
 
 from fastapi import Request
-from pydantic import EmailStr, Field, HttpUrl, SecretStr, computed_field, field_validator, model_validator
+from pydantic import EmailStr, Field, HttpUrl, PrivateAttr, SecretStr, computed_field, field_validator, model_validator
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.core import feature_flags, settings
@@ -13,7 +13,8 @@ from futuramaapi.mixins.pydantic import (
     BaseModelTokenMixin,
     TemplateBodyMixin,
 )
-from futuramaapi.repositories.models import LinkModel, UserModel
+from futuramaapi.repositories.base import ModelDoesNotExistError
+from futuramaapi.repositories.models import AuthSessionModel, LinkModel, UserModel
 from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError
 from futuramaapi.routers.tokens.schemas import DecodedUserToken
 
@@ -124,6 +125,11 @@ class PasswordMismatchError(Exception): ...
 
 
 class User(UserBase, BaseModelDatabaseMixin):
+    cookie_auth_key: ClassVar[str] = "Authorization"
+    cookie_expiration_time: ClassVar[int] = AuthSessionModel.cookie_expiration_time
+
+    _cookie_session: str | None = PrivateAttr(default=None)
+
     id: int
     is_confirmed: bool
     created_at: datetime
@@ -131,6 +137,25 @@ class User(UserBase, BaseModelDatabaseMixin):
     def verify_password(self, password: str, /):
         if not self.hasher.verify(password, self.password.get_secret_value()):
             raise UserPasswordError() from None
+
+    @classmethod
+    async def from_cookie_session_id(cls, session: AsyncSession, session_id: str, /) -> Self:
+        # Fuck it, I'm tired mapping SQL models to Pydantic model
+        try:
+            auth_session: AuthSessionModel = await AuthSessionModel.get(
+                session,
+                session_id,
+                field=AuthSessionModel.key,
+            )
+        except ModelDoesNotExistError:
+            raise ModelNotFoundError() from None
+
+        if not auth_session.valid:
+            raise ModelNotFoundError() from None
+
+        user: User = cls.model_validate(auth_session.user)
+        user._cookie_session = session_id
+        return user
 
     @classmethod
     async def auth(cls, session: AsyncSession, username: str, password: str, /) -> Self:

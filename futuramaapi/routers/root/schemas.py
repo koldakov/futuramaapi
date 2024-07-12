@@ -38,3 +38,11 @@ class About(BaseModel, BaseModelTemplateMixin):
     @classmethod
     async def from_request(cls, session: AsyncSession, request: Request, /) -> Self:
         return cls()
+
+
+class UserAuth(BaseModel, BaseModelTemplateMixin):
+    template_name: ClassVar[str] = "auth.html"
+
+    @classmethod
+    async def from_request(cls, session: AsyncSession, request: Request, /) -> Self:
+        return cls()
