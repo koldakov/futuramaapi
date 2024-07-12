@@ -235,9 +235,16 @@ class UserModel(Base):
         back_populates="user",
     )
 
+    active_sessions: Mapped[list["AuthSession"]] = relationship(
+        back_populates="user",
+    )
+
     @staticmethod
     def get_select_in_load() -> list[Load]:
-        return [selectinload(UserModel.links)]
+        return [
+            selectinload(UserModel.links),
+            selectinload(UserModel.active_sessions),
+        ]
 
 
 def _generate_shortened(length: int, /) -> str:
@@ -342,3 +349,39 @@ class SecretMessageModel(Base):
         ),
         nullable=False,
     )
+
+
+class AuthSession(Base):
+    __tablename__ = "auth_sessions"
+
+    key_length: int = 32
+
+    key = Column(
+        VARCHAR(
+            length=key_length,
+        ),
+        unique=True,
+        default=partial(
+            hasher.get_random_string,
+            key_length,
+            allowed_chars="abcdefghijklmnopqrstuvwxyz",
+        ),
+        nullable=False,
+    )
+    ip_address = Column(
+        VARCHAR(
+            length=64,
+        ),
+        nullable=False,
+    )
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+    )
+    user: Mapped["UserModel"] = relationship(
+        back_populates="active_sessions",
+    )
+
+    @staticmethod
+    def get_select_in_load() -> list[Load]:
+        return [selectinload(AuthSession.user)]
