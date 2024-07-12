@@ -239,13 +239,13 @@ class BaseModelTokenMixin(ABC, _PydanticSanityCheck):
 class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
     template_name: ClassVar[str]
 
-    def get_context(self) -> dict:
+    async def get_context(self) -> dict:
         return {
             **self.model_dump(),
             "version": __version__,
         }
 
-    def get_response(
+    async def get_response(
         self,
         request: Request,
         /,
@@ -258,7 +258,7 @@ class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
         return templates.TemplateResponse(
             request,
             template_name,
-            context=self.get_context(),
+            context=await self.get_context(),
         )
 
     @classmethod

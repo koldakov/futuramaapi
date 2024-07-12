@@ -180,7 +180,7 @@ async def change_user_password_form(
 ) -> Response:
     """Show password change form."""
     response: PasswordChange = PasswordChange(user=user, sig=sig)
-    return response.get_response(request)
+    return await response.get_response(request)
 
 
 @router.post(

@@ -72,7 +72,7 @@ async def get_root(
     session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Response:
     obj: Root = await Root.from_request(session, request)
-    return obj.get_response(request)
+    return await obj.get_response(request)
 
 
 @router.get(
@@ -85,7 +85,7 @@ async def about(
     session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Response:
     obj: About = await About.from_request(session, request)
-    return obj.get_response(request)
+    return await obj.get_response(request)
 
 
 @router.get(
@@ -102,7 +102,7 @@ async def user_auth(
         return RedirectResponse("/")
 
     obj: UserAuth = await UserAuth.from_request(session, request)
-    return obj.get_response(request)
+    return await obj.get_response(request)
 
 
 @router.post(
