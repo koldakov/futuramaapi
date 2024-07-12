@@ -3,7 +3,7 @@ import logging
 from abc import ABC, abstractmethod
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
-from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, Optional, Self
 from uuid import UUID
 
 import jwt
@@ -23,6 +23,7 @@ from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.helpers.templates import templates
 from futuramaapi.repositories.base import Base, FilterStatementKwargs, ModelAlreadyExistsError, ModelDoesNotExistError
+from futuramaapi.repositories.session import session_manager
 from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError, UpdateArgsNotDefined
 
 if TYPE_CHECKING:
@@ -239,10 +240,23 @@ class BaseModelTokenMixin(ABC, _PydanticSanityCheck):
 class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
     template_name: ClassVar[str]
 
-    async def get_context(self, *, extra_context: dict[str, Any] | None = None) -> dict:
+    async def _get_user_from_request(self, request: Request, /) -> Optional["User"]:
+        from futuramaapi.routers.users.schemas import User
+
+        try:
+            session_id: str = request.cookies[User.cookie_auth_key]
+        except KeyError:
+            return None
+
+        async with session_manager.session() as session:
+            return await User.from_cookie_session_id(session, session_id)
+
+    async def get_context(self, request: Request, *, extra_context: dict[str, Any] | None = None) -> dict:
+        user: "User" | None = await self._get_user_from_request(request)
         context: dict = {
             **self.model_dump(),
             "version": __version__,
+            "current_user": user,
         }
         if extra_context:
             context.update(extra_context)
@@ -262,7 +276,7 @@ class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
         return templates.TemplateResponse(
             request,
             template_name,
-            context=await self.get_context(extra_context=extra_context),
+            context=await self.get_context(request, extra_context=extra_context),
         )
 
     @classmethod
