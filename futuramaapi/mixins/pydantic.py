@@ -249,7 +249,10 @@ class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
             return None
 
         async with session_manager.session() as session:
-            return await User.from_cookie_session_id(session, session_id)
+            try:
+                return await User.from_cookie_session_id(session, session_id)
+            except ModelNotFoundError:
+                return None
 
     async def get_context(self, request: Request, *, extra_context: dict[str, Any] | None = None) -> dict:
         user: "User" | None = await self._get_user_from_request(request)
