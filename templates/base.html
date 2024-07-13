@@ -71,7 +71,10 @@
                   href="{{ relative_path_for('user_auth') }}"
                  >Sign In</a>
                 {% else %}
-                <form action="{{ relative_path_for('user_logout') }}">
+                <form
+                  method="POST"
+                  action="{{ relative_path_for('user_logout') }}"
+                >
                   <button
                     type="submit"
                     class="btn"
