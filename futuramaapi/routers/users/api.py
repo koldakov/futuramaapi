@@ -17,6 +17,7 @@ from .schemas import (
     UserAlreadyActivatedError,
     UserCreateRequest,
     UserPasswordChangeRequest,
+    UserSearchResponse,
     UserUpdateRequest,
 )
 
@@ -266,3 +267,19 @@ async def get_user_link(
             detail="Not Found",
         ) from None
     return link
+
+
+@router.get(
+    "/list",
+    status_code=status.HTTP_200_OK,
+    response_model=Page[UserSearchResponse],
+    name="user_search",
+)
+async def search_user(
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
+) -> UserSearchResponse:
+    filter_params: FilterStatementKwargs = FilterStatementKwargs(
+        offset=0,
+        limit=20,
+    )
+    return await UserSearchResponse.paginate(session, filter_params=filter_params)

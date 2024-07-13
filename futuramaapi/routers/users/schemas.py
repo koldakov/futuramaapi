@@ -329,3 +329,25 @@ class Link(BaseModel, BaseModelDatabaseMixin):
 
 class LinkCreateRequest(BaseModel):
     url: HttpUrl
+
+
+class UserSearchResponse(BaseModel, BaseModelDatabaseMixin):
+    model: ClassVar[type[UserModel]] = UserModel
+
+    id: int
+    is_confirmed: bool
+    created_at: datetime
+    username: str = Field(
+        min_length=5,
+        max_length=64,
+    )
+    name: str | None = Field(
+        min_length=1,
+        max_length=64,
+        default=None,
+    )
+    surname: str | None = Field(
+        min_length=1,
+        max_length=64,
+        default=None,
+    )
