@@ -250,6 +250,15 @@ class UserModel(Base):
             selectinload(UserModel.active_sessions),
         ]
 
+    @classmethod
+    def get_cond_list(cls, **kwargs) -> list[BinaryExpression]:
+        query: str | None = kwargs.get("query")
+
+        cond_list = []
+        if query is not None:
+            cond_list.append(cls.username.ilike(f"%{query.lower()}%"))
+        return cond_list
+
 
 def _generate_shortened(length: int, /) -> str:
     shortened: str

@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response, status
 from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
@@ -276,10 +276,21 @@ async def get_user_link(
     name="user_search",
 )
 async def search_user(
+    query: Annotated[
+        str | None,
+        Query(
+            alias="query",
+            description="Search by username.",
+            max_length=128,
+        ),
+    ] = None,
     session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> UserSearchResponse:
     filter_params: FilterStatementKwargs = FilterStatementKwargs(
         offset=0,
         limit=20,
+        extra={
+            "query": query,
+        },
     )
     return await UserSearchResponse.paginate(session, filter_params=filter_params)
