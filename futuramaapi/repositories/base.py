@@ -4,7 +4,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple, Self
 from uuid import UUID, uuid4
 
-from asyncpg.exceptions import UniqueViolationError
+from asyncpg.exceptions import ForeignKeyViolationError, UniqueViolationError
 from sqlalchemy import UUID as COLUMN_UUID
 from sqlalchemy import Column, DateTime, Row, Select, select
 from sqlalchemy.exc import IntegrityError, NoResultFound
@@ -30,6 +30,9 @@ class ModelDoesNotExistError(ModelBaseError): ...
 
 
 class ModelAlreadyExistsError(ModelBaseError): ...
+
+
+class ModelForeignKeyViolationError(ModelBaseError): ...
 
 
 class ModelFieldError(ModelBaseError): ...
@@ -200,7 +203,13 @@ class Base(DeclarativeBase):
         session.add(obj)
         if commit is True:
             try:
-                await session.commit()
+                try:
+                    await session.commit()
+                except IntegrityError as err:
+                    if err.orig.sqlstate == ForeignKeyViolationError.sqlstate:
+                        raise ModelForeignKeyViolationError() from None
+                    raise
+
             except IntegrityError as err:
                 if err.orig.sqlstate == UniqueViolationError.sqlstate:
                     raise ModelAlreadyExistsError() from None
