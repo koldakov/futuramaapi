@@ -83,7 +83,7 @@ class Base(DeclarativeBase):
 
     @classmethod
     def get_options(cls) -> list[Load]:
-        return [*cls.get_select_in_load()]
+        return cls.get_select_in_load()
 
     @classmethod
     def get_cond_list(cls, **kwargs) -> list[BinaryExpression]:
