@@ -24,6 +24,7 @@ pyjwt = "^2.8.0"
 fastapi-mail = {extras = ["httpx"], version = "^1.4.1"}
 strawberry-graphql = "^0.230.0"
 cryptography = "^42.0.8"
+redis = "^5.0.7"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.0"

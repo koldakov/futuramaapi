@@ -6,7 +6,7 @@ from urllib.parse import ParseResult, urlparse
 
 from cryptography.fernet import Fernet
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-from pydantic import BaseModel, EmailStr, Field, HttpUrl, PostgresDsn
+from pydantic import BaseModel, EmailStr, Field, HttpUrl, PostgresDsn, RedisDsn
 from pydantic.fields import FieldInfo
 from pydantic_settings import (
     BaseSettings,
@@ -14,6 +14,7 @@ from pydantic_settings import (
     PydanticBaseSettingsSource,
     SettingsConfigDict,
 )
+from redis.asyncio import ConnectionPool
 
 from futuramaapi.helpers.templates import TEMPLATES_PATH
 
@@ -96,6 +97,20 @@ class EmailSettings(BaseSettings):
 email_settings = EmailSettings()
 
 
+class RedisSettings(BaseSettings):
+    rediscloud_url: RedisDsn
+
+    @cached_property
+    def pool(self) -> ConnectionPool:
+        return ConnectionPool.from_url(
+            self.rediscloud_url.unicode_string(),
+            decode_responses=True,
+        )
+
+
+redis_settings = RedisSettings()
+
+
 def _parse_list(value: str) -> list[str]:
     return [str(x).strip() for x in value.split(",")]
 
@@ -128,6 +143,7 @@ class Settings(BaseSettings):
     trusted_host: str
     secret_key: str
     email: EmailSettings = email_settings
+    redis: RedisSettings = redis_settings
 
     @cached_property
     def fernet(self) -> Fernet:
