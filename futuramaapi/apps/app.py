@@ -1,14 +1,14 @@
 import mimetypes
 from abc import ABC, abstractmethod
-from collections.abc import Generator
 from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Self
 
 from fastapi import FastAPI
 from fastapi.routing import APIRouter
 from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import add_pagination
 from starlette.applications import Starlette
+from starlette.types import Lifespan
 
 from futuramaapi.__version__ import __version__
 from futuramaapi.core import feature_flags, settings
@@ -29,7 +29,7 @@ class BaseAPI(ABC):
         self,
         routers: list[APIRouter],
         *,
-        lifespan: Generator[Any, Any, None] | Any | None,
+        lifespan: Lifespan[Self] | None,
     ) -> None:
         self.routers: list[APIRouter] = routers
         self.app: Starlette = self.get_app(lifespan)
@@ -39,7 +39,7 @@ class BaseAPI(ABC):
     @abstractmethod
     def get_app(
         self,
-        lifespan: Generator[Any, Any, None] | Any | None,
+        lifespan: Lifespan[Self] | None,
         /,
     ) -> Starlette: ...
 
@@ -50,7 +50,7 @@ class BaseAPI(ABC):
 class FuturamaAPI(BaseAPI):
     def get_app(
         self,
-        lifespan: Generator[Any, Any, None] | Any | None,
+        lifespan: Lifespan[Self] | None,
         /,
     ) -> Starlette:
         return FastAPI(
