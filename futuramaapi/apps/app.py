@@ -32,12 +32,7 @@ class BaseAPI(ABC):
         lifespan: Generator[Any, Any, None] | Any | None,
     ) -> None:
         self.routers: list[APIRouter] = routers
-        self.app: FastAPI = FastAPI(
-            docs_url=None,
-            redoc_url=None,
-            lifespan=lifespan,
-            version=__version__,
-        )
+        self.app: Starlette = self.get_app(lifespan)
 
         self.build()
 
