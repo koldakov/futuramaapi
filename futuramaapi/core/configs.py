@@ -1,7 +1,7 @@
 from base64 import urlsafe_b64encode
 from functools import cached_property
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 from urllib.parse import ParseResult, urlparse
 
 from cryptography.fernet import Fernet
@@ -111,6 +111,30 @@ class RedisSettings(BaseSettings):
 redis_settings = RedisSettings()
 
 
+class SentrySettings(BaseSettings):
+    dsn: HttpUrl | None = None
+    traces_sample_rate: float = Field(
+        default=1.0,
+        ge=0,
+        le=1,
+    )
+    profiles_sample_rate: float = Field(
+        default=1.0,
+        ge=0,
+        le=1,
+    )
+    # Not the best practice to split on environments and currently the code is totally abstract from
+    # any environment, but it's really nice to have sentry divided on different environments.
+    environment: Literal["development", "staging", "production"] = "production"
+
+    model_config = SettingsConfigDict(
+        env_prefix="sentry_",
+    )
+
+
+sentry_settings = SentrySettings()
+
+
 def _parse_list(value: str) -> list[str]:
     return [str(x).strip() for x in value.split(",")]
 
@@ -144,6 +168,7 @@ class Settings(BaseSettings):
     secret_key: str
     email: EmailSettings = email_settings
     redis: RedisSettings = redis_settings
+    sentry: SentrySettings = sentry_settings
 
     @cached_property
     def fernet(self) -> Fernet:
@@ -184,6 +209,7 @@ class FeatureFlags(BaseSettings):
     enable_https_redirect: bool = False
     send_emails: bool = True
     activate_users: bool = False
+    enable_sentry: bool = False
 
 
 feature_flags = FeatureFlags()

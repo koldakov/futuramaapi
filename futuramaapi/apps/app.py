@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING, Self
 
+import sentry_sdk
 from fastapi import FastAPI
 from fastapi.routing import APIRouter
 from fastapi.staticfiles import StaticFiles
@@ -31,10 +32,24 @@ class BaseAPI(ABC):
         *,
         lifespan: Lifespan[Self] | None,
     ) -> None:
+        self._init_sentry()
+
         self.routers: list[APIRouter] = routers
         self.app: Starlette = self.get_app(lifespan)
 
         self.build()
+
+    @staticmethod
+    def _init_sentry() -> None:
+        if feature_flags.enable_sentry is False or settings.sentry.dsn is None:
+            return None
+
+        sentry_sdk.init(
+            dsn=settings.sentry.dsn,
+            environment=settings.sentry.environment,
+            traces_sample_rate=settings.sentry.traces_sample_rate,
+            profiles_sample_rate=settings.sentry.profiles_sample_rate,
+        )
 
     @abstractmethod
     def get_app(
