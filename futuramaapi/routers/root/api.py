@@ -43,7 +43,7 @@ async def favicon():
 async def get_swagger():
     return get_swagger_ui_html(
         openapi_url="/openapi.json",
-        title="Documentation | Futurama API",
+        title="Swagger Playground | Futurama API",
         swagger_favicon_url="/favicon.ico",
     )
 
