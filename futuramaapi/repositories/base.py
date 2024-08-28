@@ -203,16 +203,12 @@ class Base(DeclarativeBase):
         session.add(obj)
         if commit is True:
             try:
-                try:
-                    await session.commit()
-                except IntegrityError as err:
-                    if err.orig.sqlstate == ForeignKeyViolationError.sqlstate:
-                        raise ModelForeignKeyViolationError() from None
-                    raise
-
+                await session.commit()
             except IntegrityError as err:
                 if err.orig.sqlstate == UniqueViolationError.sqlstate:
                     raise ModelAlreadyExistsError() from None
+                elif err.orig.sqlstate == ForeignKeyViolationError.sqlstate:
+                    raise ModelForeignKeyViolationError() from None
                 await session.rollback()
                 raise
         return obj
