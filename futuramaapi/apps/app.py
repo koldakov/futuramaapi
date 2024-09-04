@@ -16,8 +16,10 @@ from futuramaapi.core import feature_flags, settings
 from futuramaapi.middlewares.cors import CORSMiddleware
 from futuramaapi.middlewares.secure import HTTPSRedirectMiddleware
 from futuramaapi.repositories.session import session_manager
+from futuramaapi.utils._compat import metadata
 
 if TYPE_CHECKING:
+    from pydantic import HttpUrl
     from starlette.routing import Route, WebSocketRoute
 
 mimetypes.add_type("image/webp", ".webp")
@@ -51,6 +53,12 @@ class BaseAPI(ABC):
             profiles_sample_rate=settings.sentry.profiles_sample_rate,
         )
 
+    @property
+    def description(self):
+        summary: str = metadata["summary"]
+        project_url: HttpUrl = settings.build_url(is_static=False)
+        return f"{summary} [Go back home]({project_url})."
+
     @abstractmethod
     def get_app(
         self,
@@ -73,6 +81,7 @@ class FuturamaAPI(BaseAPI):
             redoc_url=None,
             lifespan=lifespan,
             version=self.version,
+            description=self.description,
         )
 
     def _add_middlewares(self) -> None:
