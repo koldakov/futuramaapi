@@ -21,7 +21,6 @@ from futuramaapi.utils._compat import metadata
 
 if TYPE_CHECKING:
     from pydantic import HttpUrl
-    from starlette.routing import Mount, Route, WebSocketRoute
 
 mimetypes.add_type("image/webp", ".webp")
 
