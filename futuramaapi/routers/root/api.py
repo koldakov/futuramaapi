@@ -149,6 +149,14 @@ async def cookie_logout_user(
 
 
 @router.get(
+    "/robots.txt",
+    include_in_schema=False,
+)
+async def robots():
+    return FileResponse("robots.txt")
+
+
+@router.get(
     "/{shortened}",
     include_in_schema=False,
     name="user_link_redirect",

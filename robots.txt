@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /api/
+Allow: /
+
+User-agent: Googlebot
+Disallow: /api/
+Allow: /
+
+User-agent: Yandex
+Disallow: /api/
+Allow: /
