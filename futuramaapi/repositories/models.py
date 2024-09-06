@@ -280,8 +280,6 @@ class LinkModel(Base):
 
     @staticmethod
     def is_shortened_allowed(shortened: str, /) -> bool:
-        if shortened in _get_forbidden_shortened():
-            return False
         return True
 
     shortened_length: int = 7
