@@ -268,13 +268,6 @@ def _generate_shortened(length: int, /) -> str:
             return shortened
 
 
-@lru_cache
-def _get_forbidden_shortened() -> set[str]:
-    from futuramaapi.apps.app import futurama_api
-
-    return futurama_api.urls
-
-
 class LinkModel(Base):
     __tablename__ = "links"
 
