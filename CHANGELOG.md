@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2024-09-06
+
+### Changed
+
+- From now, shortened users links are available only with /s/ prefix in the path.
+Example: https://futuramaapi.com/s/qaSon2Q
+
 ## [1.4.1] - 2024-09-06
 
 ### Fixed
@@ -168,6 +175,7 @@ For now auto generation available only
 - GraphQL: Season selection by id
 - GraphQL: Paginated (Edged) seasons selection
 
+[1.5.0]: https://github.com/koldakov/futuramaapi/releases/tag/1.5.0
 [1.4.1]: https://github.com/koldakov/futuramaapi/releases/tag/1.4.1
 [1.4.0]: https://github.com/koldakov/futuramaapi/releases/tag/1.4.0
 [1.3.2]: https://github.com/koldakov/futuramaapi/releases/tag/1.3.2
