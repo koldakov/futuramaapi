@@ -9,6 +9,7 @@ from fastapi.routing import APIRouter
 from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import add_pagination
 from starlette.applications import Starlette
+from starlette.routing import BaseRoute
 from starlette.types import Lifespan
 
 from futuramaapi.__version__ import __version__
@@ -20,7 +21,7 @@ from futuramaapi.utils._compat import metadata
 
 if TYPE_CHECKING:
     from pydantic import HttpUrl
-    from starlette.routing import Route, WebSocketRoute
+    from starlette.routing import Mount, Route, WebSocketRoute
 
 mimetypes.add_type("image/webp", ".webp")
 
@@ -115,15 +116,8 @@ class FuturamaAPI(BaseAPI):
         add_pagination(self.app)
 
     @property
-    def urls(self) -> set[str]:
-        route: APIRouter | Route | WebSocketRoute
-        result: str
-        urls: set[str] = set()
-        for route in self.app.routes:
-            result = route.path.split("/")[1]
-            if result:
-                urls.add(result)
-        return urls
+    def urls(self) -> list[BaseRoute]:
+        return self.app.routes
 
 
 @asynccontextmanager
