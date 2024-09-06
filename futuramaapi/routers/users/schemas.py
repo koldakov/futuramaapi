@@ -295,16 +295,17 @@ class Link(BaseModel, BaseModelDatabaseMixin):
     )
     created_at: datetime
     counter: int
+    path_prefix: ClassVar[str] = "s"
 
     @computed_field(  # type: ignore[misc]
         examples=[
-            settings.build_url(path="LWlWthH", is_static=False).unicode_string(),
+            settings.build_url(path=f"{path_prefix}/LWlWthH", is_static=False).unicode_string(),
         ],
         return_type=str,
     )
     @property
     def shortened_url(self) -> str:
-        return settings.build_url(path=self.shortened, is_static=False).unicode_string()
+        return settings.build_url(path=f"{self.path_prefix}/{self.shortened}", is_static=False).unicode_string()
 
     @classmethod
     async def create(

@@ -157,7 +157,7 @@ async def robots():
 
 
 @router.get(
-    "/{shortened}",
+    "/s/{shortened}",
     include_in_schema=False,
     name="user_link_redirect",
 )

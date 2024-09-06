@@ -1,11 +1,14 @@
 User-agent: *
 Disallow: /api/
+Disallow: /s/
 Allow: /
 
 User-agent: Googlebot
 Disallow: /api/
+Disallow: /s/
 Allow: /
 
 User-agent: Yandex
 Disallow: /api/
+Disallow: /s/
 Allow: /
