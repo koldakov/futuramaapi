@@ -11,7 +11,7 @@ from futuramaapi.routers.exceptions import ModelNotFoundError
 from futuramaapi.routers.users.dependencies import cookie_user_from_form_data, user_from_cookies
 from futuramaapi.routers.users.schemas import Link, User
 
-from .schemas import About, Root, UserAuth
+from .schemas import About, Root, SiteMap, UserAuth
 
 router = APIRouter()
 
@@ -178,3 +178,14 @@ async def user_link_redirect(
         counter=add(link.counter, 1),
     )
     return RedirectResponse(link.url)
+
+
+@router.get(
+    "/sitemap.xml",
+    include_in_schema=False,
+)
+async def get_sitemap(
+    request: Request,
+) -> Response:
+    obj: SiteMap = await SiteMap.from_request(request)
+    return await obj.get_response()

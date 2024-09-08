@@ -1,7 +1,7 @@
 import mimetypes
 from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING, Literal, Self
 
 import sentry_sdk
 from fastapi import FastAPI
@@ -23,6 +23,19 @@ if TYPE_CHECKING:
     from pydantic import HttpUrl
 
 mimetypes.add_type("image/webp", ".webp")
+
+
+BOTS_FORBIDDEN_URLS: tuple[str, ...] = (
+    "/favicon.ico",
+    "/openapi.json",
+    "/robots.txt",
+    "/sitemap.xml",
+    "/static",
+    "/health",
+    "/logout",
+    "/api/",
+    "/s/",
+)
 
 
 class BaseAPI(ABC):
@@ -68,6 +81,27 @@ class BaseAPI(ABC):
 
     @abstractmethod
     def build(self) -> None: ...
+
+
+def _is_route_public(
+    url: BaseRoute,
+    /,
+    *,
+    allowed_methods: list[Literal["GET", "POST", "HEAD", "PUT"]] | None = None,
+) -> bool:
+    if url.path.startswith(BOTS_FORBIDDEN_URLS):
+        return False
+
+    if allowed_methods is None:
+        allowed_methods = ["GET"]
+
+    if not hasattr(url, "methods"):
+        return True
+
+    if not any(x in allowed_methods for x in url.methods):
+        return False
+
+    return True
 
 
 class FuturamaAPI(BaseAPI):
@@ -117,6 +151,15 @@ class FuturamaAPI(BaseAPI):
     @property
     def urls(self) -> list[BaseRoute]:
         return self.app.routes
+
+    @property
+    def public_urls(self) -> list[BaseRoute]:
+        urls: list[BaseRoute] = []
+        for route in self.app.routes:
+            if _is_route_public(route) and route.path not in [u.path for u in urls]:
+                urls.append(route)
+
+        return urls
 
 
 @asynccontextmanager
