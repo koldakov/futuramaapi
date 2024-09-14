@@ -37,17 +37,18 @@ this project embraces cutting-edge technologies to provide a modern development 
 
 1. Python >= 3.12
 2. PostgreSQL
+3. poetry
 
 ## Installation
 
 
 ```commandline
-# Create virtual environment
-python -m venv .venv
-# Activate virtual environment
-source .venv/bin/activate
-# Install python libraries in virtual environment
-pip install -r requirements.txt
+# Clone repo
+git clone git@github.com:koldakov/futuramaapi.git
+# Instal dependencies
+poetry install
+# Initiate pre-commit
+poetry run pre-commit install
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -69,8 +70,6 @@ poetry run alembic upgrade head
 ```commandline
 # Export variables
 export $(cat .env | xargs)
-# Install project
-make install
 # Run server
 bash docker-entrypoint.sh
 ```
