@@ -13,6 +13,7 @@
     <title>{% block title %}Welcome{% endblock %} | Futurama API</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ relative_path_for('static', path='/css/base.css') }}" rel="stylesheet">
+    <link href="{{ relative_path_for('static', path='/css/cookie-banner.css') }}" rel="stylesheet">
     {% block extra_styles %}{% endblock %}
   </head>
   <body>
@@ -147,6 +148,20 @@
     </main>
     <footer>
     </footer>
+    <div
+      id="futurama-api-cookie-banner"
+      class="alert alert-dark text-center mb-0"
+      role="alert"
+    >
+      This website uses cookies to ensure you get the best experience on our website.
+      <button
+        type="button"
+        class="btn btn-primary btn-sm ms-3"
+        onclick="window.futuramaapi_hideCookieBanner()"
+      >
+        I Got It
+      </button>
+    </div>
     {% if _project.G_TAG %}
     <script
       async
@@ -163,6 +178,9 @@
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
       crossorigin="anonymous"
+    ></script>
+    <script
+      src="{{ relative_path_for('static', path='/js/cookie-banner.js') }}"
     ></script>
     {% block extra_scripts %}{% endblock %}
   </body>
