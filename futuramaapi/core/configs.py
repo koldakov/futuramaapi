@@ -169,6 +169,10 @@ class Settings(BaseSettings):
     email: EmailSettings = email_settings
     redis: RedisSettings = redis_settings
     sentry: SentrySettings = sentry_settings
+    g_tag: str | None = Field(
+        default=None,
+        description="Google analytics tag.",
+    )
 
     @cached_property
     def fernet(self) -> Fernet:

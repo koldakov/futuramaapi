@@ -260,6 +260,7 @@ class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
             **self.model_dump(),
             "version": __version__,
             "current_user": user,
+            "G_TAG": settings.g_tag,
         }
         if extra_context:
             context.update(extra_context)
