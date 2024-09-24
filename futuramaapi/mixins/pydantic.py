@@ -25,6 +25,7 @@ from futuramaapi.helpers.templates import templates
 from futuramaapi.repositories.base import Base, FilterStatementKwargs, ModelAlreadyExistsError, ModelDoesNotExistError
 from futuramaapi.repositories.session import session_manager
 from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError, UpdateArgsNotDefined
+from futuramaapi.utils._compat import metadata
 
 if TYPE_CHECKING:
     from sqlalchemy import Select
@@ -244,6 +245,12 @@ class ProjectContext(BaseModel):
     g_tag: str = Field(
         default=settings.g_tag,
         alias="G_TAG",
+    )
+    author: str | None = Field(
+        default=metadata.get("author", None),
+    )
+    description: str = Field(
+        default=metadata["summary"],
     )
 
 

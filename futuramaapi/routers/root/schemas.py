@@ -7,7 +7,7 @@ from starlette.requests import Request
 
 from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel, Field
-from futuramaapi.mixins.pydantic import BaseModelTemplateMixin
+from futuramaapi.mixins.pydantic import BaseModelTemplateMixin, ProjectContext
 from futuramaapi.repositories.base import FilterStatementKwargs
 from futuramaapi.routers.characters.schemas import Character
 from futuramaapi.routers.users.schemas import User
@@ -38,6 +38,12 @@ class Root(BaseModel, BaseModelTemplateMixin):
 class About(BaseModel, BaseModelTemplateMixin):
     template_name: ClassVar[str] = "about.html"
 
+    @property
+    def project_context(self) -> ProjectContext:
+        return ProjectContext(
+            description="Practice with API, learn to code, and gain hands-on experience with SSE, callbacks, and more.",
+        )
+
     @classmethod
     async def from_request(cls, session: AsyncSession, request: Request, /) -> Self:
         return cls()
@@ -45,6 +51,13 @@ class About(BaseModel, BaseModelTemplateMixin):
 
 class UserAuth(BaseModel, BaseModelTemplateMixin):
     template_name: ClassVar[str] = "auth.html"
+
+    @property
+    def project_context(self) -> ProjectContext:
+        return ProjectContext(
+            description="Log in to your Futurama API account to manage your account and access all your tools "
+            "securely and easily.",
+        )
 
     @classmethod
     async def from_request(cls, session: AsyncSession, request: Request, /) -> Self:

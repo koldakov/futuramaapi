@@ -3,8 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Ivan Koldakov">
+    {% if _project.description %}
+    <meta name="description" content="{{ _project.description }}">
+    <meta name="og:description" content="{{ _project.description }}">
+    {% endif %}
+    {% if _project.author %}
+    <meta name="author" content="{{ _project.author }}">
+    {% endif %}
     <title>{% block title %}Welcome{% endblock %} | Futurama API</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ relative_path_for('static', path='/css/base.css') }}" rel="stylesheet">
