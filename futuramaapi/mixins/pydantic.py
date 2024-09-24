@@ -11,7 +11,7 @@ from fastapi import Request
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
-from pydantic import HttpUrl, model_validator
+from pydantic import Field, HttpUrl, model_validator
 from pydantic.main import IncEx
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm.attributes import InstrumentedAttribute
@@ -237,8 +237,22 @@ class BaseModelTokenMixin(ABC, _PydanticSanityCheck):
         return cls(**token_)
 
 
+class ProjectContext(BaseModel):
+    version: str = Field(
+        default=__version__,
+    )
+    g_tag: str = Field(
+        default=settings.g_tag,
+        alias="G_TAG",
+    )
+
+
 class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
     template_name: ClassVar[str]
+
+    @property
+    def project_context(self) -> ProjectContext:
+        return ProjectContext()
 
     async def _get_user_from_request(self, request: Request, /) -> Optional["User"]:
         from futuramaapi.routers.users.schemas import User
@@ -258,9 +272,8 @@ class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
         user: "User" | None = await self._get_user_from_request(request)
         context: dict = {
             **self.model_dump(),
-            "version": __version__,
+            "_project": self.project_context.model_dump(by_alias=True),
             "current_user": user,
-            "G_TAG": settings.g_tag,
         }
         if extra_context:
             context.update(extra_context)

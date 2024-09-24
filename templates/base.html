@@ -23,7 +23,7 @@
             href="{{ relative_path_for('root') }}"
           >
             Futurama API
-            <sup>{{ version }}</sup>
+            <sup>{{ _project.version }}</sup>
           </a>
           <button
             class="navbar-toggler"
@@ -142,16 +142,16 @@
     </main>
     <footer>
     </footer>
-    {% if G_TAG %}
+    {% if _project.G_TAG %}
     <script
       async
-      src="https://www.googletagmanager.com/gtag/js?id={{ G_TAG }}"
+      src="https://www.googletagmanager.com/gtag/js?id={{ _project.G_TAG }}"
     ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', '{{ G_TAG }}');
+      gtag('config', '{{ _project.G_TAG }}');
     </script>
     {% endif %}
     <script
