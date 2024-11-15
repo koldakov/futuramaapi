@@ -85,7 +85,7 @@ class SessionManager:
 session_manager: SessionManager = SessionManager(
     settings.database_url,
     kwargs={
-        "echo": True,
+        "echo": False,
     },
 )
 
