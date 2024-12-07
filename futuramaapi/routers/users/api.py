@@ -274,6 +274,7 @@ async def get_user_link(
     status_code=status.HTTP_200_OK,
     response_model=Page[UserSearchResponse],
     name="user_search",
+    deprecated=True,
 )
 async def search_user(
     query: Annotated[
@@ -286,6 +287,37 @@ async def search_user(
     ] = None,
     session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> UserSearchResponse:
+    filter_params: FilterStatementKwargs = FilterStatementKwargs(
+        offset=0,
+        limit=20,
+        extra={
+            "query": query,
+        },
+    )
+    return await UserSearchResponse.paginate(session, filter_params=filter_params)
+
+
+@router.get(
+    "",
+    status_code=status.HTTP_200_OK,
+    response_model=Page[UserSearchResponse],
+    name="users",
+)
+async def get_users(
+    query: Annotated[
+        str | None,
+        Query(
+            alias="query",
+            description="Search by username.",
+            max_length=128,
+        ),
+    ] = None,
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
+) -> UserSearchResponse:
+    """Get users.
+
+    Retrieve users. Search by username.
+    """
     filter_params: FilterStatementKwargs = FilterStatementKwargs(
         offset=0,
         limit=20,
