@@ -5,6 +5,13 @@ description = "Inspired REST and GraphQL API based on TV show Futurama."
 authors = ["Ivan Koldakov <coldie322@gmail.com>"]
 readme = "README.md"
 
+[project.urls]
+Homepage = "https://futuramaapi.com"
+Documentation = "https://futuramaapi.com/docs"
+Repository = "https://github.com/koldakov/futuramaapi"
+Issues = "https://github.com/koldakov/futuramaapi/issues"
+Changelog = "https://github.com/koldakov/futuramaapi/blob/main/CHANGELOG.md"
+
 [tool.poetry.dependencies]
 python = "^3.12"
 fastapi = "^0.111.0"
