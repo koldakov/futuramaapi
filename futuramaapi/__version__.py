@@ -1,3 +1,3 @@
-from futuramaapi.utils._compat import metadata
+from futuramaapi.utils import metadata
 
 __version__ = metadata["version"]

@@ -9,7 +9,7 @@ from starlette.types import Lifespan
 
 from futuramaapi.__version__ import __version__
 from futuramaapi.core import feature_flags, settings
-from futuramaapi.utils._compat import metadata
+from futuramaapi.utils import metadata
 
 if TYPE_CHECKING:
     from pydantic import HttpUrl
