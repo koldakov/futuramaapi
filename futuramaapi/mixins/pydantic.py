@@ -25,6 +25,7 @@ from futuramaapi.helpers.templates import templates
 from futuramaapi.repositories.base import Base, FilterStatementKwargs, ModelAlreadyExistsError, ModelDoesNotExistError
 from futuramaapi.repositories.session import session_manager
 from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError, UpdateArgsNotDefined
+from futuramaapi.utils import config
 from futuramaapi.utils._compat import metadata
 
 if TYPE_CHECKING:
@@ -252,6 +253,7 @@ class ProjectContext(BaseModel):
     description: str = Field(
         default=metadata["summary"],
     )
+    config: dict[str, Any] = config
 
 
 class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
