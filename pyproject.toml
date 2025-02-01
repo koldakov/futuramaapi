@@ -1,3 +1,6 @@
+[project]
+name = "futuramaapi"
+
 [tool.poetry]
 name = "futuramaapi"
 version = "1.8.0"
