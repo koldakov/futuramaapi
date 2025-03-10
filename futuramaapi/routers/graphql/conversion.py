@@ -81,34 +81,32 @@ def _(type_: StrawberryList, data: Any, /) -> list:
 class ConverterBase(ABC):
     @staticmethod
     @abstractmethod
-    def to_strawberry[S](  # type: ignore[valid-type]
-        cls: type[S],  # type: ignore[name-defined]
+    def to_strawberry[S](
+        cls: type[S],  # noqa: PLW0211
         model_instance: Base,
         /,
-    ) -> S:  # type: ignore[name-defined]
-        ...
+    ) -> S: ...
 
     @staticmethod
     @abstractmethod
-    def get_edges[S](  # type: ignore[valid-type]
-        cls: type[S],  # type: ignore[name-defined]
+    def get_edges[S](
+        cls: type[S],  # noqa: PLW0211
         model_instance: list[Base],
         /,
-    ) -> S:  # type: ignore[name-defined]
-        ...
+    ) -> list[S] | None: ...
 
 
 class ModelConverter(ConverterBase):
     @staticmethod
-    def to_strawberry[S](  # type: ignore[valid-type]
-        cls: type[S],  # type: ignore[name-defined]
+    def to_strawberry[S](
+        cls: type[S],  # noqa: PLW0211
         model_instance: Base,
         /,
-    ) -> S:  # type: ignore[name-defined]
+    ) -> S:
         kwargs: dict = {}
 
         field: StrawberryField
-        for field in cls.__strawberry_definition__.fields:
+        for field in cls.__strawberry_definition__.fields:  # type: ignore[attr-defined]
             data: Any = getattr(model_instance, field.python_name, None)
             if field.init:
                 kwargs[field.python_name] = _convert(
@@ -119,12 +117,12 @@ class ModelConverter(ConverterBase):
         return cls(**kwargs)
 
     @staticmethod
-    def get_edges[S](  # type: ignore[valid-type]
-        cls: type[S],  # type: ignore[name-defined]
+    def get_edges[S](
+        cls: type[S],  # noqa: PLW0211
         data: list[Base],
         /,
-    ) -> list[S] | None:  # type: ignore[name-defined]
-        field: StrawberryField = next(f for f in cls.__strawberry_definition__.fields if f.python_name == "edges")
+    ) -> list[S] | None:
+        field: StrawberryField = next(f for f in cls.__strawberry_definition__.fields if f.python_name == "edges")  # type: ignore[attr-defined]
         if field.init:
             return _convert(
                 field.type,

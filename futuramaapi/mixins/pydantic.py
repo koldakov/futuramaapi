@@ -35,7 +35,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class _PydanticSanityCheck[Model: BaseModel]:  # type: ignore[valid-type]
+class _PydanticSanityCheck[Model: BaseModel]:
     _required_methods: ClassVar[tuple[str, ...]] = (
         "model_validate",
         "model_dump_json",
@@ -44,15 +44,14 @@ class _PydanticSanityCheck[Model: BaseModel]:  # type: ignore[valid-type]
 
     @classmethod
     @abstractmethod
-    def model_validate(
-        cls: type[Model],  # type: ignore[name-defined]
+    def model_validate(  # type: ignore[misc]
+        cls: type[Model],
         obj: Any,
         *,
         strict: bool | None = None,
         from_attributes: bool | None = None,
         context: dict[str, Any] | None = None,
-    ) -> Model:  # type: ignore[name-defined]
-        ...
+    ) -> Model: ...
 
     @abstractmethod
     def model_dump_json(  # noqa: PLR0913
@@ -96,7 +95,7 @@ class _PydanticSanityCheck[Model: BaseModel]:  # type: ignore[valid-type]
             raise RuntimeError(f"Class {cls.__name__} should be inherited from ``pydantic.BaseModel``.")
 
 
-class BaseModelDatabaseMixin[Model: BaseModel](ABC, _PydanticSanityCheck):  # type: ignore[valid-type]
+class BaseModelDatabaseMixin[Model: BaseModel](ABC, _PydanticSanityCheck):
     model: ClassVar[type[Base]]
 
     id: int
@@ -126,7 +125,7 @@ class BaseModelDatabaseMixin[Model: BaseModel](ABC, _PydanticSanityCheck):  # ty
                 },
             )
             raise ModelNotFoundError() from None
-        return cls.model_validate(obj)
+        return cls.model_validate(obj)  # type: ignore[misc]
 
     @classmethod
     async def paginate(
@@ -134,7 +133,7 @@ class BaseModelDatabaseMixin[Model: BaseModel](ABC, _PydanticSanityCheck):  # ty
         session: AsyncSession,
         /,
         filter_params: FilterStatementKwargs | None = None,
-    ) -> Page[Model]:  # type: ignore[name-defined]
+    ) -> Page[Model]:
         if filter_params is None:
             filter_params = FilterStatementKwargs(
                 offset=0,
@@ -170,7 +169,7 @@ class BaseModelDatabaseMixin[Model: BaseModel](ABC, _PydanticSanityCheck):  # ty
                 },
             )
             raise ModelExistsError() from None
-        return cls.model_validate(obj)
+        return cls.model_validate(obj)  # type: ignore[misc]
 
     async def update(self, session: AsyncSession, data: BaseModel | None, /, **kwargs) -> None:
         if data is None and not kwargs:
@@ -183,14 +182,14 @@ class BaseModelDatabaseMixin[Model: BaseModel](ABC, _PydanticSanityCheck):  # ty
             data_dict.update(kwargs)
         obj: Base = await self.model.update(session, self.id, data_dict)
 
-        updated: BaseModel = self.model_validate(obj)
+        updated: BaseModel = self.model_validate(obj)  # type: ignore[misc]
         for field in updated.model_fields_set:
             val: Any = getattr(updated, field)
             setattr(self, field, val)
 
     @classmethod
     async def filter(cls, session: AsyncSession, kwargs: FilterStatementKwargs, /) -> list[Self]:
-        return [cls.model_validate(character) for character in await cls.model.filter(session, kwargs)]
+        return [cls.model_validate(character) for character in await cls.model.filter(session, kwargs)]  # type: ignore[misc]
 
 
 class TokenBaseError(Exception): ...
@@ -277,7 +276,7 @@ class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
                 return None
 
     async def get_context(self, request: Request, *, extra_context: dict[str, Any] | None = None) -> dict:
-        user: "User" | None = await self._get_user_from_request(request)
+        user: User | None = await self._get_user_from_request(request)
         context: dict = {
             **self.model_dump(),
             "_project": self.project_context.model_dump(by_alias=True),

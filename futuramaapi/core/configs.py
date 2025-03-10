@@ -179,7 +179,7 @@ class Settings(BaseSettings):
         return Fernet(urlsafe_b64encode(self.secret_key.encode().ljust(32)[:32]))
 
     @classmethod
-    def settings_customise_sources(  # noqa: PLR0913
+    def settings_customise_sources(
         cls,
         settings_cls: type[BaseSettings],
         init_settings: PydanticBaseSettingsSource,

@@ -99,7 +99,7 @@ class CallbackResponse(BaseModel):
         await callback_response.send_callback(request.callback_url)
 
     @classmethod
-    async def process(  # noqa: PLR0913
+    async def process(
         cls,
         session: AsyncSession,
         requested_object: type[Character | Episode | Season],

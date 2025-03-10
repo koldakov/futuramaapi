@@ -13,8 +13,8 @@ TEMPLATES_PATH: Path = Path("templates")
 
 @pass_context
 def relative_path_for(context: dict, name: str, /, **path_params) -> URL:
-    request: "Request" = context["request"]
-    http_url: "URL" = request.url_for(name, **path_params)
+    request: Request = context["request"]
+    http_url: URL = request.url_for(name, **path_params)
     return http_url.replace(netloc="", scheme="")
 
 
