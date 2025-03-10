@@ -1881,18 +1881,18 @@ full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart (>=0.0.7
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.230.0"
+version = "0.262.1"
 description = "A library for creating GraphQL APIs"
 optional = false
-python-versions = "<4.0,>=3.8"
+python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "strawberry_graphql-0.230.0-py3-none-any.whl", hash = "sha256:83700255420102d7192a31223e165f83b140191f7800d18314e533dc73b723f8"},
-    {file = "strawberry_graphql-0.230.0.tar.gz", hash = "sha256:34672bab677ce35fe92837dc6c2f194b018daa5b11cf330e71104bec18dc2922"},
+    {file = "strawberry_graphql-0.262.1-py3-none-any.whl", hash = "sha256:94683e7778e61e67c5d47897f69a5d4af6a39ff61075364351d1aedd01db77a3"},
+    {file = "strawberry_graphql-0.262.1.tar.gz", hash = "sha256:e1884aa50c345d22e2f9722a830593f340bc0b71b4514137ef089eadead187c8"},
 ]
 
 [package.dependencies]
-graphql-core = ">=3.2.0,<3.3.0"
+graphql-core = {version = ">=3.2.0,<3.4.0", markers = "python_version >= \"3.9\" and python_version < \"4.0\""}
 python-dateutil = ">=2.7.0,<3.0.0"
 typing-extensions = ">=4.5.0"
 
@@ -1901,7 +1901,7 @@ aiohttp = ["aiohttp (>=3.7.4.post0,<4.0.0)"]
 asgi = ["python-multipart (>=0.0.7)", "starlette (>=0.18.0)"]
 chalice = ["chalice (>=1.22,<2.0)"]
 channels = ["asgiref (>=3.2,<4.0)", "channels (>=3.0.5)"]
-cli = ["graphlib_backport", "libcst (>=0.4.7)", "pygments (>=2.3,<3.0)", "rich (>=12.0.0)", "typer (>=0.7.0)"]
+cli = ["libcst (>=0.4.7)", "pygments (>=2.3,<3.0)", "rich (>=12.0.0)", "typer (>=0.7.0)"]
 debug = ["libcst (>=0.4.7)", "rich (>=12.0.0)"]
 debug-server = ["libcst (>=0.4.7)", "pygments (>=2.3,<3.0)", "python-multipart (>=0.0.7)", "rich (>=12.0.0)", "starlette (>=0.18.0)", "typer (>=0.7.0)", "uvicorn (>=0.11.6)"]
 django = ["Django (>=3.2)", "asgiref (>=3.2,<4.0)"]
@@ -1913,7 +1913,6 @@ pydantic = ["pydantic (>1.6.1)"]
 pyinstrument = ["pyinstrument (>=4.0.0)"]
 quart = ["quart (>=0.19.3)"]
 sanic = ["sanic (>=20.12.2)"]
-starlite = ["starlite (>=1.48.0)"]
 
 [[package]]
 name = "typer"
@@ -2244,4 +2243,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "4a247143fb7034be277ef6d59a7e61df2f60d324a81b4461f2e8de93c694dc18"
+content-hash = "ee9af0f473a006f04f2840cf3320b2431b7af231a45de382661d788616788a5a"

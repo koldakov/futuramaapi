@@ -2,7 +2,7 @@ from typing import ClassVar, Self, cast
 
 from fastapi_storages.base import StorageImage
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from strawberry.field import StrawberryField
+from strawberry.types.field import StrawberryField
 
 from futuramaapi.core import settings
 from futuramaapi.repositories.base import Base, FilterStatementKwargs, ModelDoesNotExistError

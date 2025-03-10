@@ -8,19 +8,15 @@ from functools import singledispatch
 from typing import TYPE_CHECKING, Any, cast
 
 from fastapi_storages.base import StorageImage
-from strawberry.enum import EnumDefinition
-from strawberry.type import (
-    StrawberryList,
-    StrawberryOptional,
-    has_object_definition,
-)
-from strawberry.union import StrawberryUnion
+from strawberry.types.base import StrawberryList, StrawberryOptional, has_object_definition
+from strawberry.types.enum import EnumDefinition
+from strawberry.types.union import StrawberryUnion
 
 from futuramaapi.core import settings
 from futuramaapi.repositories.base import Base
 
 if TYPE_CHECKING:
-    from strawberry.field import StrawberryField
+    from strawberry.types.field import StrawberryField
 
 
 @singledispatch
