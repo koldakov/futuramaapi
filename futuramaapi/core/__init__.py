@@ -1,4 +1,4 @@
-from futuramaapi.core.configs import email_settings, feature_flags, settings
+from ._settings import email_settings, feature_flags, settings
 
 __all__ = [
     "email_settings",
