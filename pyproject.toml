@@ -3,7 +3,7 @@ name = "futuramaapi"
 
 [tool.poetry]
 name = "futuramaapi"
-version = "1.8.1"
+version = "1.8.2"
 description = "Inspired REST and GraphQL API based on TV show Futurama."
 authors = ["Ivan Koldakov <coldie322@gmail.com>"]
 readme = "README.md"
