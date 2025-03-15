@@ -1,5 +1,5 @@
 import logging
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple, Self
 from uuid import UUID, uuid4
@@ -9,11 +9,16 @@ from sqlalchemy import UUID as COLUMN_UUID
 from sqlalchemy import Column, DateTime, Row, Select, select
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.inspection import Inspectable
+from sqlalchemy.orm import DeclarativeBaseNoMeta as _DeclarativeBaseNoMeta
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm.attributes import InstrumentedAttribute
+from sqlalchemy.orm.decl_api import DeclarativeAttributeIntercept as _DeclarativeAttributeIntercept
 from sqlalchemy.orm.strategy_options import Load
 from sqlalchemy.sql import func
-from sqlalchemy.sql.elements import BinaryExpression, ColumnElement, UnaryExpression
+from sqlalchemy.sql._typing import _HasClauseElement
+from sqlalchemy.sql.elements import BinaryExpression, ColumnElement, SQLCoreOperations, UnaryExpression
+from sqlalchemy.sql.roles import ColumnsClauseRole, TypedColumnsClauseRole
 
 from futuramaapi.helpers.pydantic import BaseModel
 
@@ -46,7 +51,36 @@ class FilterStatementKwargs(NamedTuple):
     extra: dict | None = None
 
 
-class Base(DeclarativeBase):
+class DeclarativeBaseNoMeta(_DeclarativeBaseNoMeta):
+    pass
+
+
+class DeclarativeAttributeIntercept(_DeclarativeAttributeIntercept):
+    @property
+    def select_(
+        cls,  # noqa: N805
+    ) -> Callable[
+        [
+            tuple[
+                TypedColumnsClauseRole[Any]
+                | ColumnsClauseRole
+                | SQLCoreOperations[Any]
+                | Inspectable[_HasClauseElement[Any]]
+                | _HasClauseElement[Any]
+                | Any,
+                ...,
+            ],
+            dict[str, Any],
+        ],
+        Select[Any],
+    ]:
+        return select
+
+
+class Base(
+    DeclarativeBaseNoMeta,
+    metaclass=DeclarativeAttributeIntercept,
+):
     __abstract__ = True
 
     negation: str = "!"
@@ -107,7 +141,8 @@ class Base(DeclarativeBase):
         if extra_where is not None:
             where_cond.extend(extra_where)
 
-        statement: Select = select(cls).where(*where_cond)
+        # TODO: I mean fix ignoring
+        statement: Select = cls.select_(cls).where(*where_cond)  # type: ignore[call-arg]
         if options:
             statement = statement.options(*options)
 
@@ -153,7 +188,8 @@ class Base(DeclarativeBase):
         kwargs: FilterStatementKwargs,
         /,
     ) -> Select[tuple[Self]]:
-        statement: Select[tuple[Base]] = select(cls)
+        # TODO: I mean fix ignoring
+        statement: Select[tuple[Base]] = cls.select_(cls)  # type: ignore[call-arg]
         statement = statement.order_by(
             cls.get_order_by(
                 field_name=kwargs.order_by,
