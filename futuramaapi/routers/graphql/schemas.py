@@ -5,7 +5,7 @@ from typing import Any, ClassVar
 import strawberry
 from strawberry.types import Info
 
-from futuramaapi.repositories.base import Base, FilterStatementKwargs
+from futuramaapi.repositories import Base, FilterStatementKwargs
 from futuramaapi.repositories.models import CharacterModel, EpisodeModel, SeasonModel
 
 from .mixins import StrawberryDatabaseMixin

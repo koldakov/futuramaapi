@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response,
 from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from futuramaapi.repositories.base import FilterStatementKwargs
+from futuramaapi.repositories import FilterStatementKwargs
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError, UnauthorizedResponse
 

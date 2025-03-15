@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from strawberry.types.field import StrawberryField
 
 from futuramaapi.core import settings
-from futuramaapi.repositories.base import Base, FilterStatementKwargs, ModelDoesNotExistError
+from futuramaapi.repositories import Base, FilterStatementKwargs, ModelDoesNotExistError
 
 from .conversion import ConverterBase, converter
 

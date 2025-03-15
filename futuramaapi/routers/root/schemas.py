@@ -8,7 +8,7 @@ from starlette.requests import Request
 from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel, Field
 from futuramaapi.mixins.pydantic import BaseModelTemplateMixin, ProjectContext
-from futuramaapi.repositories.base import FilterStatementKwargs
+from futuramaapi.repositories import FilterStatementKwargs
 from futuramaapi.routers.characters.schemas import Character
 from futuramaapi.routers.users.schemas import User
 

@@ -26,7 +26,8 @@ from sqlalchemy.sql.elements import BinaryExpression
 
 from futuramaapi.core import settings
 from futuramaapi.helpers.hashers import hasher
-from futuramaapi.repositories.base import Base
+
+from ._base import Base
 
 
 class SeasonModel(Base):

@@ -7,8 +7,10 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from futuramaapi.core import settings
-from futuramaapi.repositories import models  # noqa: F401, do not remove.
-from futuramaapi.repositories.base import Base
+from futuramaapi.repositories import (
+    Base,
+    models,  # noqa: F401, do not remove.
+)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

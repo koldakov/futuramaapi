@@ -22,7 +22,7 @@ from futuramaapi.__version__ import __version__
 from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.helpers.templates import templates
-from futuramaapi.repositories.base import Base, FilterStatementKwargs, ModelAlreadyExistsError, ModelDoesNotExistError
+from futuramaapi.repositories import Base, FilterStatementKwargs, ModelAlreadyExistsError, ModelDoesNotExistError
 from futuramaapi.repositories.session import session_manager
 from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError, UpdateArgsNotDefined
 from futuramaapi.utils import config, metadata
