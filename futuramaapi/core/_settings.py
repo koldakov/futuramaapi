@@ -2,7 +2,7 @@ from base64 import urlsafe_b64encode
 from functools import cached_property
 from pathlib import Path
 from typing import Any, Literal, get_origin
-from urllib.parse import ParseResult, urlparse
+from urllib.parse import urlparse
 
 from cryptography.fernet import Fernet
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
@@ -139,9 +139,8 @@ def _parse_list(value: str) -> list[str]:
     return [str(x).strip() for x in value.split(",")]
 
 
-def _fix_postgres_url(url: str, /) -> str:
-    db_url: ParseResult = urlparse(url)
-    return db_url._replace(scheme="postgresql+asyncpg").geturl()
+def _fix_postgres_url(url: str, /, *, scheme: str = "postgresql+asyncpg") -> str:
+    return urlparse(url)._replace(scheme=scheme).geturl()
 
 
 class _EnvSource(EnvSettingsSource):
