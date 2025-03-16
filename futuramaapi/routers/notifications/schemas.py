@@ -1,4 +1,5 @@
 from asyncio import sleep
+from collections.abc import AsyncGenerator
 from datetime import datetime
 from random import randint
 
@@ -32,7 +33,7 @@ class CharacterNotification(BaseModel):
     notification: Notification
 
     @classmethod
-    async def get_move(cls, request: Request, character: Character, /):
+    async def get_move(cls, request: Request, character: Character, /) -> AsyncGenerator[ServerSentEvent]:
         while True:
             if await request.is_disconnected():
                 # Can be removed. Do not trust lib, force connection close.
@@ -52,6 +53,6 @@ class CharacterNotification(BaseModel):
             )
 
     @classmethod
-    async def from_request(cls, id_: int, request: Request, session: AsyncSession, /):
+    async def from_request(cls, id_: int, request: Request, session: AsyncSession, /) -> EventSourceResponse:
         character: Character = await Character.get(session, id_)
         return EventSourceResponse(cls.get_move(request, character))
