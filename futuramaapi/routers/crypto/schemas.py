@@ -3,7 +3,7 @@ from operator import add
 from typing import ClassVar, Self
 
 from fastapi import Request
-from pydantic import Field, HttpUrl, computed_field, field_serializer, field_validator
+from pydantic import Field, HttpUrl, PrivateAttr, computed_field, field_serializer, field_validator
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.core import settings
@@ -28,13 +28,17 @@ class SecretMessageCreateRequest(BaseModel):
 class SecretMessageCreateResponse(BaseModel):
     url: str
 
+    _base_path: PrivateAttr = PrivateAttr(
+        default="/api/crypto/secret_message/",
+    )
+
     @computed_field(  # type: ignore[misc]
         return_type=HttpUrl,
     )
     @property
     def message_link(self) -> HttpUrl:
         return settings.build_url(
-            path=self.url,
+            path=f"{self._base_path}{self.url}",
             is_static=False,
         )
 
