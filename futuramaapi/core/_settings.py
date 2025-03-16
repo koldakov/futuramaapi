@@ -1,7 +1,7 @@
 from base64 import urlsafe_b64encode
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, get_origin
 from urllib.parse import ParseResult, urlparse
 
 from cryptography.fernet import Fernet
@@ -152,7 +152,7 @@ class _EnvSource(EnvSettingsSource):
         value: Any,
         value_is_complex: bool,
     ) -> Any:
-        if field_name == "allow_origins":
+        if get_origin(field.annotation) is list:
             return _parse_list(value)
         if field_name == "database_url":
             return PostgresDsn(_fix_postgres_url(value))
