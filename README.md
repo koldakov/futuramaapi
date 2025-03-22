@@ -74,6 +74,23 @@ export $(cat .env | xargs)
 bash docker-entrypoint.sh
 ```
 
+### Docker
+
+To build the project in docker you can use:
+
+```commandline
+docker-compose up --build
+```
+
+Keep in mind docker-compose.yaml is for local DEV only.
+It is NOT secure to use it in production as passwords are
+hardcoded there for now (but you always can create a PR to fix it).
+
+#### Notes
+
+- Sending emails are disabled as this feature requires real env vars to be set.
+- Redis is not being used in reality, but there is a task to move background tasks to redis.
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Contributing
