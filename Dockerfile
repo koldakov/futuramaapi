@@ -1,4 +1,4 @@
-FROM python:3.12.0-slim-bullseye as python-base
+FROM python:3.12.0-slim-bullseye AS python-base
 
 # Environ
 ENV PYTHONUNBUFFERED=1 \
@@ -15,16 +15,16 @@ RUN apt-get update
 RUN apt-get -y install make
 
 # Create stage for Poetry installation
-FROM python-base as poetry-base
+FROM python-base AS poetry-base
 
 # Creating a virtual environment just for poetry and install it with pip
 RUN python3 -m venv $POETRY_VENV \
 	&& $POETRY_VENV/bin/pip install poetry
 
 # Create a new stage from the base python image
-FROM python-base as futuramaapi-app
+FROM python-base AS futuramaapi-app
 
-ARG APP_USER=userapp
+ARG APP_USER=futuramaapi
 ARG WORK_DIR=/app
 
 # Copy Poetry to app image
