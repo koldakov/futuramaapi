@@ -10,7 +10,6 @@ from sqlalchemy import (
     VARCHAR,
     BigInteger,
     Boolean,
-    Column,
     Date,
     ForeignKey,
     Integer,
@@ -63,27 +62,27 @@ class EpisodeCharacterAssociationModel(Base):
 class EpisodeModel(Base):
     __tablename__ = "episodes"
 
-    name = Column(
+    name: Mapped[str | None] = mapped_column(
         VARCHAR(
             length=128,
         ),
         nullable=True,
     )
-    air_date = Column(
+    air_date: Mapped[datetime | None] = mapped_column(
         Date(),
         nullable=True,
     )
-    duration = Column(
+    duration: Mapped[int | None] = mapped_column(
         Integer,
         nullable=True,
     )
-    production_code = Column(
+    production_code: Mapped[str | None] = mapped_column(
         VARCHAR(
             length=8,
         ),
         nullable=True,
     )
-    broadcast_number = Column(
+    broadcast_number: Mapped[int | None] = mapped_column(
         SmallInteger,
         nullable=True,
     )
@@ -128,31 +127,31 @@ class CharacterModel(Base):
         FEMALE = "FEMALE"
         UNKNOWN = "UNKNOWN"
 
-    name = Column(
+    name: Mapped[str] = mapped_column(
         VARCHAR(
             length=128,
         ),
         nullable=False,
     )
-    status = Column(
+    status: Mapped[CharacterStatus] = mapped_column(
         ENUM(
             CharacterStatus,
         ),
         nullable=False,
     )
-    gender = Column(
+    gender: Mapped[CharacterGender] = mapped_column(
         ENUM(
             CharacterGender,
         ),
         nullable=False,
     )
-    species = Column(
+    species: Mapped[CharacterSpecies] = mapped_column(
         ENUM(
             CharacterSpecies,
         ),
         nullable=False,
     )
-    image = Column(
+    image: Mapped[ImageType | None] = mapped_column(
         ImageType(
             storage=FileSystemStorage(path=settings.project_root / settings.static),
         ),
@@ -190,49 +189,49 @@ class CharacterModel(Base):
 class UserModel(Base):
     __tablename__ = "users"
 
-    name = Column(
+    name: Mapped[str] = mapped_column(
         VARCHAR(
             length=64,
         ),
         nullable=False,
     )
-    surname = Column(
+    surname: Mapped[str] = mapped_column(
         VARCHAR(
             length=64,
         ),
         nullable=False,
     )
-    middle_name = Column(
+    middle_name: Mapped[str] = mapped_column(
         VARCHAR(
             length=64,
         ),
         nullable=True,
     )
-    email = Column(
+    email: Mapped[str] = mapped_column(
         VARCHAR(
             length=320,
         ),
         nullable=False,
         unique=True,
     )
-    username = Column(
+    username: Mapped[str] = mapped_column(
         VARCHAR(
             length=64,
         ),
         nullable=False,
         unique=True,
     )
-    password = Column(
+    password: Mapped[str] = mapped_column(
         VARCHAR(
             length=128,
         ),
         nullable=False,
     )
-    is_confirmed = Column(
+    is_confirmed: Mapped[bool | None] = mapped_column(
         Boolean,
         default=False,
     )
-    is_subscribed = Column(
+    is_subscribed: Mapped[bool | None] = mapped_column(
         Boolean,
         default=True,
     )
@@ -278,13 +277,13 @@ class LinkModel(Base):
 
     shortened_length: int = 7
 
-    url = Column(
+    url: Mapped[str] = mapped_column(
         VARCHAR(
             length=4096,
         ),
         nullable=False,
     )
-    shortened = Column(
+    shortened: Mapped[str] = mapped_column(
         VARCHAR(
             length=128,
         ),
@@ -295,7 +294,7 @@ class LinkModel(Base):
             shortened_length,
         ),
     )
-    counter = Column(
+    counter: Mapped[str] = mapped_column(
         BigInteger,
         nullable=False,
         default=0,
@@ -328,22 +327,22 @@ class SecretMessageModel(Base):
 
     url_length: int = 128
 
-    text = Column(
+    text: Mapped[str] = mapped_column(
         TEXT,
         nullable=False,
     )
-    visit_counter = Column(
+    visit_counter: Mapped[int] = mapped_column(
         BIGINT,
         nullable=False,
         default=0,
     )
-    ip_address = Column(
+    ip_address: Mapped[str] = mapped_column(
         VARCHAR(
             length=64,
         ),
         nullable=False,
     )
-    url = Column(
+    url: Mapped[str] = mapped_column(
         VARCHAR(
             length=128,
         ),
@@ -362,7 +361,7 @@ class AuthSessionModel(Base):
     key_length: int = 32
     cookie_expiration_time: int = 14 * 24 * 60 * 60
 
-    key = Column(
+    key: Mapped[str] = mapped_column(
         VARCHAR(
             length=key_length,
         ),
@@ -374,13 +373,13 @@ class AuthSessionModel(Base):
         ),
         nullable=False,
     )
-    ip_address = Column(
+    ip_address: Mapped[str] = mapped_column(
         VARCHAR(
             length=64,
         ),
         nullable=False,
     )
-    expired = Column(
+    expired: Mapped[bool] = mapped_column(
         Boolean,
         default=False,
         nullable=False,

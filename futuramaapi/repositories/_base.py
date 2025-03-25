@@ -1,5 +1,6 @@
 import logging
 from collections.abc import Callable, Sequence
+from datetime import datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple, Self
 from uuid import UUID, uuid4
@@ -87,14 +88,14 @@ class Base(
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    created_at = Column(
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(
             timezone=True,
         ),
         server_default=func.now(),
         nullable=False,
     )
-    uuid = Column(
+    uuid: Mapped[UUID] = mapped_column(
         COLUMN_UUID(
             as_uuid=True,
         ),
