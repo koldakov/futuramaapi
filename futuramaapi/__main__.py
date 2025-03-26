@@ -1,6 +1,6 @@
 import sys
 
-from .apps import run
+from .web_servers import run
 
 
 def _run() -> int:

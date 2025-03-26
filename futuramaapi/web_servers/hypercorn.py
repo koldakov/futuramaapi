@@ -21,7 +21,7 @@ def run(
     main(
         [
             "futuramaapi:app",
-            "--config=python:futuramaapi.hypercorn_config",
+            "--config=python:futuramaapi.web_servers.hypercorn.hypercorn_config",
             *argv,
         ]
     )
