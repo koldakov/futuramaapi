@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 class Config:
     worker_class = "uvloop"
+    workers = 2
 
 
 hypercorn_config: Config = Config()
