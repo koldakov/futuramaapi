@@ -1,78 +1,73 @@
 import mimetypes
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import Literal, Self
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self
 
+import sentry_sdk
 from fastapi import FastAPI
-from fastapi.routing import APIRouter
 from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import add_pagination
-from starlette.applications import Starlette
-from starlette.routing import BaseRoute
-from starlette.types import Lifespan
+from starlette.routing import Host, Mount, Route, WebSocketRoute
 
+from futuramaapi.__version__ import __version__
 from futuramaapi.core import feature_flags, settings
 from futuramaapi.middlewares.cors import CORSMiddleware
 from futuramaapi.middlewares.secure import HTTPSRedirectMiddleware
 from futuramaapi.repositories.session import session_manager
+from futuramaapi.utils import metadata
 
-from ._base import BaseAPI
+if TYPE_CHECKING:
+    from pydantic import HttpUrl
 
 mimetypes.add_type("image/webp", ".webp")
 
 
-BOTS_FORBIDDEN_URLS: tuple[str, ...] = (
-    "/favicon.ico",
-    "/openapi.json",
-    "/robots.txt",
-    "/sitemap.xml",
-    "/static",
-    "/health",
-    "/logout",
-    "/api/",
-    "/s/",
-)
+class FuturamaAPI(FastAPI):
+    BOTS_FORBIDDEN_URLS: ClassVar[tuple[str, ...]] = (
+        "/favicon.ico",
+        "/openapi.json",
+        "/robots.txt",
+        "/sitemap.xml",
+        "/static",
+        "/health",
+        "/logout",
+        "/api/",
+        "/s/",
+    )
 
+    def __init__(self, **kwargs: Any) -> None:
+        self._setup_sentry()
 
-def _is_route_public(
-    url: BaseRoute,
-    /,
-    *,
-    allowed_methods: list[Literal["GET", "POST", "HEAD", "PUT"]] | None = None,
-) -> bool:
-    if url.path.startswith(BOTS_FORBIDDEN_URLS):
-        return False
+        kwargs.setdefault("docs_url", None)
+        kwargs.setdefault("redoc_url", None)
+        kwargs.setdefault("lifespan", self._lifespan)
+        kwargs.setdefault("version", __version__)
+        kwargs.setdefault("description", self._description)
+        super().__init__(**kwargs)
 
-    if allowed_methods is None:
-        allowed_methods = ["GET"]
+    @asynccontextmanager
+    async def _lifespan(self, _: Self, /) -> AsyncGenerator[None, Any]:
+        yield
+        if session_manager.engine is not None:
+            await session_manager.close()
 
-    if not hasattr(url, "methods"):
-        return True
+    @staticmethod
+    def _setup_sentry() -> None:
+        if feature_flags.enable_sentry is False or settings.sentry.dsn is None:
+            return None
 
-    if not any(x in allowed_methods for x in url.methods):
-        return False
-
-    return True
-
-
-class FuturamaAPI(BaseAPI):
-    def get_app(
-        self,
-        lifespan: Lifespan[Self] | None,
-        /,
-    ) -> Starlette:
-        return FastAPI(
-            docs_url=None,
-            redoc_url=None,
-            lifespan=lifespan,
-            version=self.version,
-            description=self.description,
+        sentry_sdk.init(
+            dsn=settings.sentry.dsn,
+            environment=settings.sentry.environment,
+            traces_sample_rate=settings.sentry.traces_sample_rate,
+            profiles_sample_rate=settings.sentry.profiles_sample_rate,
         )
 
-    def _add_middlewares(self) -> None:
+    def _setup_middlewares(self) -> None:
         if feature_flags.enable_https_redirect:
-            self.app.add_middleware(HTTPSRedirectMiddleware)
+            self.add_middleware(HTTPSRedirectMiddleware)
 
-        self.app.add_middleware(
+        self.add_middleware(
             CORSMiddleware,
             allow_origins=settings.allow_origins,
             allow_credentials=True,
@@ -80,56 +75,64 @@ class FuturamaAPI(BaseAPI):
             allow_headers=["*"],
         )
 
-    def _add_routers(self) -> None:
-        for router in self.routers:
-            self.app.include_router(router)
+    def _setup_routers(self) -> None:
+        from futuramaapi.routers import api_router, graphql_router, root_router
 
-    def _add_static(self) -> None:
-        self.app.mount(
+        for router in [api_router, graphql_router, root_router]:
+            self.include_router(router)
+
+    def _setup_static(self) -> None:
+        self.mount(
             "/static",
             StaticFiles(directory="static"),
             name="static",
         )
 
-    def build(self) -> None:
-        self._add_middlewares()
-        self._add_routers()
-        self._add_static()
+    def setup(self) -> None:
+        super().setup()
 
-        add_pagination(self.app)
+        self._setup_middlewares()
+        self._setup_routers()
+        self._setup_static()
 
-    @property
-    def urls(self) -> list[BaseRoute]:
-        return self.app.routes
+        add_pagination(self)
 
     @property
-    def public_urls(self) -> list[BaseRoute]:
-        urls: list[BaseRoute] = []
-        for route in self.app.routes:
-            if _is_route_public(route) and route.path not in [u.path for u in urls]:
+    def _description(self):
+        summary: str = metadata["summary"]
+        project_url: HttpUrl = settings.build_url(is_static=False)
+        return f"{summary} [Go back home]({project_url})."
+
+    def _is_route_public(
+        self,
+        url: Route | WebSocketRoute | Mount | Host,
+        /,
+        *,
+        allowed_methods: list[Literal["GET", "POST", "HEAD", "PUT"]] | None = None,
+    ) -> bool:
+        if url.path.startswith(self.BOTS_FORBIDDEN_URLS):
+            return False
+
+        if allowed_methods is None:
+            allowed_methods = ["GET"]
+
+        if not hasattr(url, "methods"):
+            return True
+
+        if not any(x in allowed_methods for x in url.methods):
+            return False
+
+        return True
+
+    @property
+    def public_urls(self) -> list[Route | WebSocketRoute | Mount | Host]:
+        urls: list[Route | WebSocketRoute | Mount | Host] = []
+        route: Route | WebSocketRoute | Mount | Host
+        for route in self.routes:
+            if self._is_route_public(route) and route.path not in [u.path for u in urls]:
                 urls.append(route)
 
         return urls
 
 
-@asynccontextmanager
-async def _lifespan(_: FastAPI):
-    yield
-    if session_manager.engine is not None:
-        await session_manager.close()
-
-
-def _get_routers() -> list[APIRouter]:
-    from futuramaapi.routers import api_router, graphql_router, root_router
-
-    return [
-        api_router,
-        graphql_router,
-        root_router,
-    ]
-
-
-futurama_api: FuturamaAPI = FuturamaAPI(
-    _get_routers(),
-    lifespan=_lifespan,
-)
+futurama_api: FuturamaAPI = FuturamaAPI()
