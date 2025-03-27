@@ -1,8 +1,8 @@
 import logging
-from collections.abc import Callable, Sequence
+from collections.abc import Sequence
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Literal, NamedTuple, Self
+from typing import TYPE_CHECKING, Any, Literal, NamedTuple, Self, overload
 from uuid import UUID, uuid4
 
 from asyncpg.exceptions import ForeignKeyViolationError, UniqueViolationError
@@ -10,16 +10,27 @@ from sqlalchemy import UUID as COLUMN_UUID
 from sqlalchemy import Column, DateTime, Row, Select, select
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from sqlalchemy.inspection import Inspectable
 from sqlalchemy.orm import DeclarativeBaseNoMeta as _DeclarativeBaseNoMeta
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.orm.decl_api import DeclarativeAttributeIntercept as _DeclarativeAttributeIntercept
 from sqlalchemy.orm.strategy_options import Load
 from sqlalchemy.sql import func
-from sqlalchemy.sql._typing import _HasClauseElement
-from sqlalchemy.sql.elements import BinaryExpression, ColumnElement, SQLCoreOperations, UnaryExpression
-from sqlalchemy.sql.roles import ColumnsClauseRole, TypedColumnsClauseRole
+from sqlalchemy.sql._typing import (
+    _T0,
+    _T1,
+    _T2,
+    _T3,
+    _T4,
+    _T5,
+    _T6,
+    _T7,
+    _T8,
+    _T9,
+    _ColumnsClauseArgument,
+)
+from sqlalchemy.sql._typing import _TypedColumnClauseArgument as _TCCA
+from sqlalchemy.sql.elements import BinaryExpression, ColumnElement, UnaryExpression
 
 from futuramaapi.helpers.pydantic import BaseModel
 
@@ -57,25 +68,124 @@ class DeclarativeBaseNoMeta(_DeclarativeBaseNoMeta):
 
 
 class DeclarativeAttributeIntercept(_DeclarativeAttributeIntercept):
-    @property
+    @overload
     def select_(
         cls,  # noqa: N805
-    ) -> Callable[
-        [
-            tuple[
-                TypedColumnsClauseRole[Any]
-                | ColumnsClauseRole
-                | SQLCoreOperations[Any]
-                | Inspectable[_HasClauseElement[Any]]
-                | _HasClauseElement[Any]
-                | Any,
-                ...,
-            ],
-            dict[str, Any],
-        ],
-        Select[Any],
-    ]:
-        return select
+        __ent0: _TCCA[_T0],
+    ) -> Select[tuple[_T0]]: ...
+
+    @overload
+    def select_(
+        cls,  # noqa: N805
+        __ent0: _TCCA[_T0],
+        __ent1: _TCCA[_T1],
+    ) -> Select[tuple[_T0, _T1]]: ...
+
+    @overload
+    def select_(
+        cls,  # noqa: N805
+        __ent0: _TCCA[_T0],
+        __ent1: _TCCA[_T1],
+        __ent2: _TCCA[_T2],
+    ) -> Select[tuple[_T0, _T1, _T2]]: ...
+
+    @overload
+    def select_(
+        cls,  # noqa: N805
+        __ent0: _TCCA[_T0],
+        __ent1: _TCCA[_T1],
+        __ent2: _TCCA[_T2],
+        __ent3: _TCCA[_T3],
+    ) -> Select[tuple[_T0, _T1, _T2, _T3]]: ...
+
+    @overload
+    def select_(
+        cls,  # noqa: N805
+        __ent0: _TCCA[_T0],
+        __ent1: _TCCA[_T1],
+        __ent2: _TCCA[_T2],
+        __ent3: _TCCA[_T3],
+        __ent4: _TCCA[_T4],
+    ) -> Select[tuple[_T0, _T1, _T2, _T3, _T4]]: ...
+
+    @overload
+    def select_(
+        cls,  # noqa: N805
+        __ent0: _TCCA[_T0],
+        __ent1: _TCCA[_T1],
+        __ent2: _TCCA[_T2],
+        __ent3: _TCCA[_T3],
+        __ent4: _TCCA[_T4],
+        __ent5: _TCCA[_T5],
+    ) -> Select[tuple[_T0, _T1, _T2, _T3, _T4, _T5]]: ...
+
+    @overload
+    def select_(
+        cls,  # noqa: N805
+        __ent0: _TCCA[_T0],
+        __ent1: _TCCA[_T1],
+        __ent2: _TCCA[_T2],
+        __ent3: _TCCA[_T3],
+        __ent4: _TCCA[_T4],
+        __ent5: _TCCA[_T5],
+        __ent6: _TCCA[_T6],
+    ) -> Select[tuple[_T0, _T1, _T2, _T3, _T4, _T5, _T6]]: ...
+
+    @overload
+    def select_(
+        cls,  # noqa: N805
+        __ent0: _TCCA[_T0],
+        __ent1: _TCCA[_T1],
+        __ent2: _TCCA[_T2],
+        __ent3: _TCCA[_T3],
+        __ent4: _TCCA[_T4],
+        __ent5: _TCCA[_T5],
+        __ent6: _TCCA[_T6],
+        __ent7: _TCCA[_T7],
+    ) -> Select[tuple[_T0, _T1, _T2, _T3, _T4, _T5, _T6, _T7]]: ...
+
+    @overload
+    def select_(
+        cls,  # noqa: N805
+        __ent0: _TCCA[_T0],
+        __ent1: _TCCA[_T1],
+        __ent2: _TCCA[_T2],
+        __ent3: _TCCA[_T3],
+        __ent4: _TCCA[_T4],
+        __ent5: _TCCA[_T5],
+        __ent6: _TCCA[_T6],
+        __ent7: _TCCA[_T7],
+        __ent8: _TCCA[_T8],
+    ) -> Select[tuple[_T0, _T1, _T2, _T3, _T4, _T5, _T6, _T7, _T8]]: ...
+
+    @overload
+    def select_(
+        cls,  # noqa: N805
+        __ent0: _TCCA[_T0],
+        __ent1: _TCCA[_T1],
+        __ent2: _TCCA[_T2],
+        __ent3: _TCCA[_T3],
+        __ent4: _TCCA[_T4],
+        __ent5: _TCCA[_T5],
+        __ent6: _TCCA[_T6],
+        __ent7: _TCCA[_T7],
+        __ent8: _TCCA[_T8],
+        __ent9: _TCCA[_T9],
+    ) -> Select[tuple[_T0, _T1, _T2, _T3, _T4, _T5, _T6, _T7, _T8, _T9]]: ...
+
+    @overload
+    def select_(
+        cls,  # noqa: N805
+        *entities: _ColumnsClauseArgument[Any],
+        **__kw: Any,
+    ) -> Select[Any]: ...
+
+    def select_(
+        cls,  # noqa: N805
+        *entities: _ColumnsClauseArgument[Any],
+        **__kw: Any,
+    ) -> Select[Any]:
+        return select(*entities, **__kw)
 
 
 class Base(
@@ -142,8 +252,7 @@ class Base(
         if extra_where is not None:
             where_cond.extend(extra_where)
 
-        # TODO: I mean fix ignoring
-        statement: Select = cls.select_(cls).where(*where_cond)  # type: ignore[call-arg]
+        statement: Select = cls.select_(cls).where(*where_cond)
         if options:
             statement = statement.options(*options)
 
@@ -189,8 +298,7 @@ class Base(
         kwargs: FilterStatementKwargs,
         /,
     ) -> Select[tuple[Self]]:
-        # TODO: I mean fix ignoring
-        statement: Select[tuple[Base]] = cls.select_(cls)  # type: ignore[call-arg]
+        statement: Select[tuple[Base]] = cls.select_(cls)
         statement = statement.order_by(
             cls.get_order_by(
                 field_name=kwargs.order_by,
