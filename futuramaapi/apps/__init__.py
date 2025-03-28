@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from .app import futurama_api
+from .fastapi import futurama_api
 
 app: FastAPI = futurama_api
 
