@@ -88,8 +88,8 @@ class SiteMap(BaseModel):
 
     @classmethod
     async def from_request(cls, request: Request) -> Self:
-        from futuramaapi.apps.app import futurama_api
+        from futuramaapi.apps import app
 
         return cls(
-            urls=[url.path for url in futurama_api.public_urls],
+            urls=[url.path for url in app.public_urls],
         )
