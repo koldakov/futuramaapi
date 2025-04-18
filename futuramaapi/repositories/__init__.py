@@ -1,4 +1,5 @@
 from ._base import (
+    INT32,
     Base,
     FilterStatementKwargs,
     ModelAlreadyExistsError,
@@ -6,6 +7,7 @@ from ._base import (
 )
 
 __all__ = [
+    "INT32",
     "Base",
     "FilterStatementKwargs",
     "ModelAlreadyExistsError",

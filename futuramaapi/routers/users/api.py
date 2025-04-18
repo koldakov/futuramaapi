@@ -1,10 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, Request, Response, status
 from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from futuramaapi.repositories import FilterStatementKwargs
+from futuramaapi.repositories import INT32, FilterStatementKwargs
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError, UnauthorizedResponse
 
@@ -251,7 +251,12 @@ async def get_user_links(
     name="user_link",
 )
 async def get_user_link(
-    link_id: int,
+    link_id: Annotated[
+        int,
+        Path(
+            le=INT32,
+        ),
+    ],
     user: Annotated[User, Depends(from_token)],
     session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Link:

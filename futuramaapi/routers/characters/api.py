@@ -1,10 +1,10 @@
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from futuramaapi.repositories import FilterStatementKwargs
+from futuramaapi.repositories import INT32, FilterStatementKwargs
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.exceptions import ModelNotFoundError, NotFoundResponse
 
@@ -28,7 +28,12 @@ router = APIRouter(
     name="character",
 )
 async def get_character(
-    character_id: int,
+    character_id: Annotated[
+        int,
+        Path(
+            le=INT32,
+        ),
+    ],
     session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Character:
     """Retrieve specific character.

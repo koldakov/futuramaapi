@@ -1,7 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, Path, status
 from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
+from futuramaapi.repositories import INT32
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.exceptions import ModelNotFoundError, NotFoundResponse
 
@@ -25,7 +28,12 @@ router = APIRouter(
     name="episode",
 )
 async def get_episode(
-    episode_id: int,
+    episode_id: Annotated[
+        int,
+        Path(
+            le=INT32,
+        ),
+    ],
     session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Episode:
     """Retrieve specific episode.

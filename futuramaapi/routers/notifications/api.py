@@ -1,7 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, Path, Request, status
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sse_starlette.sse import EventSourceResponse
 
+from futuramaapi.repositories import INT32
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.exceptions import ModelNotFoundError
 
@@ -24,7 +27,12 @@ router = APIRouter(
     status_code=status.HTTP_200_OK,
 )
 async def character_sse(
-    character_id: int,
+    character_id: Annotated[
+        int,
+        Path(
+            le=INT32,
+        ),
+    ],
     request: Request,
     session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> EventSourceResponse:

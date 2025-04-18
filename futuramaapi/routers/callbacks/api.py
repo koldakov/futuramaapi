@@ -1,6 +1,9 @@
-from fastapi import APIRouter, BackgroundTasks, Depends, status
+from typing import Annotated
+
+from fastapi import APIRouter, BackgroundTasks, Depends, Path, status
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
+from futuramaapi.repositories import INT32
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.callbacks.schemas import Character
 from futuramaapi.routers.episodes.schemas import Episode
@@ -38,7 +41,12 @@ def character_callback(
     callbacks=_characters_callbacks_router.routes,
 )
 async def create_characters_callback_request(
-    character_id: int,
+    character_id: Annotated[
+        int,
+        Path(
+            le=INT32,
+        ),
+    ],
     request: CallbackRequest,
     background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(get_async_session),  # noqa: B008
@@ -75,7 +83,12 @@ def episodes_callback(
     callbacks=_episodes_callbacks_router.routes,
 )
 async def create_episodes_callback_request(
-    episode_id: int,
+    episode_id: Annotated[
+        int,
+        Path(
+            le=INT32,
+        ),
+    ],
     request: CallbackRequest,
     background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(get_async_session),  # noqa: B008
@@ -113,7 +126,12 @@ def seasons_callback(
     callbacks=_seasons_callbacks_router.routes,
 )
 async def create_seasons_callback_request(
-    season_id: int,
+    season_id: Annotated[
+        int,
+        Path(
+            le=INT32,
+        ),
+    ],
     request: CallbackRequest,
     background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(get_async_session),  # noqa: B008

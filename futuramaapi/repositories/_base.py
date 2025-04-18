@@ -2,7 +2,7 @@ import logging
 from collections.abc import Callable, Sequence
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Literal, NamedTuple, Self
+from typing import TYPE_CHECKING, Any, Final, Literal, NamedTuple, Self
 from uuid import UUID, uuid4
 
 from asyncpg.exceptions import ForeignKeyViolationError, UniqueViolationError
@@ -27,6 +27,8 @@ if TYPE_CHECKING:
     from sqlalchemy.engine.result import Result
 
 logger = logging.getLogger(__name__)
+
+INT32: Final[int] = 2147483647
 
 
 class ModelBaseError(Exception): ...
