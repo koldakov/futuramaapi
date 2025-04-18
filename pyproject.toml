@@ -17,34 +17,35 @@ Changelog = "https://github.com/koldakov/futuramaapi/blob/main/CHANGELOG.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-fastapi = "^0.115.11"
+fastapi = "^0.115.12"
 hypercorn = {extras = ["uvloop"], version = "^0.17.3"}
-sqlalchemy = "^2.0.39"
-pydantic-settings = "^2.8.1"
-alembic = "^1.15.1"
-pydantic = {extras = ["email"], version = "^2.7.1"}
+sqlalchemy = "^2.0.40"
+pydantic-settings = "^2.9.0"
+alembic = "^1.15.2"
+pydantic = "^2.11.3"
 fastapi-storages = "^0.3.0"
 asyncpg = "^0.30.0"
-pillow = "^11.1.0"
-fastapi-pagination = "^0.12.24"
-anyio = "^4.3.0"
+pillow = "^11.2.1"
+fastapi-pagination = "^0.12.34"
+anyio = "^4.9.0"
 sse-starlette = "^2.2.1"
-pydash = "^8.0.1"
-pyjwt = "^2.8.0"
-fastapi-mail = {extras = ["httpx"], version = "^1.4.1"}
-strawberry-graphql = "^0.262.5"
+pydash = "^8.0.5"
+pyjwt = "^2.10.1"
+fastapi-mail = "^1.4.2"
+strawberry-graphql = "^0.265.1"
 cryptography = "^44.0.2"
-redis = "^5.0.7"
-pyyaml = "^6.0.1"
+redis = "^5.2.1"
+pyyaml = "^6.0.2"
 python-multipart = "^0.0.20"
-sentry-sdk = {extras = ["fastapi"], version = "^2.22.0"}
-greenlet = "^3.1.1"
+sentry-sdk = "^2.26.1"
+greenlet = "^3.2.0"
+httpx = "^0.28.1"
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^3.7.0"
+pre-commit = "^4.2.0"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^8.2.0"
+pytest = "^8.3.5"
 
 [build-system]
 requires = ["poetry-core"]
