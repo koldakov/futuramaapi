@@ -13,8 +13,12 @@ from sqlalchemy import (
     Date,
     ForeignKey,
     Integer,
+    Result,
+    Select,
     SmallInteger,
     Update,
+    func,
+    select,
     update,
 )
 from sqlalchemy.dialects.postgresql import ENUM, Insert, insert  # TODO: engine agnostic.
@@ -444,3 +448,13 @@ class RequestsCounterModel(Base):
         async with session_manager.session() as session:
             await session.execute(statement)
             await session.commit()
+
+    @classmethod
+    async def get_total_requests(cls) -> int:
+        statement: Select = select(func.coalesce(func.sum(RequestsCounterModel.counter), 0))
+
+        session: AsyncSession
+        async with session_manager.session() as session:
+            result: Result = await session.execute(statement)
+
+        return result.scalar()

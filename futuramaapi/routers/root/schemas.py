@@ -9,6 +9,7 @@ from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel, Field
 from futuramaapi.mixins.pydantic import BaseModelTemplateMixin, ProjectContext
 from futuramaapi.repositories import FilterStatementKwargs
+from futuramaapi.repositories.models import RequestsCounterModel
 from futuramaapi.routers.characters.schemas import Character
 from futuramaapi.routers.users.schemas import User
 
@@ -16,6 +17,7 @@ from futuramaapi.routers.users.schemas import User
 class Root(BaseModel, BaseModelTemplateMixin):
     characters: list[Character]
     user_count: int = Field(alias="user_count")
+    total_api_requests: int
 
     template_name: ClassVar[str] = "index.html"
 
@@ -28,10 +30,12 @@ class Root(BaseModel, BaseModelTemplateMixin):
                 limit=6,
             ),
         )
+        total_requests: int = await RequestsCounterModel.get_total_requests()
 
         return cls(
             characters=characters,
             user_count=user_count,
+            total_api_requests=total_requests,
         )
 
 
