@@ -410,3 +410,20 @@ class AuthSessionModel(Base):
 
         await session.execute(statement)
         await session.commit()
+
+
+class RequestsCounterModel(Base):
+    __tablename__ = "requests_counter"
+
+    url: Mapped[str] = mapped_column(
+        VARCHAR(
+            length=64,
+        ),
+        nullable=False,
+        unique=True,
+    )
+    counter: Mapped[int] = mapped_column(
+        BIGINT,
+        nullable=False,
+        default=1,
+    )
