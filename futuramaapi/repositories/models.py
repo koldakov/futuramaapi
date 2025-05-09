@@ -458,3 +458,19 @@ class RequestsCounterModel(Base):
             result: Result = await session.execute(statement)
 
         return result.scalar()
+
+
+class SystemMessage(Base):
+    __tablename__ = "system_messages"
+
+    message: Mapped[str] = mapped_column(
+        TEXT,
+        nullable=False,
+    )
+    author_name: Mapped[str] = mapped_column(
+        VARCHAR(
+            length=64,
+        ),
+        nullable=False,
+        unique=True,
+    )
