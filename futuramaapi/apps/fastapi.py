@@ -12,6 +12,7 @@ from starlette.routing import Host, Mount, Route, WebSocketRoute
 from futuramaapi.__version__ import __version__
 from futuramaapi.core import feature_flags, settings
 from futuramaapi.middlewares.cors import CORSMiddleware
+from futuramaapi.middlewares.counter import APIRequestsCounter
 from futuramaapi.middlewares.secure import HTTPSRedirectMiddleware
 from futuramaapi.repositories.session import session_manager
 from futuramaapi.utils import metadata
@@ -74,6 +75,9 @@ class FuturamaAPI(FastAPI):
             allow_methods=["*"],
             allow_headers=["*"],
         )
+
+        if feature_flags.count_api_requests:
+            self.add_middleware(APIRequestsCounter)
 
     def _setup_routers(self) -> None:
         from futuramaapi.routers import api_router, graphql_router, root_router

@@ -17,7 +17,7 @@ from sqlalchemy import (
     Update,
     update,
 )
-from sqlalchemy.dialects.postgresql import ENUM  # TODO: engine agnostic.
+from sqlalchemy.dialects.postgresql import ENUM, Insert, insert  # TODO: engine agnostic.
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 from sqlalchemy.orm.strategy_options import Load
@@ -27,6 +27,7 @@ from futuramaapi.core import settings
 from futuramaapi.helpers.hashers import hasher
 
 from ._base import Base
+from .session import session_manager
 
 
 class SeasonModel(Base):
@@ -427,3 +428,19 @@ class RequestsCounterModel(Base):
         nullable=False,
         default=1,
     )
+
+    @classmethod
+    async def count_url(cls, url: str, /) -> None:
+        statement: Insert = (
+            insert(cls)
+            .values({"url": url})
+            .on_conflict_do_update(
+                constraint="requests_counter_url_key",
+                set_={"counter": cls.counter + 1},
+            )
+        )
+
+        session: AsyncSession
+        async with session_manager.session() as session:
+            await session.execute(statement)
+            await session.commit()

@@ -220,6 +220,7 @@ class FeatureFlags(BaseSettings):
     send_emails: bool = True
     activate_users: bool = False
     enable_sentry: bool = False
+    count_api_requests: bool = True
 
 
 feature_flags = FeatureFlags()
