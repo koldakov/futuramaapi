@@ -98,6 +98,13 @@
       <div
         class="px-4 pt-5 my-5 text-center intro-background"
       >
+        {% if system_messages %}
+          {% for system_message in system_messages %}
+            <div class="alert alert-danger" role="alert">
+              {{ system_message }}
+            </div>
+          {% endfor %}
+        {% endif %}
         {% if current_user %}
         <h3>Hi, {{ current_user.full_name }}, welcome to</h3>
         {% endif %}

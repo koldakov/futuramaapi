@@ -1,4 +1,4 @@
-from typing import ClassVar, Self
+from typing import TYPE_CHECKING, ClassVar, Self
 
 from fastapi import Response
 from pydantic import HttpUrl
@@ -9,15 +9,19 @@ from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel, Field
 from futuramaapi.mixins.pydantic import BaseModelTemplateMixin, ProjectContext
 from futuramaapi.repositories import FilterStatementKwargs
-from futuramaapi.repositories.models import RequestsCounterModel
+from futuramaapi.repositories.models import RequestsCounterModel, SystemMessage
 from futuramaapi.routers.characters.schemas import Character
 from futuramaapi.routers.users.schemas import User
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 class Root(BaseModel, BaseModelTemplateMixin):
     characters: list[Character]
     user_count: int = Field(alias="user_count")
     total_api_requests: int
+    system_messages: list[str]
 
     template_name: ClassVar[str] = "index.html"
 
@@ -31,11 +35,13 @@ class Root(BaseModel, BaseModelTemplateMixin):
             ),
         )
         total_requests: int = await RequestsCounterModel.get_total_requests()
+        system_messages: Sequence[SystemMessage] = await SystemMessage.filter(session, FilterStatementKwargs())
 
         return cls(
             characters=characters,
             user_count=user_count,
             total_api_requests=total_requests,
+            system_messages=[system_message.message for system_message in system_messages],
         )
 
 
