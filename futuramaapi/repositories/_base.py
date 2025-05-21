@@ -312,3 +312,19 @@ class Base(
         statement = cls.get_filter_statement(kwargs)
         cursor: Result = await session.execute(statement)
         return cursor.scalars().all()
+
+    @classmethod
+    async def get_random(
+        cls,
+        session: AsyncSession,
+        /,
+        *,
+        extra_where: list[ColumnElement[bool]] | None = None,
+    ) -> Self:
+        # TODO: Implement extra where
+        statement: Select[tuple[Base]] = select(cls).order_by(func.random()).limit(1)
+        cursor: Result = await session.execute(statement)
+        try:
+            return cursor.scalars().one()
+        except NoResultFound as err:
+            raise ModelDoesNotExistError() from err

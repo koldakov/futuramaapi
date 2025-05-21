@@ -128,6 +128,19 @@ class BaseModelDatabaseMixin[Model: BaseModel](ABC, _PydanticSanityCheck):
         return cls.model_validate(obj)  # type: ignore[misc]
 
     @classmethod
+    async def get_random(
+        cls,
+        session: AsyncSession,
+        extra_where: list[ColumnElement[bool]] | None = None,
+    ) -> Self:
+        try:
+            obj: Base = await cls.model.get_random(session, extra_where=extra_where)
+        except ModelDoesNotExistError:
+            raise ModelNotFoundError() from None
+
+        return cls.model_validate(obj)  # type: ignore[misc]
+
+    @classmethod
     async def paginate(
         cls,
         session: AsyncSession,

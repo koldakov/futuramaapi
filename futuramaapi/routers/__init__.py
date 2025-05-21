@@ -6,6 +6,7 @@ from .crypto import router as crypto_router
 from .episodes import router as episodes_router
 from .graphql import router as graphql_router
 from .notifications import router as notification_router
+from .randoms import router as randoms_router
 from .root import router as root_router
 from .seasons import router as seasons_router
 from .tokens import router as tokens_router
@@ -20,6 +21,7 @@ __all__ = [
 api_router = APIRouter(prefix="/api")
 
 api_router.include_router(callbacks_router)
+api_router.include_router(randoms_router)
 api_router.include_router(characters_router)
 api_router.include_router(crypto_router)
 api_router.include_router(episodes_router)
