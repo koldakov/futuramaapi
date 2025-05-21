@@ -322,7 +322,11 @@ class Base(
         extra_where: list[ColumnElement[bool]] | None = None,
     ) -> Self:
         # TODO: Implement extra where
+        options: list[Load] = cls.get_options()
         statement: Select[tuple[Base]] = select(cls).order_by(func.random()).limit(1)
+        if options:
+            statement = statement.options(*options)
+
         cursor: Result = await session.execute(statement)
         try:
             return cursor.scalars().one()

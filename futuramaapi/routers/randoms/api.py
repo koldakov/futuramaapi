@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.characters.schemas import Character
+from futuramaapi.routers.episodes.schemas import Episode
 from futuramaapi.routers.exceptions import ModelNotFoundError, NotFoundResponse
 
 router = APIRouter(
@@ -36,5 +37,34 @@ async def get_random_character(
     """
     try:
         return await Character.get_random(session)
+    except ModelNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND) from None
+
+
+@router.get(
+    "/episode",
+    status_code=status.HTTP_200_OK,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "model": NotFoundResponse,
+        },
+    },
+    response_model=Episode,
+    name="random_episode",
+)
+async def get_random_episode(
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
+) -> Episode:
+    """Retrieve random episode.
+
+    This endpoint allows users to retrieve detailed information about a randomly selected Futurama episode.
+    The response includes essential details such as the episode's title, season, episode number, air date, synopsis,
+    and other relevant information.
+
+    Perfect for when you're not sure which Futurama episode to watch - use this endpoint to get a randomly
+    selected episode and dive right in.
+    """
+    try:
+        return await Episode.get_random(session)
     except ModelNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND) from None
