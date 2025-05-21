@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2025-05-21
+
+### Added
+
+- Endpoint to retrieve random character
+- Endpoint to retrieve random episode
+- Endpoint to retrieve random season
+
 ## [1.8.6] - 2025-05-09
 
 ### Added
@@ -275,6 +283,7 @@ For now auto generation available only
 - GraphQL: Season selection by id
 - GraphQL: Paginated (Edged) seasons selection
 
+[1.9.0]: https://github.com/koldakov/futuramaapi/releases/tag/1.9.0
 [1.8.6]: https://github.com/koldakov/futuramaapi/releases/tag/1.8.6
 [1.8.5]: https://github.com/koldakov/futuramaapi/releases/tag/1.8.5
 [1.8.4]: https://github.com/koldakov/futuramaapi/releases/tag/1.8.4
