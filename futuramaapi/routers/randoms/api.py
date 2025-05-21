@@ -5,6 +5,7 @@ from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.characters.schemas import Character
 from futuramaapi.routers.episodes.schemas import Episode
 from futuramaapi.routers.exceptions import ModelNotFoundError, NotFoundResponse
+from futuramaapi.routers.seasons.schemas import Season
 
 router = APIRouter(
     prefix="/random",
@@ -66,5 +67,33 @@ async def get_random_episode(
     """
     try:
         return await Episode.get_random(session)
+    except ModelNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND) from None
+
+
+@router.get(
+    "/season",
+    status_code=status.HTTP_200_OK,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "model": NotFoundResponse,
+        },
+    },
+    response_model=Season,
+    name="random_season",
+)
+async def get_random_season(
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
+) -> Season:
+    """Retrieve random season.
+
+    This endpoint allows users to retrieve information about a randomly selected season from the Futurama series.
+    The response includes key details such as the season number, list of episodes, and other relevant metadata.
+
+    Great for when you can't decide where to start—use this endpoint to randomly pick a season and enjoy a
+    fresh batch of Futurama episodes.
+    """
+    try:
+        return await Season.get_random(session)
     except ModelNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND) from None
