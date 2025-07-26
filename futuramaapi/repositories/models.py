@@ -459,6 +459,18 @@ class RequestsCounterModel(Base):
 
         return result.scalar()
 
+    @classmethod
+    async def get_requests_since(cls, since: datetime, /) -> int:
+        statement: Select = select(func.sum(RequestsCounterModel.counter)).where(
+            RequestsCounterModel.created_at >= since
+        )
+
+        session: AsyncSession
+        async with session_manager.session() as session:
+            result: Result = await session.execute(statement)
+
+        return result.scalar() or 0
+
 
 class SystemMessage(Base):
     __tablename__ = "system_messages"

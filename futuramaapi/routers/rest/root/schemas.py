@@ -1,3 +1,4 @@
+from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, ClassVar, Self
 
 from fastapi import Response
@@ -21,6 +22,7 @@ class Root(BaseModel, BaseModelTemplateMixin):
     characters: list[Character]
     user_count: int = Field(alias="user_count")
     total_api_requests: int
+    last_day_api_requests: int
     system_messages: list[str]
 
     template_name: ClassVar[str] = "index.html"
@@ -36,11 +38,15 @@ class Root(BaseModel, BaseModelTemplateMixin):
         )
         total_requests: int = await RequestsCounterModel.get_total_requests()
         system_messages: Sequence[SystemMessage] = await SystemMessage.filter(session, FilterStatementKwargs())
+        last_day_api_requests: int = await RequestsCounterModel.get_requests_since(
+            datetime.now(tz=UTC) - timedelta(days=1),
+        )
 
         return cls(
             characters=characters,
             user_count=user_count,
             total_api_requests=total_requests,
+            last_day_api_requests=last_day_api_requests,
             system_messages=[system_message.message for system_message in system_messages],
         )
 
