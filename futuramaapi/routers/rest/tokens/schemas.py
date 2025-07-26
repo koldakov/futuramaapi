@@ -6,7 +6,7 @@ from futuramaapi.helpers.pydantic import BaseModel, BaseTokenModel
 from futuramaapi.mixins.pydantic import BaseModelTokenMixin, DecodedTokenError
 
 if TYPE_CHECKING:
-    from futuramaapi.routers.users.schemas import User
+    from futuramaapi.routers.rest.users.schemas import User
 
 
 class _DecodedTokenBase(BaseTokenModel):

@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.repositories.session import get_async_session
-from futuramaapi.routers.characters.schemas import Character
-from futuramaapi.routers.episodes.schemas import Episode
 from futuramaapi.routers.exceptions import ModelNotFoundError, NotFoundResponse
-from futuramaapi.routers.seasons.schemas import Season
+from futuramaapi.routers.rest.characters.schemas import Character
+from futuramaapi.routers.rest.episodes.schemas import Episode
+from futuramaapi.routers.rest.seasons.schemas import Season
 
 router = APIRouter(
     prefix="/random",

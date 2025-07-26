@@ -30,7 +30,7 @@ from futuramaapi.utils import config, metadata
 if TYPE_CHECKING:
     from sqlalchemy import Select
 
-    from futuramaapi.routers.users.schemas import User
+    from futuramaapi.routers.rest.users.schemas import User
 
 logger = logging.getLogger(__name__)
 
@@ -275,7 +275,7 @@ class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
         return ProjectContext()
 
     async def _get_user_from_request(self, request: Request, /) -> Optional["User"]:
-        from futuramaapi.routers.users.schemas import User
+        from futuramaapi.routers.rest.users.schemas import User
 
         try:
             session_id: str = request.cookies[User.cookie_auth_key]

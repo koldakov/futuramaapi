@@ -3,7 +3,7 @@ from typing import ClassVar
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.mixins.pydantic import BaseModelDatabaseMixin
 from futuramaapi.repositories.models import SeasonModel
-from futuramaapi.routers.episodes.schemas import EpisodeBase
+from futuramaapi.routers.rest.episodes.schemas import EpisodeBase
 
 
 class Season(BaseModel, BaseModelDatabaseMixin):

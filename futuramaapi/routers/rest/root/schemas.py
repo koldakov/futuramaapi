@@ -10,8 +10,8 @@ from futuramaapi.helpers.pydantic import BaseModel, Field
 from futuramaapi.mixins.pydantic import BaseModelTemplateMixin, ProjectContext
 from futuramaapi.repositories import FilterStatementKwargs
 from futuramaapi.repositories.models import RequestsCounterModel, SystemMessage
-from futuramaapi.routers.characters.schemas import Character
-from futuramaapi.routers.users.schemas import User
+from futuramaapi.routers.rest.characters.schemas import Character
+from futuramaapi.routers.rest.users.schemas import User
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

@@ -8,8 +8,8 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from futuramaapi.repositories.models import AuthSessionModel
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.exceptions import ModelNotFoundError
-from futuramaapi.routers.users.dependencies import cookie_user_from_form_data, user_from_cookies
-from futuramaapi.routers.users.schemas import Link, User
+from futuramaapi.routers.rest.users.dependencies import cookie_user_from_form_data, user_from_cookies
+from futuramaapi.routers.rest.users.schemas import Link, User
 
 from .schemas import About, Root, SiteMap, UserAuth
 

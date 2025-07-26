@@ -9,8 +9,8 @@ from futuramaapi.mixins.pydantic import DecodedTokenError
 from futuramaapi.repositories.models import AuthSessionModel
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.exceptions import ModelNotFoundError
-from futuramaapi.routers.tokens.schemas import DecodedUserToken
-from futuramaapi.routers.users.schemas import User, UserPasswordError, UserUpdateRequest
+from futuramaapi.routers.rest.tokens.schemas import DecodedUserToken
+from futuramaapi.routers.rest.users.schemas import User, UserPasswordError, UserUpdateRequest
 
 _oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/tokens/users/auth")
 

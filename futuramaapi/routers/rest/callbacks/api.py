@@ -5,9 +5,9 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.repositories import INT32
 from futuramaapi.repositories.session import get_async_session
-from futuramaapi.routers.callbacks.schemas import Character
-from futuramaapi.routers.episodes.schemas import Episode
-from futuramaapi.routers.seasons.schemas import Season
+from futuramaapi.routers.rest.characters.schemas import Character
+from futuramaapi.routers.rest.episodes.schemas import Episode
+from futuramaapi.routers.rest.seasons.schemas import Season
 
 from .schemas import (
     CallbackObjectResponse,

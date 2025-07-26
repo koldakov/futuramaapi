@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from sse_starlette import EventSourceResponse, ServerSentEvent
 
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.routers.characters.schemas import Character
+from futuramaapi.routers.rest.characters.schemas import Character
 
 MIN_COORDINATE: int = 0
 MAX_COORDINATE: int = 2**6

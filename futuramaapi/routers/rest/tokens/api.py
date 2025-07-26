@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, status
 
 from futuramaapi.routers.exceptions import UnauthorizedResponse
-from futuramaapi.routers.users.schemas import User
+from futuramaapi.routers.rest.users.schemas import User
 
 from .dependencies import from_form_data, refresh_token
 from .schemas import UserToken

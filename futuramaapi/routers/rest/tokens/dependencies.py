@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.exceptions import ModelNotFoundError
-from futuramaapi.routers.users.schemas import User, UserPasswordError
+from futuramaapi.routers.rest.users.schemas import User, UserPasswordError
 
 from .schemas import DecodedTokenError, UserToken, UserTokenRefreshRequest
 

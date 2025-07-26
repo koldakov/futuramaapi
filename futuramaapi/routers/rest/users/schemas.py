@@ -16,7 +16,7 @@ from futuramaapi.mixins.pydantic import (
 from futuramaapi.repositories import ModelDoesNotExistError
 from futuramaapi.repositories.models import AuthSessionModel, LinkModel, UserModel
 from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError
-from futuramaapi.routers.tokens.schemas import DecodedUserToken
+from futuramaapi.routers.rest.tokens.schemas import DecodedUserToken
 
 
 class UserBase(BaseModel):

@@ -8,9 +8,9 @@ from pydantic import Field, HttpUrl
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.routers.characters.schemas import Character
-from futuramaapi.routers.episodes.schemas import Episode
-from futuramaapi.routers.seasons.schemas import Season
+from futuramaapi.routers.rest.characters.schemas import Character
+from futuramaapi.routers.rest.episodes.schemas import Episode
+from futuramaapi.routers.rest.seasons.schemas import Season
 
 MIN_DELAY: int = 5
 MAX_DELAY: int = 10
