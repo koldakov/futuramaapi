@@ -7,7 +7,7 @@ from futuramaapi.repositories.models import RequestsCounterModel
 
 def _get_url(request: Request, /) -> str:
     # Quick fix
-    return request.url.__str__().split("?")[0]
+    return request.url.__str__().split("?")[0][:64]
 
 
 class APIRequestsCounter(BaseHTTPMiddleware):
