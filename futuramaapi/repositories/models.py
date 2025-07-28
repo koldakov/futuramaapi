@@ -444,7 +444,6 @@ class RequestsCounterModel(Base):
     )
 
     @classmethod
-    @cached(ttl=_REQUESTS_TTL)
     async def count_url(cls, url: str, /) -> None:
         statement: Insert = (
             insert(cls)
