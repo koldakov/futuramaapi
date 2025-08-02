@@ -2,31 +2,66 @@ name: Futuramaapi
 
 on:
   push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
 
 permissions:
   contents: read
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      ALLOW_ORIGINS: "*"
+      DATABASE_URL: "postgresql+asyncpg://postgres@localhost:5432/postgres"
+      TRUSTED_HOST: "localhost"
+      REDISCLOUD_URL: "redis://localhost:6379"
+      SECRET_KEY: "secret-key-haha"
+      EMAIL_FROM_DEFAULT: "admin@futuramaapi.com"
+      EMAIL_HOST_USER: "apikey"
+      EMAIL_HOST: "smtp.localhost"
+      EMAIL_API_KEY: "secret-key-haha"
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.12"
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        make install-dev
-    - name: Code style
-      run: |
-        poetry run pre-commit run --all-files
-    - name: Pytest
-      run: |
-        make test
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          make install-dev
+
+      - name: Code style
+        run: |
+          poetry run pre-commit run --all-files
+
+      - name: Run tests
+        run: |
+          make test
