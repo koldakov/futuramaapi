@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 
 from cryptography.fernet import Fernet
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-from pydantic import BaseModel, EmailStr, Field, HttpUrl, PostgresDsn, RedisDsn
+from pydantic import BaseModel, EmailStr, Field, HttpUrl, PostgresDsn, RedisDsn, SecretStr
 from pydantic.fields import FieldInfo
 from pydantic_settings import (
     BaseSettings,
@@ -25,7 +25,7 @@ class EmailSettings(BaseSettings):
     )
     host_user: str
     host: str
-    api_key: str
+    api_key: SecretStr
     port: int = 587
     from_name: str = "FuturamaAPI"
     start_tls: bool = True
@@ -164,7 +164,7 @@ class Settings(BaseSettings):
     project_root: Path = Path(__file__).parent.parent.parent.resolve()
     static: Path = Path("static")
     trusted_host: str
-    secret_key: str
+    secret_key: SecretStr
     email: EmailSettings = email_settings
     redis: RedisSettings = redis_settings
     sentry: SentrySettings = sentry_settings
@@ -175,7 +175,7 @@ class Settings(BaseSettings):
 
     @cached_property
     def fernet(self) -> Fernet:
-        return Fernet(urlsafe_b64encode(self.secret_key.encode().ljust(32)[:32]))
+        return Fernet(urlsafe_b64encode(self.secret_key.get_secret_value().encode().ljust(32)[:32]))
 
     @classmethod
     def settings_customise_sources(

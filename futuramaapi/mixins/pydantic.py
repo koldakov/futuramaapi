@@ -237,14 +237,14 @@ class BaseModelTokenMixin(ABC, _PydanticSanityCheck):
         payload = json.loads(self.model_dump_json(by_alias=True))
         return jwt.encode(
             self._get_payload(payload, exp_time),
-            settings.secret_key,
+            settings.secret_key.get_secret_value(),
             algorithm=algorithm,
         )
 
     @classmethod
     def decode(cls, token: str, /, *, algorithm="HS256"):
         try:
-            token_: dict = jwt.decode(token, key=settings.secret_key, algorithms=[algorithm])
+            token_: dict = jwt.decode(token, key=settings.secret_key.get_secret_value(), algorithms=[algorithm])
         except (ExpiredSignatureError, InvalidSignatureError, InvalidTokenError):
             raise DecodedTokenError() from None
         return cls(**token_)
