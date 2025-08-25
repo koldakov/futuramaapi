@@ -1,18 +1,28 @@
-from typing import Any
+from typing import Any, ClassVar
 
+from graphql import GRAPHQL_MAX_INT
 from strawberry import Info
 from strawberry.extensions.field_extension import AsyncExtensionResolver, FieldExtension
 
 
 class LimitsRule(FieldExtension):
-    @staticmethod
-    def validate_range(name: str, value: int, min_: int, max_: int, /) -> None:
-        if not min_ <= value <= max_:
-            raise ValueError(f"{name} violation: {min_} <= {value} <= {max_}.")
+    min_limit: ClassVar[int] = 0
+    max_limit: ClassVar[int] = 50
+    min_offset: ClassVar[int] = 0
 
-    def validate_limits(self, kwargs: dict):
-        for limit in ["limit", "offset"]:
-            self.validate_range(limit, kwargs[limit], 0, 50)
+    def _validate_limit(self, limit: int, /) -> None:
+        if not self.min_limit <= limit <= self.max_limit:
+            raise ValueError(f"limit violation. Allowed range is {self.min_limit}-{self.max_limit}, current={limit}.")
+
+    def _validate_offset(self, offset: int, /) -> None:
+        if not self.min_offset <= offset <= GRAPHQL_MAX_INT:
+            raise ValueError(
+                f"offset violation. Allowed range is {self.min_offset}-{GRAPHQL_MAX_INT}, current={offset}."
+            )
+
+    def validate_kwargs(self, kwargs: dict, /) -> None:
+        self._validate_limit(kwargs["limit"])
+        self._validate_offset(kwargs["offset"])
 
     async def resolve_async(
         self,
@@ -21,6 +31,6 @@ class LimitsRule(FieldExtension):
         info: Info,
         **kwargs,
     ):
-        self.validate_limits(kwargs)
+        self.validate_kwargs(kwargs)
 
         return await next_(source, info, **kwargs)
