@@ -8,7 +8,7 @@ class LimitsRule(FieldExtension):
     @staticmethod
     def validate_range(name: str, value: int, min_: int, max_: int, /) -> None:
         if not min_ <= value <= max_:
-            raise ValueError(f"{name} can be more than {min_} and less than {max_}") from None
+            raise ValueError(f"{name} can be more than {min_} and less than {max_}")
 
     def validate_limits(self, kwargs: dict):
         for limit in ["limit", "offset"]:
