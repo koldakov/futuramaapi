@@ -423,7 +423,7 @@ _REQUESTS_TTL: Final[int] = 60 * 60 * 1
 
 
 def _cache_requests_since_builder(func_, *args, **_) -> str:
-    truncated = args[1].replace(hour=0, minute=0, second=0, microsecond=0)
+    truncated = args[1].replace(minute=0, second=0, microsecond=0)
     return f"{func_.__name__}:{truncated.isoformat()}"
 
 
