@@ -86,6 +86,10 @@ session_manager: SessionManager = SessionManager(
     settings.database_url,
     kwargs={
         "echo": False,
+        "max_overflow": settings.pool_max_overflow,
+        "pool_size": settings.pool_size,
+        "pool_timeout": settings.pool_timeout,
+        "pool_recycle": settings.pool_recycle,
     },
 )
 

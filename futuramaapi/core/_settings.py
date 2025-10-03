@@ -173,6 +173,11 @@ class Settings(BaseSettings):
         description="Google analytics tag.",
     )
 
+    pool_max_overflow: int = 10
+    pool_size: int = 5
+    pool_timeout: int = 30
+    pool_recycle: int = -1
+
     @cached_property
     def fernet(self) -> Fernet:
         return Fernet(urlsafe_b64encode(self.secret_key.get_secret_value().encode().ljust(32)[:32]))
