@@ -5,7 +5,7 @@ name = "futuramaapi"
 name = "futuramaapi"
 version = "1.9.9"
 description = "Inspired REST and GraphQL API based on TV show Futurama."
-authors = ["Ivan Koldakov <coldie322@gmail.com>"]
+authors = ["Ivan Koldakov <ivan.koldakov@gmail.com>"]
 readme = "README.md"
 
 [project.urls]
