@@ -1,13 +1,14 @@
 from asyncio import sleep
 from random import randint
-from typing import Literal, Self
+from typing import Literal, Self, cast
 
-from fastapi import BackgroundTasks, HTTPException
+from fastapi import BackgroundTasks
 from httpx import AsyncClient, Response
 from pydantic import Field, HttpUrl
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.routers.exceptions import ModelNotFoundError
 from futuramaapi.routers.rest.characters.schemas import Character
 from futuramaapi.routers.rest.episodes.schemas import Episode
 from futuramaapi.routers.rest.seasons.schemas import Season
@@ -21,7 +22,7 @@ class DoesNotExist(BaseModel):
         description="Requested Object ID.",
     )
     detail: str = Field(
-        "Not found",
+        default="Not found",
         examples=[
             "Not found",
         ],
@@ -47,12 +48,12 @@ class CallbackObjectResponse(BaseModel):
         item: Character | Episode | Season | DoesNotExist
         try:
             item = await requested_object.get(session, id_)
-        except HTTPException:
+        except ModelNotFoundError:
             item = DoesNotExist(
                 id=id_,
             )
         return cls(
-            kind=requested_object.__name__,
+            type=cast(Literal["Character", "Episode", "Season"], requested_object.__name__),
             item=item,
         )
 
