@@ -1,14 +1,18 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Path, status
+from fastapi import APIRouter, Path, status
 from fastapi_pagination import Page
-from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.repositories import INT32
-from futuramaapi.repositories.session import get_async_session
-from futuramaapi.routers.exceptions import ModelNotFoundError, NotFoundResponse
-
-from .schemas import Season
+from futuramaapi.routers.exceptions import NotFoundResponse
+from futuramaapi.routers.services.seasons.get_season import (
+    GetSeasonResponse,
+    GetSeasonService,
+)
+from futuramaapi.routers.services.seasons.list_seasons import (
+    ListSeasonResponse,
+    ListSeasonsService,
+)
 
 router = APIRouter(
     prefix="/seasons",
@@ -24,7 +28,7 @@ router = APIRouter(
             "model": NotFoundResponse,
         },
     },
-    response_model=Season,
+    response_model=GetSeasonResponse,
     name="season",
 )
 async def get_season(
@@ -34,8 +38,7 @@ async def get_season(
             le=INT32,
         ),
     ],
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> Season:
+) -> GetSeasonResponse:
     """Retrieve specific season.
 
     Utilize this endpoint to retrieve detailed information about a specific Futurama season by providing its unique ID.
@@ -43,21 +46,17 @@ async def get_season(
 
     Can be used to gain in-depth insights into a particular season of Futurama.
     """
-    try:
-        return await Season.get(session, season_id)
-    except ModelNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND) from None
+    service: GetSeasonService = GetSeasonService(pk=season_id)
+    return await service()
 
 
 @router.get(
     "",
     status_code=status.HTTP_200_OK,
-    response_model=Page[Season],
+    response_model=Page[ListSeasonResponse],
     name="seasons",
 )
-async def get_seasons(
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> Page[Season]:
+async def get_seasons() -> Page[ListSeasonResponse]:
     """Retrieve specific seasons.
 
     Access a comprehensive list of all Futurama seasons using this endpoint,
@@ -67,4 +66,5 @@ async def get_seasons(
     This endpoint is valuable for those interested in exploring the entirety of Futurama's seasons or implementing
     features like season browsing on your site.
     """
-    return await Season.paginate(session)
+    service: ListSeasonsService = ListSeasonsService()
+    return await service()
