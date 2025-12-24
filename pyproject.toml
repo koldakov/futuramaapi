@@ -17,36 +17,36 @@ Changelog = "https://github.com/koldakov/futuramaapi/blob/main/CHANGELOG.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-hypercorn = {extras = ["uvloop"], version = "^0.17.3"}
-pydantic-settings = "^2.9.0"
+hypercorn = {extras = ["uvloop"], version = "^0.18.0"}
+pydantic-settings = "^2.12.0"
 fastapi-storages = "^0.3.0"
-asyncpg = "^0.30.0"
-anyio = "^4.9.0"
+asyncpg = "^0.31.0"
+anyio = "^4.12.0"
 pydash = "^8.0.5"
 pyjwt = "^2.10.1"
 pyyaml = "^6.0.2"
-python-multipart = "^0.0.20"
-greenlet = "^3.2.0"
+python-multipart = "^0.0.21"
+greenlet = "^3.3.0"
 httpx = "^0.28.1"
 aiocache = "^0.12.3"
 cryptography = "^46.0.3"
-sqlalchemy = "^2.0.44"
+sqlalchemy = "^2.0.45"
 pillow = "^12.0.0"
-fastapi = "^0.121.0"
-sse-starlette = "^3.0.3"
-fastapi-mail = "^1.5.8"
-sentry-sdk = "^2.43.0"
-fastapi-pagination = "^0.15.0"
-redis = "^7.0.1"
-pydantic = "^2.12.4"
-alembic = "^1.17.1"
-strawberry-graphql = "^0.284.2"
+fastapi = "^0.127.0"
+sse-starlette = "^3.0.4"
+fastapi-mail = "^1.6.1"
+sentry-sdk = "^2.48.0"
+fastapi-pagination = "^0.15.4"
+redis = "^7.1.0"
+pydantic = "^2.12.5"
+alembic = "^1.17.2"
+strawberry-graphql = "^0.287.3"
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^4.2.0"
+pre-commit = "^4.5.1"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^8.3.5"
+pytest = "^9.0.2"
 
 [build-system]
 requires = ["poetry-core"]
