@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.15] - 2025-12-24
+
+### Fixed
+
+- Minor bugs.
+
 ## [1.9.14] - 2025-11-05
 
 ### Fixed
@@ -371,6 +377,7 @@ For now auto generation available only
 - GraphQL: Season selection by id
 - GraphQL: Paginated (Edged) seasons selection
 
+[1.9.15]: https://github.com/koldakov/futuramaapi/releases/tag/1.9.15
 [1.9.14]: https://github.com/koldakov/futuramaapi/releases/tag/1.9.14
 [1.9.13]: https://github.com/koldakov/futuramaapi/releases/tag/1.9.13
 [1.9.12]: https://github.com/koldakov/futuramaapi/releases/tag/1.9.12
