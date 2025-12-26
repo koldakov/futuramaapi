@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, ClassVar, Self
 
 from fastapi import Response
 from pydantic import HttpUrl
+from sqlalchemy import Select, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
@@ -10,9 +11,9 @@ from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel, Field
 from futuramaapi.mixins.pydantic import BaseModelTemplateMixin, ProjectContext
 from futuramaapi.repositories import FilterStatementKwargs
-from futuramaapi.repositories.models import RequestsCounterModel, SystemMessage
-from futuramaapi.routers.rest.characters.schemas import Character
+from futuramaapi.repositories.models import CharacterModel, RequestsCounterModel, SystemMessage
 from futuramaapi.routers.rest.users.schemas import User
+from futuramaapi.routers.services.characters.get_character import Character
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -30,12 +31,8 @@ class Root(BaseModel, BaseModelTemplateMixin):
     @classmethod
     async def from_request(cls, session: AsyncSession, request: Request, /) -> Self:
         user_count: int = await User.count(session)
-        characters: list[Character] = await Character.filter(
-            session,
-            FilterStatementKwargs(
-                limit=6,
-            ),
-        )
+        statement: Select[tuple[CharacterModel]] = select(CharacterModel).limit(6).order_by(CharacterModel.id.asc())
+        characters: Sequence[CharacterModel] = (await session.execute(statement)).scalars().all()
         total_requests: int = await RequestsCounterModel.get_total_requests()
         system_messages: Sequence[SystemMessage] = await SystemMessage.filter(session, FilterStatementKwargs())
         last_day_api_requests: int = await RequestsCounterModel.get_requests_since(

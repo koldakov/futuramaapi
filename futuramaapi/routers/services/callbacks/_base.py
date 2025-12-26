@@ -9,9 +9,9 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.routers.exceptions import ModelNotFoundError
-from futuramaapi.routers.rest.characters.schemas import Character
 from futuramaapi.routers.rest.episodes.schemas import Episode
 from futuramaapi.routers.rest.seasons.schemas import Season
+from futuramaapi.routers.services.characters.get_character import Character
 
 MIN_DELAY: int = 5
 MAX_DELAY: int = 10

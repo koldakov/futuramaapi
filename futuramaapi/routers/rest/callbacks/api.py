@@ -5,15 +5,10 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.repositories import INT32
 from futuramaapi.repositories.session import get_async_session
-from futuramaapi.routers.rest.characters.schemas import Character
 from futuramaapi.routers.rest.episodes.schemas import Episode
 from futuramaapi.routers.rest.seasons.schemas import Season
-
-from .schemas import (
-    CallbackObjectResponse,
-    CallbackRequest,
-    CallbackResponse,
-)
+from futuramaapi.routers.services.callbacks import CallbackObjectResponse, CallbackRequest, CallbackResponse
+from futuramaapi.routers.services.callbacks.get_character import GetCharacterCallbackService
 
 router = APIRouter(
     prefix="/callbacks",
@@ -49,7 +44,6 @@ async def create_characters_callback_request(
     ],
     request: CallbackRequest,
     background_tasks: BackgroundTasks,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> CallbackResponse:
     """Create a request to get a character by ID.
 
@@ -59,7 +53,11 @@ async def create_characters_callback_request(
     * Receive a delay after which the callback will be sent.
     * Receive a notification back to the API, as a callback.
     """
-    return await CallbackResponse.process(session, Character, request, character_id, background_tasks)
+    service: GetCharacterCallbackService = GetCharacterCallbackService(
+        request_data=request,
+        id=character_id,
+    )
+    return await service(background_tasks)
 
 
 _episodes_callbacks_router = APIRouter()

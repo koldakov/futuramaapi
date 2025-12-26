@@ -1,14 +1,12 @@
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
+from fastapi import APIRouter, Path, Query, status
 from fastapi_pagination import Page
-from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from futuramaapi.repositories import INT32, FilterStatementKwargs
-from futuramaapi.repositories.session import get_async_session
-from futuramaapi.routers.exceptions import ModelNotFoundError, NotFoundResponse
-
-from .schemas import Character
+from futuramaapi.repositories import INT32
+from futuramaapi.routers.exceptions import NotFoundResponse
+from futuramaapi.routers.services.characters.get_character import Character, GetCharacterService
+from futuramaapi.routers.services.characters.list_characters import ListCharactersService
 
 router = APIRouter(
     prefix="/characters",
@@ -34,7 +32,6 @@ async def get_character(
             le=INT32,
         ),
     ],
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Character:
     """Retrieve specific character.
 
@@ -45,10 +42,8 @@ async def get_character(
     Can be used to utilize this endpoint to obtain in-depth insights
     into a particular character from the Futurama universe.
     """
-    try:
-        return await Character.get(session, character_id)
-    except ModelNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND) from None
+    service: GetCharacterService = GetCharacterService(pk=character_id)
+    return await service()
 
 
 @router.get(
@@ -97,7 +92,7 @@ async def get_characters(  # noqa: PLR0913
     ]
     | None = None,
     order_by: Annotated[
-        Literal["id"] | None,
+        Literal["id"],
         Query(alias="orderBy"),
     ] = "id",
     direction: Annotated[
@@ -112,7 +107,6 @@ async def get_characters(  # noqa: PLR0913
             max_length=128,
         ),
     ] = None,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> Page[Character]:
     """Retrieve characters.
 
@@ -125,16 +119,12 @@ async def get_characters(  # noqa: PLR0913
     `/api/characters/?gender=!unknown&status=!unknown&species=alien`.
     Check query Parameters to more info.
     """
-    return await Character.paginate(
-        session,
-        filter_params=FilterStatementKwargs(
-            order_by=order_by,
-            order_by_direction=direction,
-            extra={
-                "gender": gender,
-                "species": species,
-                "status": character_status,
-                "query": query,
-            },
-        ),
+    service: ListCharactersService = ListCharactersService(
+        gender=gender,
+        character_status=character_status,
+        species=species,
+        order_by=order_by,
+        direction=direction,
+        query=query,
     )
+    return await service()

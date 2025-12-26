@@ -3,9 +3,10 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.exceptions import ModelNotFoundError, NotFoundResponse
-from futuramaapi.routers.rest.characters.schemas import Character
 from futuramaapi.routers.rest.episodes.schemas import Episode
 from futuramaapi.routers.rest.seasons.schemas import Season
+from futuramaapi.routers.services.characters.get_character import Character
+from futuramaapi.routers.services.randoms.get_random_character import GetRandomCharacterService
 
 router = APIRouter(
     prefix="/random",
@@ -24,9 +25,7 @@ router = APIRouter(
     response_model=Character,
     name="random_character",
 )
-async def get_random_character(
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> Character:
+async def get_random_character() -> Character:
     """Retrieve random character.
 
     This endpoint allows users to retrieve detailed information about a randomly selected Futurama character.
@@ -36,10 +35,8 @@ async def get_random_character(
     Can be used to discover and explore random characters from the Futurama universe,
     offering a fun and engaging way to learn about different personalities in the series.
     """
-    try:
-        return await Character.get_random(session)
-    except ModelNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND) from None
+    service: GetRandomCharacterService = GetRandomCharacterService()
+    return await service()
 
 
 @router.get(

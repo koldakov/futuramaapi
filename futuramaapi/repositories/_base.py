@@ -110,6 +110,10 @@ class Base(
     order_by_direction: Literal["asc", "desc"] = "asc"
 
     @classmethod
+    def str_to_field(cls, field_name: str, /) -> InstrumentedAttribute[Any]:
+        return getattr(cls, field_name)
+
+    @classmethod
     async def count(cls, session: AsyncSession, /) -> int:
         cursor: Result = await session.execute(func.count(cls.id))
         return cursor.scalar()

@@ -1,14 +1,13 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Request, status
-from sqlalchemy.ext.asyncio.session import AsyncSession
+from fastapi import APIRouter, Path, Request, status
 from sse_starlette.sse import EventSourceResponse
 
 from futuramaapi.repositories import INT32
-from futuramaapi.repositories.session import get_async_session
-from futuramaapi.routers.exceptions import ModelNotFoundError
-
-from .schemas import CharacterNotification
+from futuramaapi.routers.services.notifications.sse_character import (
+    CharacterNotificationResponse,
+    GetCharacterNotificationService,
+)
 
 router = APIRouter(
     prefix="/notifications",
@@ -21,7 +20,7 @@ router = APIRouter(
     response_class=EventSourceResponse,
     responses={
         status.HTTP_200_OK: {
-            "model": CharacterNotification,
+            "model": CharacterNotificationResponse,
         }
     },
     status_code=status.HTTP_200_OK,
@@ -34,7 +33,6 @@ async def character_sse(
         ),
     ],
     request: Request,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> EventSourceResponse:
     """Retrieve character path.
 
@@ -44,10 +42,7 @@ async def character_sse(
     It facilitates real-time updates on character path.
     Exercise caution when using this endpoint to ensure responsible and accurate data retrieval.
     """
-    try:
-        return await CharacterNotification.from_request(character_id, request, session)
-    except ModelNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=f"Character with id={character_id} not found",
-        ) from None
+    service: GetCharacterNotificationService = GetCharacterNotificationService(
+        pk=character_id,
+    )
+    return await service(request)
