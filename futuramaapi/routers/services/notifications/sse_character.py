@@ -14,7 +14,7 @@ from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import CharacterModel
 from futuramaapi.repositories.session import session_manager
 from futuramaapi.routers.services import BaseService
-from futuramaapi.routers.services.characters.get_character import Character
+from futuramaapi.routers.services.characters.get_character import GetCharacterResponse
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio.session import AsyncSession
@@ -37,7 +37,7 @@ class CharacterNotificationResponse(BaseModel):
             le=MAX_COORDINATE,
         )
 
-    item: Character
+    item: GetCharacterResponse
     notification: Notification
 
 

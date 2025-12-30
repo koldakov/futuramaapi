@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
 
-class Character(BaseModel):
+class GetCharacterResponse(BaseModel):
     id: int
     name: str
     gender: CharacterModel.CharacterGender
@@ -43,7 +43,7 @@ class GetCharacterService(BaseService):
     def statement(self) -> Select[tuple[CharacterModel]]:
         return select(CharacterModel).where(CharacterModel.id == self.pk)
 
-    async def __call__(self, *args, **kwargs) -> Character:
+    async def __call__(self, *args, **kwargs) -> GetCharacterResponse:
         session: AsyncSession
         async with session_manager.session() as session:
             try:
@@ -51,4 +51,4 @@ class GetCharacterService(BaseService):
             except NoResultFound:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Character not found") from None
 
-        return Character.model_validate(result)
+        return GetCharacterResponse.model_validate(result)

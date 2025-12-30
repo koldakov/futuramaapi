@@ -10,7 +10,7 @@ from futuramaapi.routers.services.seasons.get_season import (
     GetSeasonService,
 )
 from futuramaapi.routers.services.seasons.list_seasons import (
-    ListSeasonResponse,
+    ListSeasonsResponse,
     ListSeasonsService,
 )
 
@@ -53,10 +53,10 @@ async def get_season(
 @router.get(
     "",
     status_code=status.HTTP_200_OK,
-    response_model=Page[ListSeasonResponse],
+    response_model=Page[ListSeasonsResponse],
     name="seasons",
 )
-async def get_seasons() -> Page[ListSeasonResponse]:
+async def get_seasons() -> Page[ListSeasonsResponse]:
     """Retrieve specific seasons.
 
     Access a comprehensive list of all Futurama seasons using this endpoint,

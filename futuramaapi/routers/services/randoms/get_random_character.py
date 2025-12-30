@@ -7,10 +7,14 @@ from sqlalchemy.exc import NoResultFound
 from futuramaapi.repositories.models import CharacterModel
 from futuramaapi.repositories.session import session_manager
 from futuramaapi.routers.services import BaseService
-from futuramaapi.routers.services.characters.get_character import Character
+from futuramaapi.routers.services.characters.get_character import GetCharacterResponse
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
+
+
+class GetRandomCharacterResponse(GetCharacterResponse):
+    pass
 
 
 class GetRandomCharacterService(BaseService):
@@ -18,7 +22,7 @@ class GetRandomCharacterService(BaseService):
     def statement(self) -> Select[tuple[CharacterModel]]:
         return select(CharacterModel).order_by(func.random()).limit(1)
 
-    async def __call__(self, *args, **kwargs) -> Character:
+    async def __call__(self, *args, **kwargs) -> GetRandomCharacterResponse:
         session: AsyncSession
         async with session_manager.session() as session:
             try:
@@ -26,4 +30,4 @@ class GetRandomCharacterService(BaseService):
             except NoResultFound:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND) from None
 
-        return Character.model_validate(result)
+        return GetRandomCharacterResponse.model_validate(result)

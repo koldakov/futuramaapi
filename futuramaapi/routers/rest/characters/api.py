@@ -5,8 +5,14 @@ from fastapi_pagination import Page
 
 from futuramaapi.repositories import INT32
 from futuramaapi.routers.exceptions import NotFoundResponse
-from futuramaapi.routers.services.characters.get_character import Character, GetCharacterService
-from futuramaapi.routers.services.characters.list_characters import ListCharactersService
+from futuramaapi.routers.services.characters.get_character import (
+    GetCharacterResponse,
+    GetCharacterService,
+)
+from futuramaapi.routers.services.characters.list_characters import (
+    ListCharactersResponse,
+    ListCharactersService,
+)
 
 router = APIRouter(
     prefix="/characters",
@@ -22,7 +28,7 @@ router = APIRouter(
             "model": NotFoundResponse,
         },
     },
-    response_model=Character,
+    response_model=GetCharacterResponse,
     name="character",
 )
 async def get_character(
@@ -32,7 +38,7 @@ async def get_character(
             le=INT32,
         ),
     ],
-) -> Character:
+) -> GetCharacterResponse:
     """Retrieve specific character.
 
     This endpoint enables users to retrieve detailed information about a specific Futurama character by providing
@@ -49,7 +55,7 @@ async def get_character(
 @router.get(
     "",
     status_code=status.HTTP_200_OK,
-    response_model=Page[Character],
+    response_model=Page[ListCharactersResponse],
     name="characters",
 )
 async def get_characters(  # noqa: PLR0913
@@ -107,7 +113,7 @@ async def get_characters(  # noqa: PLR0913
             max_length=128,
         ),
     ] = None,
-) -> Page[Character]:
+) -> Page[ListCharactersResponse]:
     """Retrieve characters.
 
     Explore advanced filtering options in our API documentation by checking out the variety of query parameters

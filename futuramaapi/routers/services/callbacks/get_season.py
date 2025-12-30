@@ -6,12 +6,13 @@ from httpx import AsyncClient, Response
 from pydantic import Field, HttpUrl
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
+from sqlalchemy.orm import selectinload
 
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.repositories.models import CharacterModel
+from futuramaapi.repositories.models import SeasonModel
 from futuramaapi.repositories.session import session_manager
 from futuramaapi.routers.services import BaseService
-from futuramaapi.routers.services.characters.get_character import GetCharacterResponse
+from futuramaapi.routers.services.seasons.get_season import GetSeasonResponse
 
 from ._base import (
     CallbackRequest,
@@ -23,12 +24,12 @@ if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
 
-class GetCharacterCallbackResponse(BaseModel):
-    kind: Literal["Character"] = Field(
+class GetSeasonCallbackResponse(BaseModel):
+    kind: Literal["Season"] = Field(
         alias="type",
         description="Requested Object type.",
     )
-    item: GetCharacterResponse | DoesNotExist
+    item: GetSeasonResponse | DoesNotExist
 
     async def send_callback(self, url: HttpUrl, /) -> None:
         async with AsyncClient(http2=True) as client:
@@ -53,7 +54,15 @@ async def _process_background_task(
     session: AsyncSession
     async with session_manager.session() as session:
         try:
-            data = (await session.execute(select(CharacterModel).where(CharacterModel.id == pk))).scalars().one()
+            data = (
+                (
+                    await session.execute(
+                        select(SeasonModel).options(selectinload(SeasonModel.episodes)).where(SeasonModel.id == pk)
+                    )
+                )
+                .scalars()
+                .one()
+            )
             data = {
                 "item": data,
             }
@@ -64,12 +73,12 @@ async def _process_background_task(
                 },
             }
 
-    data.update({"kind": "Character"})
-    response: GetCharacterCallbackResponse = GetCharacterCallbackResponse.model_validate(data)
+    data.update({"kind": "Season"})
+    response: GetSeasonCallbackResponse = GetSeasonCallbackResponse.model_validate(data)
     await response.send_callback(request.callback_url)
 
 
-class GetCharacterCallbackService(BaseService):
+class GetSeasonCallbackService(BaseService):
     request_data: CallbackRequest
     id: int
 

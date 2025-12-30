@@ -1,14 +1,24 @@
 from typing import Annotated
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Path, status
-from sqlalchemy.ext.asyncio.session import AsyncSession
+from fastapi import APIRouter, BackgroundTasks, Path, status
 
 from futuramaapi.repositories import INT32
-from futuramaapi.repositories.session import get_async_session
-from futuramaapi.routers.rest.episodes.schemas import Episode
-from futuramaapi.routers.rest.seasons.schemas import Season
-from futuramaapi.routers.services.callbacks import CallbackObjectResponse, CallbackRequest, CallbackResponse
-from futuramaapi.routers.services.callbacks.get_character import GetCharacterCallbackService
+from futuramaapi.routers.services.callbacks import (
+    CallbackRequest,
+    CallbackResponse,
+)
+from futuramaapi.routers.services.callbacks.get_character import (
+    GetCharacterCallbackResponse,
+    GetCharacterCallbackService,
+)
+from futuramaapi.routers.services.callbacks.get_episode import (
+    GetEpisodeCallbackResponse,
+    GetEpisodeCallbackService,
+)
+from futuramaapi.routers.services.callbacks.get_season import (
+    GetSeasonCallbackResponse,
+    GetSeasonCallbackService,
+)
 
 router = APIRouter(
     prefix="/callbacks",
@@ -23,7 +33,7 @@ _characters_callbacks_router = APIRouter()
     status_code=status.HTTP_200_OK,
 )
 def character_callback(
-    body: CallbackObjectResponse,
+    body: GetCharacterCallbackResponse,
 ):
     """Request to the provided callback URL."""
 
@@ -68,7 +78,7 @@ _episodes_callbacks_router = APIRouter()
     status_code=status.HTTP_200_OK,
 )
 def episodes_callback(
-    body: CallbackObjectResponse,
+    body: GetEpisodeCallbackResponse,
 ):
     """Request to the provided callback URL."""
 
@@ -89,7 +99,6 @@ async def create_episodes_callback_request(
     ],
     request: CallbackRequest,
     background_tasks: BackgroundTasks,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> CallbackResponse:
     """Create a request to get an episode by ID.
 
@@ -99,7 +108,11 @@ async def create_episodes_callback_request(
     * Receive a delay after which the callback will be sent.
     * Receive a notification back to the API, as a callback.
     """
-    return await CallbackResponse.process(session, Episode, request, episode_id, background_tasks)
+    service: GetEpisodeCallbackService = GetEpisodeCallbackService(
+        request_data=request,
+        id=episode_id,
+    )
+    return await service(background_tasks)
 
 
 # Season related endpoints.
@@ -111,7 +124,7 @@ _seasons_callbacks_router = APIRouter()
     status_code=status.HTTP_200_OK,
 )
 def seasons_callback(
-    body: CallbackObjectResponse,
+    body: GetSeasonCallbackResponse,
 ):
     """Request to the provided callback URL."""
 
@@ -132,7 +145,6 @@ async def create_seasons_callback_request(
     ],
     request: CallbackRequest,
     background_tasks: BackgroundTasks,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> CallbackResponse:
     """Create a request to get a season by ID.
 
@@ -142,4 +154,8 @@ async def create_seasons_callback_request(
     * Receive a delay after which the callback will be sent.
     * Receive a notification back to the API, as a callback.
     """
-    return await CallbackResponse.process(session, Season, request, season_id, background_tasks)
+    service: GetSeasonCallbackService = GetSeasonCallbackService(
+        request_data=request,
+        id=season_id,
+    )
+    return await service(background_tasks)

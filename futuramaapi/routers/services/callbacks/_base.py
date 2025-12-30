@@ -1,16 +1,8 @@
-from asyncio import sleep
 from random import randint
-from typing import Literal, Self, cast
 
-from fastapi import BackgroundTasks
-from httpx import AsyncClient, Response
 from pydantic import Field, HttpUrl
-from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.routers.exceptions import ModelNotFoundError
-from futuramaapi.routers.rest.episodes.schemas import Episode
-from futuramaapi.routers.rest.seasons.schemas import Season
 
 MIN_DELAY: int = 5
 MAX_DELAY: int = 10
@@ -28,43 +20,6 @@ class DoesNotExist(BaseModel):
     )
 
 
-class CallbackObjectResponse(BaseModel):
-    # Can't use type even with noqa: A003, cause native type is being used for a arg typing below.
-    kind: Literal["Episode", "Season"] = Field(
-        alias="type",
-        description="Requested Object type.",
-    )
-    item: Episode | Season | DoesNotExist
-
-    @classmethod
-    async def from_item(
-        cls,
-        session: AsyncSession,
-        requested_object: type[Episode | Season],
-        id_: int,
-        /,
-    ) -> Self:
-        item: Episode | Season | DoesNotExist
-        try:
-            item = await requested_object.get(session, id_)
-        except ModelNotFoundError:
-            item = DoesNotExist(
-                id=id_,
-            )
-        return cls(
-            type=cast(Literal["Episode", "Season"], requested_object.__name__),
-            item=item,
-        )
-
-    async def send_callback(self, url: HttpUrl, /) -> None:
-        async with AsyncClient(http2=True) as client:
-            callback_response: Response = await client.post(
-                f"{url}",
-                json=self.to_dict(),
-            )
-            callback_response.raise_for_status()
-
-
 class CallbackRequest(BaseModel):
     callback_url: HttpUrl
 
@@ -80,40 +35,3 @@ class CallbackResponse(BaseModel):
         le=MAX_DELAY,
         description="Delay after which the callback will be sent.",
     )
-
-    async def process_background_task(
-        self,
-        session: AsyncSession,
-        requested_object: type[Episode | Season],
-        request: CallbackRequest,
-        id_: int,
-        /,
-    ) -> None:
-        await sleep(self.delay)
-        callback_response: CallbackObjectResponse = await CallbackObjectResponse.from_item(
-            session,
-            requested_object,
-            id_,
-        )
-        await session.close()
-        await callback_response.send_callback(request.callback_url)
-
-    @classmethod
-    async def process(
-        cls,
-        session: AsyncSession,
-        requested_object: type[Episode | Season],
-        request: CallbackRequest,
-        id_: int,
-        background_tasks: BackgroundTasks,
-        /,
-    ) -> Self:
-        response: Self = cls()
-        background_tasks.add_task(
-            response.process_background_task,
-            session,
-            requested_object,
-            request,
-            id_,
-        )
-        return response

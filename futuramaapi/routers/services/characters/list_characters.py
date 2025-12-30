@@ -9,10 +9,14 @@ from futuramaapi.repositories.models import CharacterModel
 from futuramaapi.repositories.session import session_manager
 from futuramaapi.routers.services import BaseService
 
-from .get_character import Character
+from .get_character import GetCharacterResponse
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
+
+
+class ListCharactersResponse(GetCharacterResponse):
+    pass
 
 
 class ListCharactersService(BaseService):
@@ -61,7 +65,7 @@ class ListCharactersService(BaseService):
 
         return statement.where(*where).order_by(order_by)
 
-    async def __call__(self, *args, **kwargs) -> Page[Character]:
+    async def __call__(self, *args, **kwargs) -> Page[ListCharactersResponse]:
         session: AsyncSession
         async with session_manager.session() as session:
             return await paginate(

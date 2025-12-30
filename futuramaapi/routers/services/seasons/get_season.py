@@ -1,4 +1,4 @@
-from abc import ABC
+from typing import TYPE_CHECKING
 
 from fastapi import HTTPException, status
 from pydantic import Field
@@ -10,6 +10,9 @@ from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import SeasonModel
 from futuramaapi.repositories.session import session_manager
 from futuramaapi.routers.services._base import BaseService
+
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class GetSeasonResponse(BaseModel):
@@ -27,7 +30,7 @@ class GetSeasonResponse(BaseModel):
     episodes: list[Episode]
 
 
-class GetSeasonService(BaseService, ABC):
+class GetSeasonService(BaseService):
     pk: int
 
     @property
@@ -35,6 +38,7 @@ class GetSeasonService(BaseService, ABC):
         return select(SeasonModel).where(SeasonModel.id == self.pk).options(selectinload(SeasonModel.episodes))
 
     async def __call__(self, *args, **kwargs) -> GetSeasonResponse:
+        session: AsyncSession
         async with session_manager.session() as session:
             try:
                 season_model: SeasonModel = (await session.execute(self.statement)).scalars().one()
