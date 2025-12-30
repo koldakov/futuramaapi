@@ -11,7 +11,6 @@ from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.routers.exceptions import ModelNotFoundError
 from futuramaapi.routers.rest.episodes.schemas import Episode
 from futuramaapi.routers.rest.seasons.schemas import Season
-from futuramaapi.routers.services.characters.get_character import Character
 
 MIN_DELAY: int = 5
 MAX_DELAY: int = 10
@@ -31,21 +30,21 @@ class DoesNotExist(BaseModel):
 
 class CallbackObjectResponse(BaseModel):
     # Can't use type even with noqa: A003, cause native type is being used for a arg typing below.
-    kind: Literal["Character", "Episode", "Season"] = Field(
+    kind: Literal["Episode", "Season"] = Field(
         alias="type",
         description="Requested Object type.",
     )
-    item: Character | Episode | Season | DoesNotExist
+    item: Episode | Season | DoesNotExist
 
     @classmethod
     async def from_item(
         cls,
         session: AsyncSession,
-        requested_object: type[Character | Episode | Season],
+        requested_object: type[Episode | Season],
         id_: int,
         /,
     ) -> Self:
-        item: Character | Episode | Season | DoesNotExist
+        item: Episode | Season | DoesNotExist
         try:
             item = await requested_object.get(session, id_)
         except ModelNotFoundError:
@@ -53,7 +52,7 @@ class CallbackObjectResponse(BaseModel):
                 id=id_,
             )
         return cls(
-            type=cast(Literal["Character", "Episode", "Season"], requested_object.__name__),
+            type=cast(Literal["Episode", "Season"], requested_object.__name__),
             item=item,
         )
 
@@ -85,7 +84,7 @@ class CallbackResponse(BaseModel):
     async def process_background_task(
         self,
         session: AsyncSession,
-        requested_object: type[Character | Episode | Season],
+        requested_object: type[Episode | Season],
         request: CallbackRequest,
         id_: int,
         /,
@@ -103,7 +102,7 @@ class CallbackResponse(BaseModel):
     async def process(
         cls,
         session: AsyncSession,
-        requested_object: type[Character | Episode | Season],
+        requested_object: type[Episode | Season],
         request: CallbackRequest,
         id_: int,
         background_tasks: BackgroundTasks,
