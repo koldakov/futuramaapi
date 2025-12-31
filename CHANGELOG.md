@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.19.18] - 2024-12-31
+
+### Changed
+
+- Temporarily removed "requests over the last day" metric due to counter aggregation logic.
+Will be reintroduced with proper time-bucketed counters in a future update.
+
 ## [1.9.17] - 2025-12-31
 
 ### Improved
