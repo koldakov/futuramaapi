@@ -1,13 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
-from sqlalchemy.ext.asyncio.session import AsyncSession
+from fastapi import APIRouter, Request, status
 
-from futuramaapi.repositories.session import get_async_session
-from futuramaapi.routers.exceptions import ModelNotFoundError, NotFoundResponse
-
-from .schemas import (
-    SecretMessage,
-    SecretMessageCreateRequest,
-    SecretMessageCreateResponse,
+from futuramaapi.routers.exceptions import NotFoundResponse
+from futuramaapi.routers.services.crypto.create_secret_message import (
+    CreateSecretMessageRequest,
+    CreateSecretMessageResponse,
+    CreateSecretMessageService,
+)
+from futuramaapi.routers.services.crypto.get_secret_message import (
+    GetSecretMessageResponse,
+    GetSecretMessageService,
 )
 
 router = APIRouter(
@@ -19,28 +20,23 @@ router = APIRouter(
 @router.post(
     "/secret_message",
     status_code=status.HTTP_201_CREATED,
-    response_model=SecretMessageCreateResponse,
+    response_model=CreateSecretMessageResponse,
     name="create_secret_message",
 )
 async def create_secret_message(
-    data: SecretMessageCreateRequest,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> SecretMessageCreateResponse:
+    data: CreateSecretMessageRequest,
+) -> CreateSecretMessageResponse:
     """Create Secret message."""
-    message: SecretMessage = await SecretMessage.create(
-        session,
-        data,
-        extra_fields={
-            "ip_address": "",
-        },
+    service: CreateSecretMessageService = CreateSecretMessageService(
+        request_data=data,
     )
-    return SecretMessageCreateResponse(**message.model_dump())
+    return await service()
 
 
 @router.get(
     "/secret_message/{url}",
     status_code=status.HTTP_200_OK,
-    response_model=SecretMessage,
+    response_model=GetSecretMessageResponse,
     responses={
         status.HTTP_404_NOT_FOUND: {
             "model": NotFoundResponse,
@@ -51,8 +47,7 @@ async def create_secret_message(
 async def get_secret_message(
     url: str,
     request: Request,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> SecretMessage:
+) -> GetSecretMessageResponse:
     """Get Secret message.
 
     Message will be shown only once. No excuses.
@@ -72,10 +67,7 @@ async def get_secret_message(
     we change the secret message with some random data, so no one, absolutely no one can recover/hack/whatever
     your secret data.
     """
-    try:
-        return await SecretMessage.get_once(session, request, url)
-    except ModelNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Not Found",
-        ) from None
+    service: GetSecretMessageService = GetSecretMessageService(
+        url=url,
+    )
+    return await service(request)
