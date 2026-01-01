@@ -91,14 +91,14 @@ files = [
 
 [[package]]
 name = "anyio"
-version = "4.12.0"
+version = "4.12.1"
 description = "High-level concurrency and networking framework on top of asyncio or Trio"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "anyio-4.12.0-py3-none-any.whl", hash = "sha256:dad2376a628f98eeca4881fc56cd06affd18f659b17a747d3ff0307ced94b1bb"},
-    {file = "anyio-4.12.0.tar.gz", hash = "sha256:73c693b567b0c55130c104d0b43a9baf3aa6a31fc6110116509f27bf75e21ec0"},
+    {file = "anyio-4.12.1-py3-none-any.whl", hash = "sha256:d405828884fc140aa80a3c667b8beed277f1dfedec42ba031bd6ac3db606ab6c"},
+    {file = "anyio-4.12.1.tar.gz", hash = "sha256:41cfcc3a4c85d3f05c932da7c26d0201ac36f72abd4435ba90d0464a3ffed703"},
 ]
 
 [package.dependencies]
@@ -601,14 +601,14 @@ redis = ["redis (>=6.4.0,<7.0.0)"]
 
 [[package]]
 name = "fastapi-pagination"
-version = "0.15.4"
+version = "0.15.5"
 description = "FastAPI pagination"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "fastapi_pagination-0.15.4-py3-none-any.whl", hash = "sha256:66d3eb5e28bfb8128a978c3f11c49300c5e914a03b96a24c9f491727e6a8d2d1"},
-    {file = "fastapi_pagination-0.15.4.tar.gz", hash = "sha256:be9be01181399be0a54bdbd9c991b70ed6cde3aa52d543ffd92af76202ee1013"},
+    {file = "fastapi_pagination-0.15.5-py3-none-any.whl", hash = "sha256:a9276ad322d0c85b46f1d5e43b2ef33dce21d1a4dbf5598269752b7542a2b47b"},
+    {file = "fastapi_pagination-0.15.5.tar.gz", hash = "sha256:65871797e53392f5a62eb206b4e1f5494d1f64a8ed4d085a32c4f7c1a1987ee1"},
 ]
 
 [package.dependencies]
@@ -617,7 +617,7 @@ pydantic = ">=1.9.1"
 typing-extensions = ">=4.8.0"
 
 [package.extras]
-aiosqlite = ["aiosqlite (>=0.19.0,!=0.22.0)"]
+aiosqlite = ["aiosqlite (>=0.19.0,!=0.22.0,!=0.22.1)"]
 asyncpg = ["asyncpg (>=0.24.0)", "sqlalchemy (>=1.3.20)"]
 beanie = ["beanie (>=2.0.0)"]
 bunnet = ["bunnet (>=1.1.0)"]
@@ -1838,14 +1838,14 @@ crt = ["botocore[crt] (>=1.37.4,<2.0a.0)"]
 
 [[package]]
 name = "sentry-sdk"
-version = "2.48.0"
+version = "2.49.0"
 description = "Python client for Sentry (https://sentry.io)"
 optional = false
 python-versions = ">=3.6"
 groups = ["main"]
 files = [
-    {file = "sentry_sdk-2.48.0-py2.py3-none-any.whl", hash = "sha256:6b12ac256769d41825d9b7518444e57fa35b5642df4c7c5e322af4d2c8721172"},
-    {file = "sentry_sdk-2.48.0.tar.gz", hash = "sha256:5213190977ff7fdff8a58b722fb807f8d5524a80488626ebeda1b5676c0c1473"},
+    {file = "sentry_sdk-2.49.0-py2.py3-none-any.whl", hash = "sha256:6ea78499133874445a20fe9c826c9e960070abeb7ae0cdf930314ab16bb97aa0"},
+    {file = "sentry_sdk-2.49.0.tar.gz", hash = "sha256:c1878599cde410d481c04ef50ee3aedd4f600e4d0d253f4763041e468b332c30"},
 ]
 
 [package.dependencies]
@@ -2240,4 +2240,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "34b82b999317cfa6e217ed8216d711a26989b1f41179623371b7e1acc647a852"
+content-hash = "a605737d29636ff35f1ae4e8e5d993281e600a4648ab6efe9cc4f61fc009d2cf"
