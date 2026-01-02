@@ -1,3 +1,4 @@
+import uuid
 from datetime import UTC, datetime, timedelta
 from enum import Enum
 from functools import partial
@@ -18,6 +19,7 @@ from sqlalchemy import (
     Result,
     Select,
     SmallInteger,
+    UniqueConstraint,
     Update,
     func,
     select,
@@ -169,6 +171,9 @@ class CharacterModel(Base):
         secondary="episode_character_association",
         back_populates="characters",
     )
+    favorite_characters: Mapped[list["FavoriteCharacterModel"]] = relationship(
+        back_populates="character",
+    )
 
     @classmethod
     def get_cond_list(cls, **kwargs) -> list[BinaryExpression]:
@@ -247,6 +252,9 @@ class UserModel(Base):
     )
 
     active_sessions: Mapped[list["AuthSessionModel"]] = relationship(
+        back_populates="user",
+    )
+    favorite_characters: Mapped[list["FavoriteCharacterModel"]] = relationship(
         back_populates="user",
     )
 
@@ -497,4 +505,32 @@ class SystemMessage(Base):
         ),
         nullable=False,
         unique=True,
+    )
+
+
+class FavoriteCharacterModel(Base):
+    __tablename__ = "favorite_characters"
+
+    user_uuid: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.uuid"),
+        nullable=False,
+    )
+    character_uuid: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("characters.uuid"),
+        nullable=False,
+    )
+
+    user: Mapped["UserModel"] = relationship(
+        back_populates="favorite_characters",
+    )
+    character: Mapped["CharacterModel"] = relationship(
+        back_populates="favorite_characters",
+    )
+
+    __table_args__ = (
+        UniqueConstraint(
+            "user_uuid",
+            "character_uuid",
+            name="uniq_favorite_user_character",
+        ),
     )

@@ -5,6 +5,7 @@ from .rest.callbacks import router as callbacks_router
 from .rest.characters import router as characters_router
 from .rest.crypto import router as crypto_router
 from .rest.episodes import router as episodes_router
+from .rest.favorites import router as favorites_router
 from .rest.notifications import router as notification_router
 from .rest.randoms import router as randoms_router
 from .rest.root import router as root_router
@@ -29,3 +30,4 @@ api_router.include_router(notification_router)
 api_router.include_router(seasons_router)
 api_router.include_router(tokens_router)
 api_router.include_router(users_router)
+api_router.include_router(favorites_router)
