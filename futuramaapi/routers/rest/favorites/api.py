@@ -58,7 +58,7 @@ async def create_favorite_character(
     "",
     status_code=status.HTTP_200_OK,
     response_model=Page[ListFavoriteCharactersResponse],
-    name="favorite_characters",
+    name="list_favorite_characters",
 )
 async def get_favorite_characters(
     token: Annotated[str, Depends(_oauth2_scheme)],
@@ -88,7 +88,7 @@ async def get_favorite_characters(
             "example": "Character is already in favorites",
         },
     },
-    name="create_favorite_character",
+    name="delete_favorite_character",
 )
 async def delete_favorite_character(
     character_id: int,
