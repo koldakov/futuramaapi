@@ -3,14 +3,18 @@ from collections.abc import Mapping
 from typing import Any
 
 from futuramaapi.api_clients import BaseClient, HTTPXClient
+from futuramaapi.helpers.pydantic import BaseModel
 
 
-class BaseTaskService[T: Mapping[str, Any]](ABC):
+class BaseTaskService[T: Mapping[str, Any]](BaseModel, ABC):
     def __init__(
         self,
         *,
         api_client: BaseClient | None = None,
+        **data: Any,
     ) -> None:
+        super().__init__(**data)
+
         self._api: BaseClient = api_client or HTTPXClient()
 
     @property

@@ -8,16 +8,18 @@ from futuramaapi.routers.services.callbacks import (
     CallbackResponse,
 )
 from futuramaapi.routers.services.callbacks.get_character import (
-    GetCharacterCallbackResponse,
     GetCharacterCallbackService,
 )
 from futuramaapi.routers.services.callbacks.get_episode import (
-    GetEpisodeCallbackResponse,
     GetEpisodeCallbackService,
 )
 from futuramaapi.routers.services.callbacks.get_season import (
-    GetSeasonCallbackResponse,
     GetSeasonCallbackService,
+)
+from futuramaapi.tasks.callbacks import (
+    GetCharacterCallbackResponse,
+    GetEpisodeCallbackResponse,
+    GetSeasonCallbackResponse,
 )
 
 router = APIRouter(
