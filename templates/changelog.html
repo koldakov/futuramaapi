@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% set active_page = "changelog" %}
+
+{% block title %}Changelog{% endblock %} | Futurama API
+
+{% block extra_styles %}
+  <link
+    href="{{ relative_path_for('static', path='/css/changelog.css') }}"
+    rel="stylesheet"
+  />
+{% endblock %}
+
+{% block main_info %}{% endblock %}
+
+{% block main_content %}
+<div
+  class="container my-5"
+>
+  <div
+    class="row justify-content-center"
+  >
+    <div
+      class="col-lg-9 col-xl-8 changelog"
+    >
+      {{ content | safe }}
+    </div>
+  </div>
+</div>
+{% endblock %}

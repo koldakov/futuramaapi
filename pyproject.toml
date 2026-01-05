@@ -41,6 +41,9 @@ redis = "^7.1.0"
 pydantic = "^2.12.5"
 alembic = "^1.17.2"
 strawberry-graphql = "^0.288.2"
+markdown = "^3.10"
+bleach = "^6.3.0"
+aiofiles = "^25.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.5.1"

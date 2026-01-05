@@ -11,7 +11,7 @@ from futuramaapi.routers.exceptions import ModelNotFoundError
 from futuramaapi.routers.rest.users.dependencies import cookie_user_from_form_data, user_from_cookies
 from futuramaapi.routers.rest.users.schemas import Link, User
 
-from .schemas import About, Root, SiteMap, UserAuth
+from .schemas import About, Changelog, Root, SiteMap, UserAuth
 
 router = APIRouter()
 
@@ -189,3 +189,16 @@ async def get_sitemap(
 ) -> Response:
     obj: SiteMap = await SiteMap.from_request(request)
     return await obj.get_response()
+
+
+@router.get(
+    "/changelog",
+    include_in_schema=False,
+    name="changelog",
+)
+async def get_changelog(
+    request: Request,
+    session: AsyncSession = Depends(get_async_session),  # noqa: B008
+):
+    obj: Changelog = await Changelog.from_request(session, request)
+    return await obj.get_response(request)

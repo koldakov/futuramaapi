@@ -1,6 +1,9 @@
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar, Self
 
+import aiofiles
+from aiocache import Cache, cached
 from fastapi import Response
 from pydantic import HttpUrl
 from sqlalchemy import Select, select
@@ -8,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
 from futuramaapi.core import settings
+from futuramaapi.helpers import render_markdown
 from futuramaapi.helpers.pydantic import BaseModel, Field
 from futuramaapi.mixins.pydantic import BaseModelTemplateMixin, ProjectContext
 from futuramaapi.repositories import FilterStatementKwargs
@@ -105,4 +109,27 @@ class SiteMap(BaseModel):
 
         return cls(
             urls=[url.path for url in app.public_urls],
+        )
+
+
+@cached(
+    ttl=None,
+    cache=Cache.MEMORY,
+)
+async def _get_rendered_content() -> str:
+    path: Path = Path(settings.project_root) / "CHANGELOG.md"
+    async with aiofiles.open(path, encoding="utf-8") as f:
+        raw_content = await f.read()
+    return render_markdown(raw_content)
+
+
+class Changelog(BaseModel, BaseModelTemplateMixin):
+    content: str
+
+    template_name: ClassVar[str] = "changelog.html"
+
+    @classmethod
+    async def from_request(cls, session: AsyncSession, request: Request, /) -> Self:
+        return cls(
+            content=await _get_rendered_content(),
         )
