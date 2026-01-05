@@ -1,6 +1,7 @@
 from typing import Literal
 
-from pydantic import Field
+from fastapi import BackgroundTasks
+from pydantic import Field, HttpUrl
 
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import CharacterModel
@@ -27,3 +28,17 @@ class GetCharacterCallbackResponse(BaseModel):
 class GetCharacterCallbackTaskService(GetItemCallbackTaskService):
     model_class = CharacterModel
     response_class = GetCharacterCallbackResponse
+
+
+async def send_get_character_callback(
+    background_tasks: BackgroundTasks,
+    pk: int,
+    delay: int,
+    callback_url: HttpUrl,
+) -> None:
+    service: GetCharacterCallbackTaskService = GetCharacterCallbackTaskService(
+        id=pk,
+        delay=delay,
+        callback_url=callback_url,
+    )
+    background_tasks.add_task(service)

@@ -1,7 +1,7 @@
 from fastapi import BackgroundTasks
 
 from futuramaapi.routers.services import BaseService
-from futuramaapi.tasks.callbacks.get_episode import GetEpisodeCallbackTaskService
+from futuramaapi.tasks.callbacks.get_episode import send_get_episode_callback
 
 from ._base import (
     CallbackRequest,
@@ -15,10 +15,10 @@ class GetEpisodeCallbackService(BaseService):
 
     async def __call__(self, background_tasks: BackgroundTasks, *args, **kwargs) -> CallbackResponse:
         response: CallbackResponse = CallbackResponse()
-        service: GetEpisodeCallbackTaskService = GetEpisodeCallbackTaskService(
-            id=self.id,
-            delay=response.delay,
-            callback_url=self.request_data.callback_url,
+        await send_get_episode_callback(
+            background_tasks,
+            self.id,
+            response.delay,
+            self.request_data.callback_url,
         )
-        background_tasks.add_task(service)
         return response
