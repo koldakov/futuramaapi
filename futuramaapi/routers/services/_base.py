@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
-from typing import Any, Generic, TypeVar
+from typing import Any, TypeVar
 
 from fastapi import HTTPException, status
 from fastapi_pagination import Page
@@ -20,7 +20,7 @@ TResponse = TypeVar(
 )
 
 
-class BaseService(BaseModel, ABC, Generic[TResponse]):
+class BaseService[TResponse](BaseModel, ABC):
     context: dict[str, Any] | None = None
 
     @abstractmethod
@@ -28,7 +28,7 @@ class BaseService(BaseModel, ABC, Generic[TResponse]):
         pass
 
 
-class BaseSessionService(BaseService[TResponse], ABC, Generic[TResponse]):
+class BaseSessionService[TResponse](BaseService[TResponse], ABC):
     def __init__(self, /, **data: Any) -> None:
         super().__init__(**data)
 
@@ -51,7 +51,7 @@ class BaseSessionService(BaseService[TResponse], ABC, Generic[TResponse]):
             return await self.process(*args, **kwargs)
 
 
-class BaseUserAuthenticatedService(BaseSessionService[TResponse], ABC, Generic[TResponse]):
+class BaseUserAuthenticatedService[TResponse](BaseSessionService[TResponse], ABC):
     token: str
 
     def __init__(self, /, **data: Any) -> None:

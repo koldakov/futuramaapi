@@ -45,7 +45,7 @@ class StrawberryDatabaseMixin:
     @classmethod
     async def paginate(cls, session: AsyncSession, kwargs: FilterStatementKwargs, /) -> Self:
         total: int = await cls.model.count(session)
-        edges: list[Base] = cast(list[Base], await cls.model.filter(session, kwargs))
+        edges: list[Base] = cast("list[Base]", await cls.model.filter(session, kwargs))
 
         return cls(
             limit=kwargs.limit,  # type: ignore[call-arg]

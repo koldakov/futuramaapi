@@ -55,7 +55,7 @@ def _(type_: StrawberryUnion, data: Any, /):
         if hasattr(option_type, "_pydantic_type"):
             source_type = option_type._pydantic_type
         else:
-            source_type = cast(type, option_type)
+            source_type = cast("type", option_type)
         if isinstance(data, source_type):
             return _convert(option_type, data)
 

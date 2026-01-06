@@ -105,7 +105,7 @@ class SiteMap(BaseModel):
 
     @classmethod
     async def from_request(cls, request: Request) -> Self:
-        from futuramaapi.apps import app
+        from futuramaapi.apps import app  # noqa: PLC0415
 
         return cls(
             urls=[url.path for url in app.public_urls],

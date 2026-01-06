@@ -275,7 +275,7 @@ class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
         return ProjectContext()
 
     async def _get_user_from_request(self, request: Request, /) -> Optional["User"]:
-        from futuramaapi.routers.rest.users.schemas import User
+        from futuramaapi.routers.rest.users.schemas import User  # noqa: PLC0415
 
         try:
             session_id: str = request.cookies[User.cookie_auth_key]

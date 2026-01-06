@@ -80,7 +80,7 @@ class FuturamaAPI(FastAPI):
             self.add_middleware(APIRequestsCounter)
 
     def _setup_routers(self) -> None:
-        from futuramaapi.routers import api_router, graphql_router, root_router
+        from futuramaapi.routers import api_router, graphql_router, root_router  # noqa: PLC0415
 
         for router in [api_router, graphql_router, root_router]:
             self.include_router(router)
