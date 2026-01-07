@@ -1,3 +1,4 @@
+import multiprocessing
 from base64 import urlsafe_b64encode
 from functools import cached_property
 from pathlib import Path
@@ -111,6 +112,30 @@ class RedisSettings(BaseSettings):
 redis_settings = RedisSettings()
 
 
+class WorkerSettings(BaseSettings):
+    redis_broker_url: RedisDsn = redis_settings.rediscloud_url
+    processes: int = multiprocessing.cpu_count()
+    threads: int = 8
+    queues: list[str] = Field(
+        default_factory=list,
+    )
+
+    model_config = SettingsConfigDict(
+        env_prefix="worker_",
+    )
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        return (_EnvSource(settings_cls),)
+
+
 class SentrySettings(BaseSettings):
     dsn: HttpUrl | None = None
     traces_sample_rate: float = Field(
@@ -135,7 +160,10 @@ class SentrySettings(BaseSettings):
 sentry_settings = SentrySettings()
 
 
-def _parse_list(value: str) -> list[str]:
+def _parse_list(value: str | None, /) -> list[str]:
+    if value is None:
+        return []
+
     return [str(x).strip() for x in value.split(",")]
 
 
@@ -177,6 +205,8 @@ class Settings(BaseSettings):
     pool_size: int = 5
     pool_timeout: int = 30
     pool_recycle: int = -1
+
+    worker: WorkerSettings = WorkerSettings()
 
     @cached_property
     def fernet(self) -> Fernet:
