@@ -28,7 +28,8 @@ def run(
         str(processes),
         "--threads",
         str(threads),
-        __name__,
+        "futuramaapi.workers._dramatiq:broker",
+        "futuramaapi.workers._dramatiq.tasks",
     ]
 
     # if settings.debug:
