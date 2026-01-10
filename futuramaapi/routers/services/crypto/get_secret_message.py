@@ -9,8 +9,7 @@ from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import SecretMessageModel
-from futuramaapi.repositories.session import session_manager
-from futuramaapi.routers.services import BaseService
+from futuramaapi.routers.services import BaseSessionService
 
 
 class GetSecretMessageResponse(BaseModel):
@@ -35,7 +34,7 @@ class SecretMessageRow:
     ip_address: str
 
 
-class GetSecretMessageService(BaseService):
+class GetSecretMessageService(BaseSessionService[GetSecretMessageResponse]):
     url: str
 
     _max_visit_counter: ClassVar[int] = 1
@@ -308,21 +307,20 @@ class GetSecretMessageService(BaseService):
             updated_secret_message.c.id == secret_message_source.c.id,
         )
 
-    async def __call__(
+    async def process(
         self,
         request: Request,
         *args,
         **kwargs,
     ) -> GetSecretMessageResponse:
-        async with session_manager.session() as session:
-            try:
-                row: Row[tuple[SecretMessageRow]] = (await session.execute(self._get_statement(request))).one()
-            except NoResultFound:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Not Found",
-                ) from None
+        try:
+            row: Row[tuple[SecretMessageRow]] = (await self.session.execute(self._get_statement(request))).one()
+        except NoResultFound:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Not Found",
+            ) from None
 
-            await session.commit()
+        await self.session.commit()
 
         return GetSecretMessageResponse.model_validate(row)

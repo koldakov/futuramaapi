@@ -1,5 +1,3 @@
-from typing import TYPE_CHECKING
-
 from fastapi import HTTPException, status
 from pydantic import Field
 from sqlalchemy import Select, select
@@ -8,11 +6,7 @@ from sqlalchemy.orm import selectinload
 
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import SeasonModel
-from futuramaapi.repositories.session import session_manager
-from futuramaapi.routers.services._base import BaseService
-
-if TYPE_CHECKING:
-    from sqlalchemy.ext.asyncio import AsyncSession
+from futuramaapi.routers.services._base import BaseSessionService
 
 
 class GetSeasonResponse(BaseModel):
@@ -30,22 +24,20 @@ class GetSeasonResponse(BaseModel):
     episodes: list[Episode]
 
 
-class GetSeasonService(BaseService):
+class GetSeasonService(BaseSessionService[GetSeasonResponse]):
     pk: int
 
     @property
     def statement(self) -> Select:
         return select(SeasonModel).where(SeasonModel.id == self.pk).options(selectinload(SeasonModel.episodes))
 
-    async def __call__(self, *args, **kwargs) -> GetSeasonResponse:
-        session: AsyncSession
-        async with session_manager.session() as session:
-            try:
-                season_model: SeasonModel = (await session.execute(self.statement)).scalars().one()
-            except NoResultFound:
-                raise HTTPException(
-                    detail="Season not found",
-                    status_code=status.HTTP_404_NOT_FOUND,
-                ) from None
+    async def process(self, *args, **kwargs) -> GetSeasonResponse:
+        try:
+            season_model: SeasonModel = (await self.session.execute(self.statement)).scalars().one()
+        except NoResultFound:
+            raise HTTPException(
+                detail="Season not found",
+                status_code=status.HTTP_404_NOT_FOUND,
+            ) from None
 
         return GetSeasonResponse.model_validate(season_model)

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, ClassVar
+from typing import ClassVar
 
 from pydantic import Field, HttpUrl, computed_field, field_validator
 from sqlalchemy import Result, insert
@@ -7,11 +7,7 @@ from sqlalchemy.sql.dml import ReturningInsert
 from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import SecretMessageModel
-from futuramaapi.repositories.session import session_manager
-from futuramaapi.routers.services import BaseService
-
-if TYPE_CHECKING:
-    from sqlalchemy.ext.asyncio import AsyncSession
+from futuramaapi.routers.services import BaseSessionService
 
 
 class CreateSecretMessageRequest(BaseModel):
@@ -42,7 +38,7 @@ class CreateSecretMessageResponse(BaseModel):
         )
 
 
-class CreateSecretMessageService(BaseService):
+class CreateSecretMessageService(BaseSessionService[CreateSecretMessageResponse]):
     request_data: CreateSecretMessageRequest
 
     @property
@@ -56,10 +52,8 @@ class CreateSecretMessageService(BaseService):
             .returning(SecretMessageModel.url)
         )
 
-    async def __call__(self, *args, **kwargs) -> CreateSecretMessageResponse:
-        session: AsyncSession
-        async with session_manager.session() as session:
-            result: Result[tuple[str]] = await session.execute(self.statement)
-            await session.commit()
+    async def process(self, *args, **kwargs) -> CreateSecretMessageResponse:
+        result: Result[tuple[str]] = await self.session.execute(self.statement)
+        await self.session.commit()
 
         return CreateSecretMessageResponse(url=result.scalar_one())

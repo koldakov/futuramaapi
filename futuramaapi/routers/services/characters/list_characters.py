@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Literal
+from typing import Literal
 
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
@@ -6,20 +6,16 @@ from pydantic import Field
 from sqlalchemy import ColumnElement, Select, select
 
 from futuramaapi.repositories.models import CharacterModel
-from futuramaapi.repositories.session import session_manager
-from futuramaapi.routers.services import BaseService
+from futuramaapi.routers.services import BaseSessionService
 
 from .get_character import GetCharacterResponse
-
-if TYPE_CHECKING:
-    from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class ListCharactersResponse(GetCharacterResponse):
     pass
 
 
-class ListCharactersService(BaseService):
+class ListCharactersService(BaseSessionService[Page[ListCharactersResponse]]):
     gender: str | None
     character_status: str | None
     species: str | None
@@ -65,10 +61,8 @@ class ListCharactersService(BaseService):
 
         return statement.where(*where).order_by(order_by)
 
-    async def __call__(self, *args, **kwargs) -> Page[ListCharactersResponse]:
-        session: AsyncSession
-        async with session_manager.session() as session:
-            return await paginate(
-                session,
-                self.statement,
-            )
+    async def process(self, *args, **kwargs) -> Page[ListCharactersResponse]:
+        return await paginate(
+            self.session,
+            self.statement,
+        )
