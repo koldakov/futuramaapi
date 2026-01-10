@@ -1,7 +1,6 @@
 from typing import Literal
 
-from fastapi import BackgroundTasks
-from pydantic import Field, HttpUrl
+from pydantic import Field
 from sqlalchemy import Select, select
 from sqlalchemy.orm import selectinload
 
@@ -34,17 +33,3 @@ class GetEpisodeCallbackTaskService(GetItemCallbackTaskService):
     @property
     def _statement(self) -> Select[tuple[EpisodeModel]]:
         return select(EpisodeModel).options(selectinload(EpisodeModel.season)).where(EpisodeModel.id == self.id)
-
-
-async def get_episode_callback_task(
-    background_tasks: BackgroundTasks,
-    pk: int,
-    delay: int,
-    callback_url: HttpUrl,
-) -> None:
-    service: GetEpisodeCallbackTaskService = GetEpisodeCallbackTaskService(
-        id=pk,
-        delay=delay,
-        callback_url=callback_url,
-    )
-    background_tasks.add_task(service)

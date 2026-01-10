@@ -10,7 +10,7 @@ from futuramaapi.api_clients import HttpMethod, RequestData
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories import Base
 from futuramaapi.repositories.session import session_manager
-from futuramaapi.tasks import BaseTaskService
+from futuramaapi.workers.services._base import BaseAPITaskService
 
 
 class DoesNotExistCallbackResponse(BaseModel):
@@ -25,7 +25,7 @@ class DoesNotExistCallbackResponse(BaseModel):
     )
 
 
-class GetItemCallbackTaskService(BaseTaskService):
+class GetItemCallbackTaskService(BaseAPITaskService):
     id: int
     delay: int
     callback_url: HttpUrl

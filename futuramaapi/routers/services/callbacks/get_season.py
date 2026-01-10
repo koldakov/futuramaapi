@@ -1,7 +1,7 @@
 from fastapi import BackgroundTasks
 
 from futuramaapi.routers.services import BaseService
-from futuramaapi.tasks.callbacks.get_season import get_season_callback_task
+from futuramaapi.workers._background_tasks.tasks.callbacks.get_season import get_season_callback_task
 
 from ._base import (
     CallbackRequest,

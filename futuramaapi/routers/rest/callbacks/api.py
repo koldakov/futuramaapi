@@ -16,7 +16,7 @@ from futuramaapi.routers.services.callbacks.get_episode import (
 from futuramaapi.routers.services.callbacks.get_season import (
     GetSeasonCallbackService,
 )
-from futuramaapi.tasks.callbacks import (
+from futuramaapi.workers.services.callbacks import (
     GetCharacterCallbackResponse,
     GetEpisodeCallbackResponse,
     GetSeasonCallbackResponse,
