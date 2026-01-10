@@ -36,7 +36,7 @@ class GetEpisodeCallbackTaskService(GetItemCallbackTaskService):
         return select(EpisodeModel).options(selectinload(EpisodeModel.season)).where(EpisodeModel.id == self.id)
 
 
-async def send_get_episode_callback(
+async def get_episode_callback_task(
     background_tasks: BackgroundTasks,
     pk: int,
     delay: int,

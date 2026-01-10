@@ -30,7 +30,7 @@ class GetCharacterCallbackTaskService(GetItemCallbackTaskService):
     response_class = GetCharacterCallbackResponse
 
 
-async def send_get_character_callback(
+async def get_character_callback_task(
     background_tasks: BackgroundTasks,
     pk: int,
     delay: int,

@@ -1,7 +1,7 @@
 from fastapi import BackgroundTasks
 
 from futuramaapi.routers.services import BaseService
-from futuramaapi.tasks.callbacks.get_character import send_get_character_callback
+from futuramaapi.tasks.callbacks.get_character import get_character_callback_task
 
 from ._base import (
     CallbackRequest,
@@ -15,7 +15,7 @@ class GetCharacterCallbackService(BaseService):
 
     async def __call__(self, background_tasks: BackgroundTasks, *args, **kwargs) -> CallbackResponse:
         response: CallbackResponse = CallbackResponse()
-        await send_get_character_callback(
+        await get_character_callback_task(
             background_tasks,
             self.id,
             response.delay,

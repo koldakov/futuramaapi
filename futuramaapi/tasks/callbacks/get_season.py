@@ -36,7 +36,7 @@ class GetSeasonCallbackTaskService(GetItemCallbackTaskService):
         return select(SeasonModel).options(selectinload(SeasonModel.episodes)).where(SeasonModel.id == self.id)
 
 
-async def send_get_season_callback(
+async def get_season_callback_task(
     background_tasks: BackgroundTasks,
     pk: int,
     delay: int,
