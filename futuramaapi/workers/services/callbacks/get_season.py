@@ -6,7 +6,6 @@ from sqlalchemy.orm import selectinload
 
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import SeasonModel
-from futuramaapi.routers.services.seasons.get_season import GetSeasonResponse
 
 from ._base import (
     DoesNotExistCallbackResponse,
@@ -15,8 +14,19 @@ from ._base import (
 
 
 class GetSeasonCallbackResponse(BaseModel):
-    class SeasonItem(GetSeasonResponse):
-        pass
+    class SeasonItem(BaseModel):
+        class Episode(BaseModel):
+            id: int
+            name: str
+            broadcast_number: int = Field(alias="number")
+            production_code: str = Field(
+                examples=[
+                    "1ACV01",
+                ],
+            )
+
+        id: int
+        episodes: list[Episode]
 
     kind: Literal["Season"] = Field(
         "Season",
