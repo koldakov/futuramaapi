@@ -5,7 +5,7 @@ from typing import Any
 from futuramaapi.helpers.pydantic import BaseModel
 
 
-class BaseTaskService(BaseModel, ABC):
+class BaseTaskService[T: Mapping[str, Any]](BaseModel, ABC):
     @abstractmethod
-    async def __call__(self, *args, **kwargs) -> Mapping[str, Any]:
+    async def __call__(self, *args, **kwargs) -> T:
         pass
