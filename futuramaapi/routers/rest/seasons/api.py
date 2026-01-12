@@ -14,7 +14,7 @@ from futuramaapi.routers.services.seasons.list_seasons import (
     ListSeasonsService,
 )
 
-router = APIRouter(
+router: APIRouter = APIRouter(
     prefix="/seasons",
     tags=["seasons"],
 )

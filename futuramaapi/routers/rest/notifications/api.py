@@ -9,7 +9,7 @@ from futuramaapi.routers.services.notifications.sse_character import (
     GetCharacterNotificationService,
 )
 
-router = APIRouter(
+router: APIRouter = APIRouter(
     prefix="/notifications",
     tags=["notifications"],
 )

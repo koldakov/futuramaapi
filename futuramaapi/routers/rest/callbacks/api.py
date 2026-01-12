@@ -22,7 +22,7 @@ from futuramaapi.workers.services.callbacks import (
     GetSeasonCallbackResponse,
 )
 
-router = APIRouter(
+router: APIRouter = APIRouter(
     prefix="/callbacks",
     tags=["callbacks"],
 )

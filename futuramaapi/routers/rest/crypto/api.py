@@ -11,7 +11,7 @@ from futuramaapi.routers.services.crypto.get_secret_message import (
     GetSecretMessageService,
 )
 
-router = APIRouter(
+router: APIRouter = APIRouter(
     prefix="/crypto",
     tags=["crypto"],
 )

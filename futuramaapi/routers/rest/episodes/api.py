@@ -16,7 +16,7 @@ from futuramaapi.routers.services.episodes.list_episodes import (
     ListEpisodesService,
 )
 
-router = APIRouter(
+router: APIRouter = APIRouter(
     prefix="/episodes",
     tags=["episodes"],
 )

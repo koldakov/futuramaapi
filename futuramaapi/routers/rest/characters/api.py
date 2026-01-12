@@ -14,7 +14,7 @@ from futuramaapi.routers.services.characters.list_characters import (
     ListCharactersService,
 )
 
-router = APIRouter(
+router: APIRouter = APIRouter(
     prefix="/characters",
     tags=["characters"],
 )

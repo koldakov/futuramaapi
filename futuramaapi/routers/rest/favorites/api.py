@@ -12,7 +12,7 @@ from futuramaapi.routers.services.favorites.list_favorite_characters import (
     ListFavoriteCharactersResponse,
 )
 
-router = APIRouter(
+router: APIRouter = APIRouter(
     prefix="/favorites/characters",
     tags=[
         "Favorite Characters",

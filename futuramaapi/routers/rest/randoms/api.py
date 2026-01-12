@@ -14,7 +14,7 @@ from futuramaapi.routers.services.randoms.get_random_season import (
     GetRandomSeasonService,
 )
 
-router = APIRouter(
+router: APIRouter = APIRouter(
     prefix="/random",
     tags=["random"],
 )
