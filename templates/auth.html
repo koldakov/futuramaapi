@@ -2,55 +2,81 @@
 
 {% set active_page = "user_auth" %}
 
-{% block titile %}Password Reset{% endblock %} | Futurama API
+{% block title %}Sign In{% endblock %}
 
-{% block main_info %}{% endblock %}
+{% block extra_styles %}{% endblock %}
+
+{% block main_info %}
+<link
+  href="{{ relative_path_for('static', path='/css/auth.css') }}"
+  rel="stylesheet"
+/>
+{% endblock %}
 
 {% block main_content %}
 <div
-  class="container px-5 my-3"
+  class="container"
 >
-  <h1>Sign In</h1>
-  <form
-    method="POST"
-    action="/auth"
+  <div
+    class="auth-page"
   >
     <div
-      class="mb-3"
+      class="auth-container"
     >
-      <label
-        for="username"
-        class="form-label"
-      >Username
-      </label>
-      <input
-        type="text"
-        name="username"
-        class="form-control"
-        id="username"
-        autofocus
-      />
+      <h1
+        class="auth-title"
+      >
+        Welcome back
+      </h1>
+        <p
+          class="auth-subtitle"
+        >
+          Sign in to continue to Futurama API
+        </p>
+      <form
+        method="POST"
+        action="{{ relative_path_for('user_auth') }}"
+      >
+        <div
+          class="auth-field"
+        >
+          <label
+            for="username"
+          >
+            Username
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            autofocus
+          >
+        </div>
+        <div
+          class="auth-field"
+        >
+          <label
+            for="password"
+          >
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+          >
+        </div>
+        <button
+          type="submit"
+          class="auth-button"
+        >
+          Sign in
+        </button>
+      </form>
+
     </div>
-    <div
-      class="mb-3"
-    >
-      <label
-        for="password"
-        class="form-label"
-      >Password
-      </label>
-      <input
-        type="password"
-        name="password"
-        class="form-control"
-        id="password"
-      />
-    </div>
-    <button
-      type="submit"
-      class="btn btn-primary"
-    >Submit
-    </button>
-  </form>
+  </div>
 </div>
 {% endblock %}
