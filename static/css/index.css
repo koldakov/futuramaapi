@@ -1,0 +1,95 @@
+.character-card {
+  border-radius: 0.75rem;
+  background-color: #ffffff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.character-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.75rem 1.25rem rgba(0, 0, 0, 0.08);
+}
+
+.character-image-wrapper {
+  height: 240px;
+  overflow: hidden;
+  background-color: #f8f9fa;
+}
+
+.character-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.character-card:hover .character-image {
+  transform: scale(1.08);
+}
+
+.character-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.character-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.badge-status-alive {
+  background-color: #198754;
+}
+
+.badge-status-dead {
+  background-color: #dc3545;
+}
+
+.badge-status-unknown {
+  background-color: #6c757d;
+}
+
+.badge-gender-male {
+  background-color: #0d6efd;
+}
+
+.badge-gender-female {
+  background-color: #d63384;
+}
+
+.badge-gender-unknown {
+  background-color: #6c757d;
+}
+
+.badge-species-human {
+  background-color: #20c997;
+}
+
+.badge-species-robot {
+  background-color: #0dcaf0;
+}
+
+.badge-species-alien {
+  background-color: #6610f2;
+}
+
+.badge-species-mutant {
+  background-color: #fd7e14;
+}
+
+.badge-species-monster {
+  background-color: #495057;
+}
+
+.badge-species-head {
+  background-color: #adb5bd;
+}
+
+.badge-species-unknown {
+  background-color: #6c757d;
+}
+
+.badge {
+  font-weight: 500;
+}

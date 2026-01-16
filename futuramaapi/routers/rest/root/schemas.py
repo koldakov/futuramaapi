@@ -35,7 +35,7 @@ class Root(BaseModel, BaseModelTemplateMixin):
     @classmethod
     async def from_request(cls, session: AsyncSession, request: Request, /) -> Self:
         user_count: int = await User.count(session)
-        statement: Select[tuple[CharacterModel]] = select(CharacterModel).limit(6).order_by(CharacterModel.id.asc())
+        statement: Select[tuple[CharacterModel]] = select(CharacterModel).limit(12).order_by(CharacterModel.id.asc())
         characters: Sequence[CharacterModel] = (await session.execute(statement)).scalars().all()
         total_requests: int = await RequestsCounterModel.get_total_requests()
         system_messages: Sequence[SystemMessage] = await SystemMessage.filter(session, FilterStatementKwargs())

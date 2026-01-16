@@ -95,83 +95,90 @@
     </header>
     <main>
       {% block main_info %}
-      <div
-        class="px-4 pt-5 my-5 text-center intro-background"
-      >
-        {% if system_messages %}
-          {% for system_message in system_messages %}
-            <div class="alert alert-danger" role="alert">
-              {{ system_message }}
-            </div>
-          {% endfor %}
-        {% endif %}
-        {% if current_user %}
-        <h3>Hi, {{ current_user.full_name }}, welcome to</h3>
-        {% endif %}
+        <div
+          class="px-4 pt-2 pb-2 text-center intro-background"
+        >
+          {% if system_messages %}
+            {% for system_message in system_messages %}
+              <div
+                class="alert alert-danger py-1"
+                role="alert"
+              >
+                {{ system_message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% if current_user %}
+            <h3
+              class="fw-bold mb-1"
+            >
+              Hi, {{ current_user.full_name }}, welcome to
+            </h3>
+          {% endif %}
         <h1
-          class="display-4 fw-bold"
+          class="display-4 fw-bold mb-3 d-inline-flex align-items-start"
         >
           Futurama API
+          <span
+            class="ms-2 mt-1 px-2 py-1 bg-light border rounded text-primary fs-6"
+          >
+            handled {{ total_api_requests }} requests
+          </span>
         </h1>
-        <div
-          class="col-lg-6 mx-auto"
-        >
           <div
-            class="d-flex justify-content-center"
+            class="col-lg-6 mx-auto"
           >
-            <a
-              href="{{ relative_path_for('changelog') }}"
-              class="btn btn-info"
-              role="button"
-              target="_blank"
-            >Changelog
-            </a>
+            <div
+              class="d-flex flex-wrap justify-content-center gap-2 mb-2"
+            >
+              <a
+                href="{{ relative_path_for('changelog') }}"
+                class="btn btn-info"
+                role="button"
+                target="_blank"
+              >
+                Changelog
+              </a>
+              <a
+                href="{{ relative_path_for('redoc_html') }}"
+                class="btn btn-danger"
+                role="button"
+                target="_blank"
+              >
+                Documentation
+              </a>
+              <a
+                href="{{ relative_path_for('swagger') }}"
+                class="btn btn-success"
+                role="button"
+                target="_blank"
+              >
+                Swagger
+              </a>
+              <a
+                href="/graphql"
+                class="btn btn-warning"
+                role="button"
+                target="_blank"
+              >
+                GraphQL
+              </a>
+              <a
+                href="{{ _project.config.project.urls.Repository }}"
+                class="btn btn-secondary"
+                role="button"
+                target="_blank"
+              >Star Me</a>
+            </div>
+            {% if not current_user %}
+              <div
+                class="text-muted small mt-1"
+              >
+                Join the community! {{ user_count }} members already.
+              </div>
+            {% endif %}
           </div>
-          <div
-            class="d-grid d-sm-flex justify-content-sm-center mb-5"
-          >
-            <a
-              href="{{ relative_path_for('redoc_html') }}"
-              class="btn btn-danger me-1 mt-2"
-              role="button"
-              target="_blank"
-            >Documentation
-            </a>
-            <a
-              href="{{ relative_path_for('swagger') }}"
-              class="btn btn-success me-1 mt-2"
-              role="button"
-              target="_blank"
-            >Swagger Playground
-            </a>
-            <a
-              href="/graphql"
-              class="btn btn-warning me-1 mt-2"
-              role="button"
-              target="_blank"
-            >GraphQL
-            </a>
-            <a
-              href="{{ _project.config.project.urls.Repository }}"
-              class="btn btn-secondary me-1 mt-2"
-              role="button"
-              target="_blank"
-            >Star Me</a>
-          </div>
-          {% if not current_user %}
-          <div
-            class="d-grid d-sm-flex justify-content-sm-center mb-5"
-          >
-            {{ "Join our community today! Already, %(user_count)s have registered, and we're excited to welcome even more members."|format(user_count=user_count) }}
-            <br />
-            Fake users will be vanished with no excuses.
-            <br />
-            <br />
-            Total API requests: {{ total_api_requests }}
-          </div>
-          {% endif %}
         </div>
-      </div>
       {% endblock %}
       {% block main_content %}{% endblock %}
     </main>
