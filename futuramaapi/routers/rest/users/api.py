@@ -279,6 +279,8 @@ async def get_user_link(
     status_code=status.HTTP_200_OK,
     response_model=Page[UserSearchResponse],
     name="user_search",
+    summary="Deprecated list users endpoint",
+    description="This endpoint is deprecated and will be removed in version 1.12.1. Please use `/api/users` instead.",
     deprecated=True,
 )
 async def search_user(
