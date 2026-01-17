@@ -4,211 +4,280 @@
 
 {% block title %}About{% endblock %} | Futurama API
 
-{% block main_info %}{% endblock %}
+{% block extra_styles %}
+  <link
+    href="{{ relative_path_for('static', path='/css/about.css') }}"
+    rel="stylesheet"
+  />
+{% endblock %}
+
+{% block main_info %}
+  <div
+    class="px-4 pt-2 pb-2 text-center intro-background"
+  >
+    <h1
+      class="display-4 fw-bold mb-3 d-inline-flex align-items-start"
+    >
+      Futurama API
+      <span
+        class="ms-2 mt-1 px-2 py-1 bg-light border rounded text-primary fs-6"
+      >
+        About
+      </span>
+    </h1>
+  </div>
+{% endblock %}
 
 {% block main_content %}
-<div
-  class="container my-5"
->
-
-  <h1
-    class="text-center mb-4 text-info"
+  <div
+    class="container about-page"
   >
-    About FuturamaAPI
-  </h1>
-
-  <section
-    class="mb-5"
-  >
-    <h2>What is this?</h2>
-    <p>
-      Welcome to
-      <a
-        href="https://www.hulu.com/series/futurama-85bf4cc1-cd8b-4469-ad87-7289217a0b74"
-        target="_blank"
-        class="text-decoration-underline"
-      >Hulu<del>rama</del></a>,
-      a REST and GraphQL API celebrating the iconic TV show Futurama.
-      Created as a playground for learning new technologies, FuturamaAPI allows you to explore, experiment, and have fun.
-    </p>
-    <p>
-      Check our
-      <a
-        href="{{ relative_path_for('redoc_html') }}"
-        target="_blank"
-        class="text-decoration-underline"
-      >documentation</a>
-      to get started, or try
-      <a
-        href="{{ relative_path_for('swagger') }}"
-        target="_blank"
-        class="text-decoration-underline"
-      >Swagger Playground</a>.
-    </p>
-  </section>
-
-  <section
-    class="mb-5 p-4 bg-light rounded shadow-sm"
-  >
-    <h2>Uptime</h2>
-    <p>
-      We aim for 100% uptime. For the past three months, the service has been stable.
-      Check the current status
-      <a
-        href="https://stats.uptimerobot.com/KjD5zt80pL/796263225"
-        target="_blank"
-        class="text-decoration-underline"
-      >here</a>.
-    </p>
-  </section>
-
-  <section
-    class="mb-5"
-  >
-    <h2>Key Features</h2>
-    <div
-      class="row row-cols-1 row-cols-md-3 g-4 mt-2"
+    <section
+      class="about-module"
     >
       <div
-        class="col"
+        class="module-id mb-2"
       >
-        <div
-          class="card h-100 shadow-sm"
-        >
-          <div
-            class="card-body"
-          >
-            <h5
-              class="card-title"
-            >Comprehensive Access</h5>
-            <p
-              class="card-text"
-            >
-              Detailed info about characters, seasons, episodes, and more.
-            </p>
-          </div>
-        </div>
+        ORIGIN
       </div>
-
+      <p
+        class="about-meta"
+      >
+        Status: <strong>Good news, everyone!</strong> The API is operational.
+      </p>
+      <p>
+        Welcome to
+        <a
+          href="https://www.hulu.com/series/futurama-85bf4cc1-cd8b-4469-ad87-7289217a0b74"
+          target="_blank"
+          class="text-decoration-underline"
+        >Hulu<del>rama</del>
+        </a>,
+        a REST and GraphQL API celebrating the iconic TV show Futurama.
+        Created as a playground for learning new technologies, FuturamaAPI allows you to explore,
+        experiment, and have fun.
+      </p>
+      <p>
+        Check our
+        <a
+          href="{{ relative_path_for('redoc_html') }}"
+          class="text-decoration-underline"
+          target="_blank"
+        >
+          documentation
+        </a>
+        to get started, or try the
+        <a
+          href="{{ relative_path_for('swagger') }}"
+          class="text-decoration-underline"
+          target="_blank"
+        >
+          Swagger Playground
+        </a>.
+      </p>
+    </section>
+    <section
+      class="about-module bg-light shadow-sm"
+    >
       <div
-        class="col"
+        class="module-id mb-2"
       >
-        <div
-          class="card h-100 shadow-sm"
-        >
-          <div
-            class="card-body"
-          >
-            <h5
-              class="card-title"
-            >Real-time Updates</h5>
-            <p
-              class="card-text"
-            >
-              Experience Server Sent Events (SSE) to stay updated with the latest happenings.
-            </p>
-          </div>
-        </div>
+        STABILITY
       </div>
-
+      <p
+        class="about-meta"
+      >
+        Monitoring: continuous · Mode: autonomous
+      </p>
+      <p>
+        We aim for 100% uptime. For the past three months, the service has been stable.
+        Check the current status
+        <a
+          href="https://stats.uptimerobot.com/KjD5zt80pL/796263225"
+          target="_blank"
+        >
+          here
+        </a>.
+      </p>
+    </section>
+    <section
+      class="about-module key-features"
+    >
       <div
-        class="col"
+        class="module-id mb-2"
+      >
+        CAPABILITIES
+      </div>
+      <h2>
+        Key Features
+      </h2>
+      <p
+        class="text-muted mb-3"
+      >
+        Explore the main capabilities of FuturamaAPI.
+      </p>
+      <div
+        class="row row-cols-1 row-cols-md-3 g-4 mt-3"
       >
         <div
-          class="card h-100 shadow-sm"
+          class="col"
         >
           <div
-            class="card-body"
+            class="card h-100 about-card"
           >
-            <h5
-              class="card-title"
-            >Documentation</h5>
-            <p
-              class="card-text"
+            <div
+              class="card-body"
             >
-              Quickly get started with our API using detailed guides and examples.
-            </p>
+              <h5
+                class="card-title"
+              >
+                <i
+                  class="bi bi-collection me-2"
+                ></i>
+                Comprehensive Access
+              </h5>
+              <p
+                class="card-text"
+              >
+                Detailed info about characters, seasons, episodes, and more.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="col"
+        >
+          <div
+            class="card h-100 about-card"
+          >
+            <div
+              class="card-body"
+            >
+              <h5
+                class="card-title"
+              >
+                <i
+                  class="bi bi-lightning-charge me-2"
+                ></i>
+                Real-time Updates
+              </h5>
+              <p
+                class="card-text"
+              >
+                Experience Server Sent Events (SSE) to stay updated with the latest happenings.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="col"
+        >
+          <div
+            class="card h-100 about-card"
+          >
+            <div
+              class="card-body"
+            >
+              <h5
+                class="card-title"
+              >
+                <i
+                  class="bi bi-journal-text me-2"
+                ></i>
+                Documentation
+              </h5>
+              <p
+                class="card-text"
+              >
+                Quickly get started with our API using detailed guides and examples.
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section
-    class="mb-5"
-  >
-    <h2>Why?</h2>
-    <p>
-      FuturamaAPI exists to celebrate even lesser-known TV shows.
-      It's a space to have fun with Futurama while exploring FastAPI, SSE, WebSockets, GraphQL, Hypercorn, HTTP/2, and more.
-    </p>
-  </section>
-
-  <section
-    class="mb-5"
-  >
-    <h2>Technical Stack</h2>
-    <ul>
-      <li>Python</li>
-      <li>FastAPI</li>
-      <li>Docker</li>
-      <li>Hypercorn</li>
-      <li>PostgreSQL + SQLAlchemy (async)</li>
-      <li>Alembic for migrations</li>
-      <li>Strawberry for GraphQL</li>
-    </ul>
-  </section>
-
-  <section
-    class="mb-5"
-  >
-    <h2>Contribute</h2>
-    <p>
-      Absolutely! Your contributions are welcome.
-      <a
-        href="https://github.com/koldakov/futuramaapi/"
-        target="_blank"
-        class="text-decoration-underline"
-      >Start here</a>.
-      Whether you're experienced or just starting out, your help is valuable.
-    </p>
-  </section>
-
-  <section
-    class="mb-5"
-  >
-    <h2>Design Help?</h2>
-    <p>
-      Design is not my strongest skill. If you have HTML/CSS experience, consider submitting a
-      <a
-        href="https://github.com/koldakov/futuramaapi/"
-        target="_blank"
-        class="text-decoration-underline"
-      >pull request</a>.
-      Any help is appreciated!
-    </p>
-  </section>
-
-  <section
-    class="mb-5"
-  >
-    <h2>Who am I?</h2>
-    <p>
-      I'm
-      <a
-        href="https://koldakov.com"
-        target="_blank"
-        class="text-decoration-underline"
-      >Ivan Koldakov</a>,
-      a Python developer.
-      Connect with me on
-      <a
-        href="https://linkedin.com/in/aiv/"
-        target="_blank"
-        class="text-decoration-underline"
-      >LinkedIn</a>.
-    </p>
-  </section>
-
-</div>
+    </section>
+    <section
+      class="about-module"
+    >
+      <div
+        class="module-id mb-2"
+      >
+        PROJECT TIMELINE
+      </div>
+      <ul
+        class="about-timeline"
+      >
+        <li>
+          <span
+            class="timeline-dot"
+          ></span>
+          <strong>Mission</strong> - Celebrate even lesser-known TV shows while exploring modern backend tech.
+        </li>
+        <li>
+          <span
+            class="timeline-dot"
+          ></span>
+          <strong>
+            Exploration
+          </strong> - FastAPI, SSE, WebSockets, GraphQL, Hypercorn, HTTP/2, and more.
+        </li>
+        <li>
+          <span
+            class="timeline-dot"
+          ></span>
+          <strong>
+            Stack
+          </strong> - Python, PostgreSQL, async SQLAlchemy, Docker, Alembic, Strawberry.
+        </li>
+        <li>
+          <span
+            class="timeline-dot"
+          ></span>
+          <strong>
+            Future
+          </strong> - More data, more experiments, more fun.
+        </li>
+      </ul>
+    </section>
+    <section
+      class="about-module"
+    >
+      <div
+        class="module-id mb-2"
+      >
+        HUMAN FACTOR
+      </div>
+      <h2>
+        Contribute & Author
+      </h2>
+      <p>
+        Contributions are always welcome.
+        <a
+          href="https://github.com/koldakov/futuramaapi/"
+          target="_blank"
+          class="text-decoration-underline"
+        >Start here</a>.
+        Code, ideas, issues, design - everything helps.
+      </p>
+      <p
+        class="about-meta"
+      >
+        Created by
+        <a
+          href="https://koldakov.com"
+          target="_blank"
+        >
+          Ivan Koldakov
+        </a>,
+        Python developer.
+        Connect on
+        <a
+          href="https://linkedin.com/in/aiv/"
+          target="_blank"
+        >
+          LinkedIn
+        </a>.
+      </p>
+    </section>
+  </div>
 {% endblock %}

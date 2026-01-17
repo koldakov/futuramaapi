@@ -1,0 +1,101 @@
+.about-page {
+  --accent: var(--bs-info);
+}
+
+.about-page h2 {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.about-page h2::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent);
+  margin-top: 4px;
+  border-radius: 2px;
+}
+
+.about-module {
+  border: 1px dashed rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  padding: 2rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.module-id {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--accent);
+  text-transform: uppercase;
+  font-family: monospace;
+}
+
+.about-meta {
+  font-family: monospace;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-bottom: 1rem;
+}
+
+.about-card {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.about-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.08);
+  background-color: #e9f7ff;
+}
+
+.about-timeline {
+  list-style: none;
+  padding-left: 1.5rem;
+  border-left: 2px solid rgba(0, 0, 0, 0.15);
+}
+
+.about-timeline li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -9px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.about-module.key-features {
+  background-color: #f0f8ff;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+}
+
+.key-features .about-card {
+  border: 1px solid rgba(0, 123, 255, 0.25);
+  background-color: #f9fbfd;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.key-features .about-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.08);
+  background-color: #e3f2ff;
+}
