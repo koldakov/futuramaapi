@@ -3,11 +3,13 @@ from fastapi import HTTPException, status
 from pydantic import EmailStr, Field, SecretStr
 from sqlalchemy import exc
 
+from futuramaapi.core import feature_flags, settings
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import UserModel
 from futuramaapi.routers.services import BaseSessionService
 
 from .get_user_me import GetUserMeResponse
+from .resend_user_confirmation import ConfirmationBody
 
 
 class CreateUserRequest(BaseModel):
@@ -42,6 +44,26 @@ class CreateUserResponse(GetUserMeResponse):
     pass
 
 
+async def _send_confirmation_email(user_model: UserModel, /) -> None:
+    if not feature_flags.activate_users:
+        return
+
+    await settings.email.send(
+        [user_model.email],
+        "FuturamaAPI - Account Activation",
+        ConfirmationBody.model_validate(
+            {
+                "user": {
+                    "id": user_model.id,
+                    "name": user_model.name,
+                    "surname": user_model.surname,
+                },
+            },
+        ),
+        "emails/confirmation.html",
+    )
+
+
 class CreateUserService(BaseSessionService[CreateUserResponse]):
     request_data: CreateUserRequest
 
@@ -67,5 +89,7 @@ class CreateUserService(BaseSessionService[CreateUserResponse]):
                     detail="User already exists.",
                 ) from None
             raise
+
+        await _send_confirmation_email(user_model)
 
         return CreateUserResponse.model_validate(user_model)
