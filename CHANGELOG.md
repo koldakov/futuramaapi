@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.5] - 2026-01-18
+
+### Fixed
+- E-mail is not being sent on user creation.
+
+### Improved
+
+- General codebase.
+
 ## [1.11.4] - 2026-01-18
 
 ### Deprecated
@@ -479,6 +488,7 @@ For now auto generation available only
 - GraphQL: Season selection by id
 - GraphQL: Paginated (Edged) seasons selection
 
+[1.11.5]: https://github.com/koldakov/futuramaapi/releases/tag/1.11.5
 [1.11.4]: https://github.com/koldakov/futuramaapi/releases/tag/1.11.4
 [1.11.3]: https://github.com/koldakov/futuramaapi/releases/tag/1.11.3
 [1.11.2]: https://github.com/koldakov/futuramaapi/releases/tag/1.11.2
