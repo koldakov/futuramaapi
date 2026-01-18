@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.repositories import INT32, FilterStatementKwargs
 from futuramaapi.repositories.session import get_async_session
-from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError, UnauthorizedResponse
+from futuramaapi.routers.exceptions import ModelNotFoundError, UnauthorizedResponse
 
 from .dependencies import from_form_signature, from_signature, from_token, password_from_form_data
 from .schemas import (
@@ -15,7 +15,6 @@ from .schemas import (
     PasswordChange,
     User,
     UserAlreadyActivatedError,
-    UserCreateRequest,
     UserPasswordChangeRequest,
     UserSearchResponse,
     UserUpdateRequest,
@@ -25,55 +24,6 @@ router = APIRouter(
     prefix="/users",
     tags=["users"],
 )
-
-
-@router.post(
-    "",
-    status_code=status.HTTP_201_CREATED,
-    response_model=User,
-    name="user",
-)
-async def create_user(
-    data: UserCreateRequest,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> User:
-    """Create User.
-
-    The user add endpoint is an API function allowing the creation of new user accounts.
-    It receives user details via HTTP requests, validates the information,
-    and stores it in the system's database.
-    This endpoint is essential for user registration and onboarding.
-
-    Please note that currently endpoint is not protected.
-    However, if there are a lot of spam requests, the endpoint will be blocked or limited.
-    """
-    try:
-        return await User.create(session, data)
-    except ModelExistsError:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="User already exists.",
-        ) from None
-
-
-@router.get(
-    "/me",
-    responses={
-        status.HTTP_401_UNAUTHORIZED: {
-            "model": UnauthorizedResponse,
-        },
-    },
-    name="user_me",
-)
-async def get_me(
-    user: Annotated[User, Depends(from_token)],
-) -> User:
-    """Get user details.
-
-    Retrieve authenticated user profile information, including username, email, and account details.
-    Personalize user experiences within the application using the JSON response containing user-specific data.
-    """
-    return user
 
 
 @router.get(
@@ -99,29 +49,6 @@ async def activate_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User already activated.",
         ) from None
-
-
-@router.put(
-    "",
-    responses={
-        status.HTTP_401_UNAUTHORIZED: {
-            "model": UnauthorizedResponse,
-        },
-    },
-    name="update_user",
-)
-async def update_user(
-    user: Annotated[User, Depends(from_token)],
-    data: UserUpdateRequest,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> User:
-    """Update user details.
-
-    This endpoint is crucial for users to manage and maintain accurate profile information,
-    often including authentication and authorization checks for security.
-    """
-    await user.update(session, data)
-    return user
 
 
 @router.post(
@@ -207,6 +134,8 @@ async def change_user_password(
 @router.post(
     "/links",
     name="generate_user_link",
+    description="This endpoint is deprecated and will be removed in version 1.12.1. Please use `/api/links` instead.",
+    deprecated=True,
 )
 async def create_user_link(
     data: LinkCreateRequest,
@@ -228,6 +157,8 @@ async def create_user_link(
     status_code=status.HTTP_200_OK,
     response_model=Page[Link],
     name="user_links",
+    description="This endpoint is deprecated and will be removed in version 1.12.1. Please use `/api/links` instead.",
+    deprecated=True,
 )
 async def get_user_links(
     user: Annotated[User, Depends(from_token)],
@@ -249,6 +180,9 @@ async def get_user_links(
     status_code=status.HTTP_200_OK,
     response_model=Link,
     name="user_link",
+    description="This endpoint is deprecated and will be removed in version 1.12.1. "
+    "Please use `/api/links/{link_id}` instead.",
+    deprecated=True,
 )
 async def get_user_link(
     link_id: Annotated[
@@ -294,37 +228,6 @@ async def search_user(
     ] = None,
     session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> UserSearchResponse:
-    filter_params: FilterStatementKwargs = FilterStatementKwargs(
-        offset=0,
-        limit=20,
-        extra={
-            "query": query,
-        },
-    )
-    return await UserSearchResponse.paginate(session, filter_params=filter_params)
-
-
-@router.get(
-    "",
-    status_code=status.HTTP_200_OK,
-    response_model=Page[UserSearchResponse],
-    name="users",
-)
-async def get_users(
-    query: Annotated[
-        str | None,
-        Query(
-            alias="query",
-            description="Search by username.",
-            max_length=128,
-        ),
-    ] = None,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> UserSearchResponse:
-    """Get users.
-
-    Retrieve users. Search by username.
-    """
     filter_params: FilterStatementKwargs = FilterStatementKwargs(
         offset=0,
         limit=20,
