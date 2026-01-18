@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.4] - 2026-01-18
+
+### Deprecated
+
+- `/api/users/links` endpoint. Instead, it's advised to use `/api/links` endpoint
+- `/api/users/links/{link_id}` endpoint. Instead, it's advised to use `/api/links/{link_id}` endpoint
+
+### Improved
+
+- General codebase.
+
 ## [1.11.3] - 2026-01-17
 
 ### Improved
@@ -468,6 +479,7 @@ For now auto generation available only
 - GraphQL: Season selection by id
 - GraphQL: Paginated (Edged) seasons selection
 
+[1.11.4]: https://github.com/koldakov/futuramaapi/releases/tag/1.11.4
 [1.11.3]: https://github.com/koldakov/futuramaapi/releases/tag/1.11.3
 [1.11.2]: https://github.com/koldakov/futuramaapi/releases/tag/1.11.2
 [1.11.1]: https://github.com/koldakov/futuramaapi/releases/tag/1.11.1
