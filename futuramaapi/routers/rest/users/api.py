@@ -15,7 +15,6 @@ from .schemas import (
     PasswordChange,
     User,
     UserAlreadyActivatedError,
-    UserPasswordChangeRequest,
     UserSearchResponse,
     UserUpdateRequest,
 )
@@ -49,45 +48,6 @@ async def activate_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User already activated.",
         ) from None
-
-
-@router.post(
-    "/confirmations/resend",
-    responses={
-        status.HTTP_401_UNAUTHORIZED: {
-            "model": UnauthorizedResponse,
-        },
-    },
-    status_code=status.HTTP_200_OK,
-    name="resend_user_confirmation",
-)
-async def resend_user_confirmation(
-    user: Annotated[User, Depends(from_token)],
-) -> None:
-    """Resend user confirmation.
-
-    If the confirmation message is not delivered or got lost, user can request another message.
-    """
-    try:
-        await user.send_confirmation_email()
-    except UserAlreadyActivatedError:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User already activated.",
-        ) from None
-
-
-@router.post(
-    "/passwords/request-change",
-    status_code=status.HTTP_200_OK,
-    name="request_user_password_change",
-)
-async def request_user_password_change(
-    data: UserPasswordChangeRequest,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> None:
-    """Request password change."""
-    await data.request_password_reset(session)
 
 
 @router.get(

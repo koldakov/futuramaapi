@@ -6,11 +6,10 @@ from pydantic import EmailStr, Field, HttpUrl, PrivateAttr, SecretStr, computed_
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.core import feature_flags, settings
-from futuramaapi.helpers.pydantic import BaseModel, BaseTokenModel
+from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.mixins.pydantic import (
     BaseModelDatabaseMixin,
     BaseModelTemplateMixin,
-    BaseModelTokenMixin,
     TemplateBodyMixin,
 )
 from futuramaapi.repositories import ModelDoesNotExistError
@@ -223,49 +222,6 @@ class User(UserBase, BaseModelDatabaseMixin):
             {
                 "password": password.get_secret_value(),
             },
-        )
-
-
-class PasswordResetBody(BaseModel, TemplateBodyMixin):
-    expiration_time: ClassVar[int] = 15 * 60
-
-    @property
-    def signature(self) -> str:
-        return DecodedUserToken(
-            type="access",
-            user={
-                "id": self.user.id,
-            },
-        ).tokenize(self.expiration_time)
-
-    @model_validator(mode="after")
-    def build_confirmation_url(self) -> Self:
-        self.url = HttpUrl.build(
-            scheme=self.url.scheme,
-            host=self.url.host,
-            path="api/users/passwords/change",
-            query=f"sig={self.signature}",
-        )
-        return self
-
-
-class UserPasswordChangeRequest(BaseTokenModel, BaseModelTokenMixin):
-    email: EmailStr
-
-    async def request_password_reset(self, session: AsyncSession, /) -> None:
-        if feature_flags.activate_users is False:
-            return
-
-        try:
-            user: User = await User.get(session, self.email, field=UserModel.email)
-        except ModelNotFoundError:
-            return
-
-        await settings.email.send(
-            [self.email],
-            "FuturamaAPI - Password Reset",
-            PasswordResetBody.from_user(user),
-            "emails/password_reset.html",
         )
 
 

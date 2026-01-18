@@ -18,6 +18,11 @@ from futuramaapi.routers.services.users.list_users import (
     ListUsersResponse,
     ListUsersService,
 )
+from futuramaapi.routers.services.users.request_change_user_password import (
+    RequestChangeUserPasswordRequest,
+    RequestChangeUserPasswordService,
+)
+from futuramaapi.routers.services.users.resend_user_confirmation import ResendUserConfirmationService
 from futuramaapi.routers.services.users.update_user import (
     UpdateUserRequest,
     UpdateUserResponse,
@@ -138,6 +143,47 @@ async def update_user(
     """
     service: UpdateUserService = UpdateUserService(
         token=token,
+        request_data=data,
+    )
+    return await service()
+
+
+@router.post(
+    "/confirmations/resend",
+    status_code=status.HTTP_202_ACCEPTED,
+    responses={
+        status.HTTP_400_BAD_REQUEST: {
+            "description": "User already activated.",
+        },
+        status.HTTP_401_UNAUTHORIZED: {
+            "model": UnauthorizedResponse,
+        },
+    },
+    name="resend_user_confirmation",
+)
+async def resend_user_confirmation(
+    token: Annotated[str, Depends(_oauth2_scheme)],
+) -> None:
+    """Resend user confirmation.
+
+    If the confirmation message is not delivered or got lost, user can request another message.
+    """
+    service: ResendUserConfirmationService = ResendUserConfirmationService(
+        token=token,
+    )
+    return await service()
+
+
+@router.post(
+    "/passwords/request-change",
+    status_code=status.HTTP_202_ACCEPTED,
+    name="request_change_user_password",
+)
+async def request_change_user_password(
+    data: RequestChangeUserPasswordRequest,
+) -> None:
+    """Request password change."""
+    service: RequestChangeUserPasswordService = RequestChangeUserPasswordService(
         request_data=data,
     )
     return await service()
