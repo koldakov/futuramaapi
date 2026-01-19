@@ -187,7 +187,7 @@ async def search_user(
         ),
     ] = None,
     session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> UserSearchResponse:
+) -> Page[UserSearchResponse]:
     filter_params: FilterStatementKwargs = FilterStatementKwargs(
         offset=0,
         limit=20,
