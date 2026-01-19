@@ -1,6 +1,6 @@
 from asyncpg import UniqueViolationError
 from fastapi import HTTPException, status
-from pydantic import EmailStr, Field, SecretStr
+from pydantic import EmailStr, Field, SecretStr, field_validator
 from sqlalchemy import exc
 
 from futuramaapi.core import feature_flags, settings
@@ -38,6 +38,11 @@ class CreateUserRequest(BaseModel):
     is_subscribed: bool = Field(
         default=True,
     )
+
+    @field_validator("password", mode="after")
+    @classmethod
+    def hash_password(cls, value: SecretStr, /) -> SecretStr:
+        return SecretStr(cls.hasher.encode(value.get_secret_value()))
 
 
 class CreateUserResponse(GetUserMeResponse):
