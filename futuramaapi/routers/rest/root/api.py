@@ -1,15 +1,13 @@
-from operator import add
-
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import APIRouter, Depends, Request, Response, status
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.responses import FileResponse, RedirectResponse
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.repositories.models import AuthSessionModel
 from futuramaapi.repositories.session import get_async_session
-from futuramaapi.routers.exceptions import ModelNotFoundError
 from futuramaapi.routers.rest.users.dependencies import cookie_user_from_form_data, user_from_cookies
-from futuramaapi.routers.rest.users.schemas import Link, User
+from futuramaapi.routers.rest.users.schemas import User
+from futuramaapi.routers.services.links.redirect_link import RedirectLinkService
 
 from .schemas import About, Changelog, Root, SiteMap, UserAuth
 
@@ -159,25 +157,13 @@ async def robots():
 @router.get(
     "/s/{shortened}",
     include_in_schema=False,
-    name="user_link_redirect",
+    name="redirect_link",
 )
-async def user_link_redirect(
+async def redirect_link(
     shortened: str,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> RedirectResponse:
-    try:
-        link: Link = await Link.get(session, shortened, field=Link.model.shortened)
-    except ModelNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Not Found",
-        ) from None
-    await link.update(
-        session,
-        None,
-        counter=add(link.counter, 1),
-    )
-    return RedirectResponse(link.url)
+    service: RedirectLinkService = RedirectLinkService(shortened=shortened)
+    return await service()
 
 
 @router.get(
