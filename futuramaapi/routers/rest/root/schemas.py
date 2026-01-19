@@ -4,8 +4,6 @@ from typing import TYPE_CHECKING, ClassVar, Self
 
 import aiofiles
 from aiocache import Cache, cached
-from fastapi import Response
-from pydantic import HttpUrl
 from sqlalchemy import Select, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
@@ -79,37 +77,6 @@ class UserAuth(BaseModel, BaseModelTemplateMixin):
     @classmethod
     async def from_request(cls, session: AsyncSession, request: Request, /) -> Self:
         return cls()
-
-
-class SiteMap(BaseModel):
-    _header: ClassVar[str] = '<?xml version="1.0" encoding="UTF-8"?>'
-    _media_type: ClassVar[str] = "application/xml"
-    _url_tag: ClassVar[str] = """<url><loc>%s</loc></url>"""
-    _url_set_tag: ClassVar[str] = """<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">%s</urlset>"""
-
-    base_url: HttpUrl = settings.build_url(is_static=False)
-    urls: list[str]
-
-    async def get_response(self) -> Response:
-        urls: str = ""
-        for url in self.urls:
-            urls += self._url_tag % settings.build_url(
-                path=url,
-                is_static=False,
-            )
-        url_set: str = self._url_set_tag % urls
-        return Response(
-            content=f"""{self._header}{url_set}""",
-            media_type=self._media_type,
-        )
-
-    @classmethod
-    async def from_request(cls, request: Request) -> Self:
-        from futuramaapi.apps import app  # noqa: PLC0415
-
-        return cls(
-            urls=[url.path for url in app.public_urls],
-        )
 
 
 @cached(

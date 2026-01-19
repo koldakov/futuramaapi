@@ -14,11 +14,13 @@ from .rest.seasons import router as seasons_router
 from .rest.tokens import router as tokens_router
 from .rest.users import router as users_router
 from .rest.users_new import router as users_new_router
+from .views import router as views_router
 
 __all__ = [
     "api_router",
     "graphql_router",
     "root_router",
+    "views_router",
 ]
 
 api_router = APIRouter(prefix="/api")

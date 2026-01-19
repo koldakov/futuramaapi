@@ -1,62 +1,15 @@
 from fastapi import APIRouter, Depends, Request, Response, status
-from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.repositories.models import AuthSessionModel
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.rest.users.dependencies import cookie_user_from_form_data, user_from_cookies
 from futuramaapi.routers.rest.users.schemas import User
-from futuramaapi.routers.services.links.redirect_link import RedirectLinkService
 
-from .schemas import About, Changelog, Root, SiteMap, UserAuth
+from .schemas import About, Changelog, Root, UserAuth
 
 router = APIRouter()
-
-
-@router.get(
-    "/health",
-    tags=[
-        "health",
-    ],
-    include_in_schema=False,
-)
-def health() -> Response:
-    return Response(status_code=status.HTTP_200_OK)
-
-
-@router.get(
-    "/favicon.ico",
-    include_in_schema=False,
-)
-async def favicon():
-    return FileResponse("favicon.ico")
-
-
-@router.get(
-    "/swagger",
-    include_in_schema=False,
-    name="swagger",
-)
-async def get_swagger():
-    return get_swagger_ui_html(
-        openapi_url="/openapi.json",
-        title="Swagger Playground | Futurama API",
-        swagger_favicon_url="/favicon.ico",
-    )
-
-
-@router.get(
-    "/docs",
-    include_in_schema=False,
-    name="redoc_html",
-)
-async def get_redoc():
-    return get_redoc_html(
-        openapi_url="/openapi.json",
-        title="Documentation | Futurama API",
-        redoc_favicon_url="/favicon.ico",
-    )
 
 
 @router.get(
@@ -144,37 +97,6 @@ async def cookie_logout_user(
     response: RedirectResponse = RedirectResponse("/auth", status_code=status.HTTP_302_FOUND)
     response.delete_cookie(User.cookie_auth_key)
     return response
-
-
-@router.get(
-    "/robots.txt",
-    include_in_schema=False,
-)
-async def robots():
-    return FileResponse("robots.txt")
-
-
-@router.get(
-    "/s/{shortened}",
-    include_in_schema=False,
-    name="redirect_link",
-)
-async def redirect_link(
-    shortened: str,
-) -> RedirectResponse:
-    service: RedirectLinkService = RedirectLinkService(shortened=shortened)
-    return await service()
-
-
-@router.get(
-    "/sitemap.xml",
-    include_in_schema=False,
-)
-async def get_sitemap(
-    request: Request,
-) -> Response:
-    obj: SiteMap = await SiteMap.from_request(request)
-    return await obj.get_response()
 
 
 @router.get(
