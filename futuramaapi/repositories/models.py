@@ -2,9 +2,7 @@ import uuid
 from datetime import UTC, datetime, timedelta
 from enum import Enum
 from functools import partial
-from typing import Final
 
-from aiocache import cached
 from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
 from sqlalchemy import (
@@ -16,13 +14,9 @@ from sqlalchemy import (
     Date,
     ForeignKey,
     Integer,
-    Result,
-    Select,
     SmallInteger,
     UniqueConstraint,
     Update,
-    func,
-    select,
     update,
 )
 from sqlalchemy.dialects.postgresql import ENUM, Insert, insert  # TODO: engine agnostic.
@@ -434,14 +428,6 @@ class AuthSessionModel(Base):
         await session.commit()
 
 
-_REQUESTS_TTL: Final[int] = 60 * 60 * 1
-
-
-def _cache_requests_since_builder(func_, *args, **_) -> str:
-    truncated = args[1].replace(minute=0, second=0, microsecond=0)
-    return f"{func_.__name__}:{truncated.isoformat()}"
-
-
 class RequestsCounterModel(Base):
     __tablename__ = "requests_counter"
 
@@ -473,30 +459,6 @@ class RequestsCounterModel(Base):
         async with session_manager.session() as session:
             await session.execute(statement)
             await session.commit()
-
-    @classmethod
-    @cached(ttl=_REQUESTS_TTL)
-    async def get_total_requests(cls) -> int:
-        statement: Select = select(func.coalesce(func.sum(RequestsCounterModel.counter), 0))
-
-        session: AsyncSession
-        async with session_manager.session() as session:
-            result: Result = await session.execute(statement)
-
-        return result.scalar()
-
-    @classmethod
-    @cached(ttl=_REQUESTS_TTL, key_builder=_cache_requests_since_builder)
-    async def get_requests_since(cls, since: datetime, /) -> int:
-        statement: Select = select(func.sum(RequestsCounterModel.counter)).where(
-            RequestsCounterModel.created_at >= since
-        )
-
-        session: AsyncSession
-        async with session_manager.session() as session:
-            result: Result = await session.execute(statement)
-
-        return result.scalar() or 0
 
 
 class SystemMessage(Base):
