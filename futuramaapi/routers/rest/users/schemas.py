@@ -120,9 +120,6 @@ class ConfirmationBody(BaseModel, TemplateBodyMixin):
         return self
 
 
-class PasswordMismatchError(Exception): ...
-
-
 class User(UserBase, BaseModelDatabaseMixin):
     cookie_auth_key: ClassVar[str] = "Authorization"
     cookie_expiration_time: ClassVar[int] = AuthSessionModel.cookie_expiration_time
