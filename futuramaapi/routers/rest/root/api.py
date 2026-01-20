@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request, Response, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
@@ -7,26 +7,7 @@ from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.rest.users.dependencies import cookie_user_from_form_data, user_from_cookies
 from futuramaapi.routers.rest.users.schemas import User
 
-from .schemas import UserAuth
-
 router = APIRouter()
-
-
-@router.get(
-    "/auth",
-    include_in_schema=False,
-    name="user_auth",
-)
-async def user_auth(
-    request: Request,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-    user: User | None = Depends(user_from_cookies),  # noqa: B008
-) -> Response:
-    if user is not None:
-        return RedirectResponse("/")
-
-    obj: UserAuth = await UserAuth.from_request(session, request)
-    return await obj.get_response(request)
 
 
 @router.post(

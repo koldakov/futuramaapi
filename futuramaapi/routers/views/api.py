@@ -3,6 +3,7 @@ from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.responses import FileResponse, HTMLResponse
 
 from futuramaapi.routers.services.about.get_about import GetAboutService
+from futuramaapi.routers.services.auth.get_user_auth import GetUserAuthService
 from futuramaapi.routers.services.changelog.get_changelog import GetChangelogService
 from futuramaapi.routers.services.index.get_index import GetIndexService
 from futuramaapi.routers.services.sitemaps.get_sitemap import GetSiteMapService
@@ -105,6 +106,22 @@ async def get_changelog(
     request: Request,
 ):
     service: GetChangelogService = GetChangelogService(
+        context={
+            "request": request,
+        },
+    )
+    return await service()
+
+
+@router.get(
+    "/auth",
+    include_in_schema=False,
+    name="user_auth",
+)
+async def user_auth(
+    request: Request,
+) -> Response:
+    service: GetUserAuthService = GetUserAuthService(
         context={
             "request": request,
         },
