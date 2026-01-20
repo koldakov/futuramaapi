@@ -7,7 +7,7 @@ from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.rest.users.dependencies import cookie_user_from_form_data, user_from_cookies
 from futuramaapi.routers.rest.users.schemas import User
 
-from .schemas import Changelog, UserAuth
+from .schemas import UserAuth
 
 router = APIRouter()
 
@@ -70,16 +70,3 @@ async def cookie_logout_user(
     response: RedirectResponse = RedirectResponse("/auth", status_code=status.HTTP_302_FOUND)
     response.delete_cookie(User.cookie_auth_key)
     return response
-
-
-@router.get(
-    "/changelog",
-    include_in_schema=False,
-    name="changelog",
-)
-async def get_changelog(
-    request: Request,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-):
-    obj: Changelog = await Changelog.from_request(session, request)
-    return await obj.get_response(request)
