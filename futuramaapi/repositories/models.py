@@ -175,6 +175,13 @@ class CharacterModel(Base):
         back_populates="character",
     )
 
+    @property
+    def relative_image_url(self) -> str | None:
+        if self.image is None:
+            return self.image
+
+        return settings.build_url(path=self.image._name, is_static=True).path
+
     @classmethod
     def get_cond_list(cls, **kwargs) -> list[BinaryExpression]:
         gender: str | None = kwargs.get("gender")

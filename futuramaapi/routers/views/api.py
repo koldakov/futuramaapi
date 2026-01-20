@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, Request, Response, status
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.responses import FileResponse, HTMLResponse
 
+from futuramaapi.routers.services.index.get_index import GetIndexService
 from futuramaapi.routers.services.sitemaps.get_sitemap import GetSiteMapService
 
 router: APIRouter = APIRouter()
@@ -57,4 +58,21 @@ async def robots() -> FileResponse:
 )
 async def get_sitemap() -> Response:
     service: GetSiteMapService = GetSiteMapService()
+    return await service()
+
+
+@router.get(
+    "/",
+    include_in_schema=False,
+    status_code=status.HTTP_200_OK,
+    name="get_index",
+)
+async def get_index(
+    request: Request,
+) -> Response:
+    service: GetIndexService = GetIndexService(
+        context={
+            "request": request,
+        },
+    )
     return await service()

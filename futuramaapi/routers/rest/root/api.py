@@ -7,23 +7,9 @@ from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.rest.users.dependencies import cookie_user_from_form_data, user_from_cookies
 from futuramaapi.routers.rest.users.schemas import User
 
-from .schemas import About, Changelog, Root, UserAuth
+from .schemas import About, Changelog, UserAuth
 
 router = APIRouter()
-
-
-@router.get(
-    "/",
-    include_in_schema=False,
-    status_code=status.HTTP_200_OK,
-    name="root",
-)
-async def get_root(
-    request: Request,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> Response:
-    obj: Root = await Root.from_request(session, request)
-    return await obj.get_response(request)
 
 
 @router.get(
