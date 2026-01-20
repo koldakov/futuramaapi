@@ -12,20 +12,6 @@ from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.mixins.pydantic import BaseModelTemplateMixin, ProjectContext
 
 
-class About(BaseModel, BaseModelTemplateMixin):
-    template_name: ClassVar[str] = "about.html"
-
-    @property
-    def project_context(self) -> ProjectContext:
-        return ProjectContext(
-            description="Practice with API, learn to code, and gain hands-on experience with SSE, callbacks, and more.",
-        )
-
-    @classmethod
-    async def from_request(cls, session: AsyncSession, request: Request, /) -> Self:
-        return cls()
-
-
 class UserAuth(BaseModel, BaseModelTemplateMixin):
     template_name: ClassVar[str] = "auth.html"
 
