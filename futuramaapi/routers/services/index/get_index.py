@@ -1,5 +1,4 @@
 from collections.abc import Sequence
-from datetime import UTC, datetime, timedelta
 from typing import Any, ClassVar
 
 from sqlalchemy import Result, Select, func, select
@@ -28,18 +27,10 @@ class GetIndexService(BaseTemplateService):
         statement: Select[tuple[SystemMessage]] = select(SystemMessage)
         return (await self.session.execute(statement)).scalars().all()
 
-    async def __get_last_day_api_requests(self) -> int:
-        statement: Select = select(func.sum(RequestsCounterModel.counter)).where(
-            RequestsCounterModel.created_at >= datetime.now(tz=UTC) - timedelta(days=1)
-        )
-        result: Result = await self.session.execute(statement)
-        return result.scalar() or 0
-
     async def get_context(self, *args, **kwargs) -> dict[str, Any]:
         return {
             "user_count": await self.__get_user_count(),
             "characters": await self.__get_characters(),
             "total_api_requests": await self.__get_total_requests(),
             "system_messages": await self.__get_system_messages(),
-            "last_day_api_requests": await self.__get_last_day_api_requests(),
         }
