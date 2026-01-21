@@ -39,7 +39,7 @@ class GetIndexService(BaseTemplateService):
         return {
             "user_count": await self.__get_user_count(),
             "characters": await self.__get_characters(),
-            "total_requests": await self.__get_total_requests(),
+            "total_api_requests": await self.__get_total_requests(),
             "system_messages": await self.__get_system_messages(),
             "last_day_api_requests": await self.__get_last_day_api_requests(),
         }
