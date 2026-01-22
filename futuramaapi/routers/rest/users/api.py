@@ -1,21 +1,14 @@
-from typing import Annotated
-
-from fastapi import APIRouter, Depends, HTTPException, Path, Query, Request, Response, status
-from fastapi_pagination import Page
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from futuramaapi.repositories import INT32, FilterStatementKwargs
 from futuramaapi.repositories.session import get_async_session
-from futuramaapi.routers.exceptions import ModelNotFoundError, UnauthorizedResponse
+from futuramaapi.routers.exceptions import UnauthorizedResponse
 
-from .dependencies import from_form_signature, from_signature, from_token, password_from_form_data
+from .dependencies import from_form_signature, from_signature, password_from_form_data
 from .schemas import (
-    Link,
-    LinkCreateRequest,
     PasswordChange,
     User,
     UserAlreadyActivatedError,
-    UserSearchResponse,
     UserUpdateRequest,
 )
 
@@ -89,110 +82,3 @@ async def change_user_password(
 ) -> None:
     """Change user password."""
     await user.update(session, data, is_confirmed=True)
-
-
-@router.post(
-    "/links",
-    name="generate_user_link",
-    description="This endpoint is deprecated and will be removed in version 1.12.1. Please use `/api/links` instead.",
-    deprecated=True,
-)
-async def create_user_link(
-    data: LinkCreateRequest,
-    user: Annotated[User, Depends(from_token)],
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> Link:
-    """Generate shortened URL."""
-    return await Link.create(
-        session,
-        data,
-        extra_fields={
-            "user_id": user.id,
-        },
-    )
-
-
-@router.get(
-    "/links",
-    status_code=status.HTTP_200_OK,
-    response_model=Page[Link],
-    name="user_links",
-    description="This endpoint is deprecated and will be removed in version 1.12.1. Please use `/api/links` instead.",
-    deprecated=True,
-)
-async def get_user_links(
-    user: Annotated[User, Depends(from_token)],
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> Page[Link]:
-    """Retrieve user links."""
-    filter_params: FilterStatementKwargs = FilterStatementKwargs(
-        offset=0,
-        limit=20,
-        extra={
-            "user": user,
-        },
-    )
-    return await Link.paginate(session, filter_params=filter_params)
-
-
-@router.get(
-    "/links/{link_id}",
-    status_code=status.HTTP_200_OK,
-    response_model=Link,
-    name="user_link",
-    description="This endpoint is deprecated and will be removed in version 1.12.1. "
-    "Please use `/api/links/{link_id}` instead.",
-    deprecated=True,
-)
-async def get_user_link(
-    link_id: Annotated[
-        int,
-        Path(
-            le=INT32,
-        ),
-    ],
-    user: Annotated[User, Depends(from_token)],
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> Link:
-    try:
-        link: Link = await Link.get(
-            session,
-            link_id,
-            extra_where=[Link.model.user_id == user.id],
-        )
-    except ModelNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Not Found",
-        ) from None
-    return link
-
-
-@router.get(
-    "/list",
-    status_code=status.HTTP_200_OK,
-    response_model=Page[UserSearchResponse],
-    name="user_search",
-    summary="Deprecated list users endpoint",
-    description="This endpoint is deprecated and will be removed in version 1.12.1. Please use `/api/users` instead.",
-    deprecated=True,
-)
-async def search_user(
-    query: Annotated[
-        str | None,
-        Query(
-            alias="query",
-            description="Search by username.",
-            max_length=128,
-        ),
-    ] = None,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> Page[UserSearchResponse]:
-    filter_params: FilterStatementKwargs = FilterStatementKwargs(
-        offset=0,
-        limit=20,
-        extra={
-            "query": query,
-        },
-    )
-    return await UserSearchResponse.paginate(session, filter_params=filter_params)

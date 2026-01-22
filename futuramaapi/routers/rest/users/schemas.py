@@ -48,13 +48,6 @@ class UserBase(BaseModel):
     )
 
 
-class UserCreateRequest(UserBase):
-    @field_validator("password", mode="after")
-    @classmethod
-    def hash_password(cls, value: SecretStr, /) -> SecretStr:
-        return SecretStr(cls.hasher.encode(value.get_secret_value()))
-
-
 class UserBaseError(Exception): ...
 
 
@@ -279,29 +272,3 @@ class Link(BaseModel, BaseModelDatabaseMixin):
                 continue
 
         raise ModelExistsError() from None
-
-
-class LinkCreateRequest(BaseModel):
-    url: HttpUrl
-
-
-class UserSearchResponse(BaseModel, BaseModelDatabaseMixin):
-    model: ClassVar[type[UserModel]] = UserModel
-
-    id: int
-    is_confirmed: bool
-    created_at: datetime
-    username: str = Field(
-        min_length=5,
-        max_length=64,
-    )
-    name: str | None = Field(
-        min_length=1,
-        max_length=64,
-        default=None,
-    )
-    surname: str | None = Field(
-        min_length=1,
-        max_length=64,
-        default=None,
-    )
