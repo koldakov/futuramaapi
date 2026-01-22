@@ -3,29 +3,23 @@ import logging
 from abc import ABC, abstractmethod
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
-from typing import TYPE_CHECKING, Any, ClassVar, Literal, Optional, Self
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self
 from uuid import UUID
 
 import jwt
-from fastapi import Request
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
-from pydantic import Field, HttpUrl, model_validator
+from pydantic import HttpUrl, model_validator
 from pydantic.main import IncEx
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import ColumnElement
-from starlette.templating import _TemplateResponse
 
-from futuramaapi.__version__ import __version__
 from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.helpers.templates import templates
 from futuramaapi.repositories import Base, FilterStatementKwargs, ModelAlreadyExistsError, ModelDoesNotExistError
-from futuramaapi.repositories.session import session_manager
 from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError, UpdateArgsNotDefined
-from futuramaapi.utils import config, metadata
 
 if TYPE_CHECKING:
     from sqlalchemy import Select
@@ -248,77 +242,6 @@ class BaseModelTokenMixin(ABC, _PydanticSanityCheck):
         except (ExpiredSignatureError, InvalidSignatureError, InvalidTokenError):
             raise DecodedTokenError() from None
         return cls(**token_)
-
-
-class ProjectContext(BaseModel):
-    version: str = Field(
-        default=__version__,
-    )
-    g_tag: str = Field(
-        default=settings.g_tag,
-        alias="G_TAG",
-    )
-    author: str | None = Field(
-        default=metadata.get("author", None),
-    )
-    description: str = Field(
-        default=metadata["summary"],
-    )
-    config: dict[str, Any] = config
-
-
-class BaseModelTemplateMixin(ABC, _PydanticSanityCheck):
-    template_name: ClassVar[str]
-
-    @property
-    def project_context(self) -> ProjectContext:
-        return ProjectContext()
-
-    async def _get_user_from_request(self, request: Request, /) -> Optional["User"]:
-        from futuramaapi.routers.rest.users.schemas import User  # noqa: PLC0415
-
-        try:
-            session_id: str = request.cookies[User.cookie_auth_key]
-        except KeyError:
-            return None
-
-        async with session_manager.session() as session:
-            try:
-                return await User.from_cookie_session_id(session, session_id)
-            except ModelNotFoundError:
-                return None
-
-    async def get_context(self, request: Request, *, extra_context: dict[str, Any] | None = None) -> dict:
-        user: User | None = await self._get_user_from_request(request)
-        context: dict = {
-            **self.model_dump(),
-            "_project": self.project_context.model_dump(by_alias=True),
-            "current_user": user,
-        }
-        if extra_context:
-            context.update(extra_context)
-        return context
-
-    async def get_response(
-        self,
-        request: Request,
-        /,
-        *,
-        template_name: str | None = None,
-        extra_context: dict[str, Any] | None = None,
-    ) -> _TemplateResponse:
-        if template_name is None:
-            template_name = self.template_name
-
-        return templates.TemplateResponse(
-            request,
-            template_name,
-            context=await self.get_context(request, extra_context=extra_context),
-        )
-
-    @classmethod
-    @abstractmethod
-    async def from_request(cls, session: AsyncSession, request: Request, /) -> Self: ...
 
 
 class TemplateBodyMixin(ABC, _PydanticSanityCheck):

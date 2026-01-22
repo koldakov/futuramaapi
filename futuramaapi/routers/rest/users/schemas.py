@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Any, ClassVar, Self
 
-from fastapi import Request
 from pydantic import EmailStr, Field, HttpUrl, PrivateAttr, SecretStr, computed_field, field_validator, model_validator
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
@@ -9,7 +8,6 @@ from futuramaapi.core import feature_flags, settings
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.mixins.pydantic import (
     BaseModelDatabaseMixin,
-    BaseModelTemplateMixin,
     TemplateBodyMixin,
 )
 from futuramaapi.repositories import ModelDoesNotExistError
@@ -213,17 +211,6 @@ class User(UserBase, BaseModelDatabaseMixin):
                 "password": password.get_secret_value(),
             },
         )
-
-
-class PasswordChange(BaseModel, BaseModelTemplateMixin):
-    template_name: ClassVar[str] = "password_change.html"
-
-    user: User
-    sig: str
-
-    @classmethod
-    async def from_request(cls, session: AsyncSession, request: Request, /) -> Self:
-        raise NotImplementedError() from None
 
 
 class Link(BaseModel, BaseModelDatabaseMixin):

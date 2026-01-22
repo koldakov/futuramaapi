@@ -33,7 +33,7 @@ class PasswordResetBody(BaseModel, TemplateBodyMixin):
         self.url = HttpUrl.build(
             scheme=self.url.scheme,
             host=self.url.host,
-            path="api/users/passwords/change",
+            path="passwords/change",
             query=f"sig={self.signature}",
         )
         return self
