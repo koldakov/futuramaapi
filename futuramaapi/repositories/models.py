@@ -259,6 +259,10 @@ class UserModel(Base):
         back_populates="user",
     )
 
+    @property
+    def full_name(self) -> str:
+        return f"{self.name} {self.surname}"
+
     @staticmethod
     def get_select_in_load() -> list[Load]:
         return [
