@@ -11,7 +11,6 @@ from .rest.notifications import router as notification_router
 from .rest.randoms import router as randoms_router
 from .rest.seasons import router as seasons_router
 from .rest.tokens import router as tokens_router
-from .rest.users import router as users_router
 from .rest.users_new import router as users_new_router
 from .views import router as views_router
 
@@ -31,7 +30,6 @@ api_router.include_router(episodes_router)
 api_router.include_router(notification_router)
 api_router.include_router(seasons_router)
 api_router.include_router(tokens_router)
-api_router.include_router(users_router)
 api_router.include_router(users_new_router)
 api_router.include_router(links_router)
 api_router.include_router(favorites_router)

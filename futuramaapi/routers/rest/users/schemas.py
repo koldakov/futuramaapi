@@ -105,7 +105,7 @@ class ConfirmationBody(BaseModel, TemplateBodyMixin):
         self.url = HttpUrl.build(
             scheme=self.url.scheme,
             host=self.url.host,
-            path="api/users/activate",
+            path="users/activate",
             query=f"sig={self.signature}",
         )
         return self
