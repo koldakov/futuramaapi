@@ -99,18 +99,3 @@ async def cookie_user_from_form_data(
 
     user._cookie_session = auth_session.key
     return user
-
-
-async def user_from_cookies(
-    request: Request,
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> User | None:
-    try:
-        session_id: str = request.cookies[User.cookie_auth_key]
-    except KeyError:
-        return None
-
-    try:
-        return await User.from_cookie_session_id(session, session_id)
-    except ModelNotFoundError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None

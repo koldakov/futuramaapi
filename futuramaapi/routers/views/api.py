@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Request, Response, status
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
 from futuramaapi.routers.services.about.get_about import GetAboutService
 from futuramaapi.routers.services.auth.get_user_auth import GetUserAuthService
+from futuramaapi.routers.services.auth.logout_cookie_session_user import LogoutCookieSessionUserService
 from futuramaapi.routers.services.changelog.get_changelog import GetChangelogService
 from futuramaapi.routers.services.index.get_index import GetIndexService
 from futuramaapi.routers.services.sitemaps.get_sitemap import GetSiteMapService
@@ -122,6 +123,22 @@ async def user_auth(
     request: Request,
 ) -> Response:
     service: GetUserAuthService = GetUserAuthService(
+        context={
+            "request": request,
+        },
+    )
+    return await service()
+
+
+@router.post(
+    "/logout",
+    include_in_schema=False,
+    name="logout_cookie_session_user",
+)
+async def logout_cookie_session_user(
+    request: Request,
+) -> RedirectResponse:
+    service: LogoutCookieSessionUserService = LogoutCookieSessionUserService(
         context={
             "request": request,
         },
