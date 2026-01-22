@@ -1,8 +1,12 @@
-from fastapi import APIRouter, Request, Response, status
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, Request, Response, status
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
+from fastapi.security import OAuth2PasswordRequestForm
 
 from futuramaapi.routers.services.about.get_about import GetAboutService
+from futuramaapi.routers.services.auth.auth_cookie_session_user import AuthCookieSessionUserService
 from futuramaapi.routers.services.auth.get_user_auth import GetUserAuthService
 from futuramaapi.routers.services.auth.logout_cookie_session_user import LogoutCookieSessionUserService
 from futuramaapi.routers.services.changelog.get_changelog import GetChangelogService
@@ -139,6 +143,28 @@ async def logout_cookie_session_user(
     request: Request,
 ) -> RedirectResponse:
     service: LogoutCookieSessionUserService = LogoutCookieSessionUserService(
+        context={
+            "request": request,
+        },
+    )
+    return await service()
+
+
+@router.post(
+    "/auth",
+    include_in_schema=False,
+    name="auth_cookie_session_user",
+)
+async def auth_cookie_session_user(
+    request: Request,
+    form_data: Annotated[
+        OAuth2PasswordRequestForm,
+        Depends(),
+    ],
+) -> RedirectResponse:
+    service: AuthCookieSessionUserService = AuthCookieSessionUserService(
+        username=form_data.username,
+        password=form_data.password,
         context={
             "request": request,
         },

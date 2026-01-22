@@ -1,16 +1,15 @@
 from typing import Annotated, Literal
 
-from fastapi import Depends, Form, HTTPException, Request, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import Depends, Form, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from pydantic import SecretStr
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.mixins.pydantic import DecodedTokenError
-from futuramaapi.repositories.models import AuthSessionModel
 from futuramaapi.repositories.session import get_async_session
 from futuramaapi.routers.exceptions import ModelNotFoundError
 from futuramaapi.routers.rest.tokens.schemas import DecodedUserToken
-from futuramaapi.routers.rest.users.schemas import User, UserPasswordError, UserUpdateRequest
+from futuramaapi.routers.rest.users.schemas import User, UserUpdateRequest
 
 _oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/tokens/users/auth")
 
@@ -78,24 +77,3 @@ def password_from_form_data(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Passwords mismatch") from None
 
     return UserUpdateRequest(password=password1.get_secret_value())
-
-
-async def cookie_user_from_form_data(
-    request: Request,
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
-) -> User | None:
-    try:
-        user: User = await User.auth(session, form_data.username, form_data.password)
-    except (ModelNotFoundError, UserPasswordError):
-        return None
-
-    auth_session: AuthSessionModel = AuthSessionModel()
-    auth_session.user_id = user.id
-    auth_session.ip_address = request.client.host
-
-    session.add(auth_session)
-    await session.commit()
-
-    user._cookie_session = auth_session.key
-    return user

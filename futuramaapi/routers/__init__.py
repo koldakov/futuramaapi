@@ -9,7 +9,6 @@ from .rest.favorites import router as favorites_router
 from .rest.links import router as links_router
 from .rest.notifications import router as notification_router
 from .rest.randoms import router as randoms_router
-from .rest.root import router as root_router
 from .rest.seasons import router as seasons_router
 from .rest.tokens import router as tokens_router
 from .rest.users import router as users_router
@@ -19,7 +18,6 @@ from .views import router as views_router
 __all__ = [
     "api_router",
     "graphql_router",
-    "root_router",
     "views_router",
 ]
 
