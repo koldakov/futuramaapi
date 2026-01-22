@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any, ClassVar, Self
 
-from pydantic import EmailStr, Field, HttpUrl, PrivateAttr, SecretStr, computed_field, field_validator, model_validator
+from pydantic import EmailStr, Field, HttpUrl, PrivateAttr, SecretStr, model_validator
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.core import feature_flags, settings
@@ -11,8 +11,8 @@ from futuramaapi.mixins.pydantic import (
     TemplateBodyMixin,
 )
 from futuramaapi.repositories import ModelDoesNotExistError
-from futuramaapi.repositories.models import AuthSessionModel, LinkModel, UserModel
-from futuramaapi.routers.exceptions import ModelExistsError, ModelNotFoundError
+from futuramaapi.repositories.models import AuthSessionModel, UserModel
+from futuramaapi.routers.exceptions import ModelNotFoundError
 from futuramaapi.routers.rest.tokens.schemas import DecodedUserToken
 
 
@@ -53,37 +53,6 @@ class UserPasswordError(UserBaseError): ...
 
 
 class UserAlreadyActivatedError(UserBaseError): ...
-
-
-class UserUpdateRequest(BaseModel):
-    name: str | None = Field(
-        min_length=1,
-        max_length=64,
-        default=None,
-    )
-    surname: str | None = Field(
-        min_length=1,
-        max_length=64,
-        default=None,
-    )
-    middle_name: str | None = Field(
-        default=None,
-        min_length=1,
-        max_length=64,
-    )
-    password: SecretStr | None = Field(
-        default=None,
-        min_length=8,
-        max_length=128,
-    )
-    is_subscribed: bool | None = None
-
-    @field_validator("password", mode="after")
-    @classmethod
-    def hash_password(cls, value: SecretStr | None, /) -> SecretStr | None:
-        if value is None:
-            return None
-        return SecretStr(cls.hasher.encode(value.get_secret_value()))
 
 
 class UserActivateRequest(BaseModel):
@@ -211,51 +180,3 @@ class User(UserBase, BaseModelDatabaseMixin):
                 "password": password.get_secret_value(),
             },
         )
-
-
-class Link(BaseModel, BaseModelDatabaseMixin):
-    model: ClassVar[type[LinkModel]] = LinkModel
-
-    url: HttpUrl = Field(
-        examples=[
-            "https://example.com",
-        ],
-    )
-    shortened: str = Field(
-        examples=[
-            "LWlWthH",
-        ],
-    )
-    created_at: datetime
-    counter: int
-    path_prefix: ClassVar[str] = "s"
-
-    @computed_field(  # type: ignore[misc]
-        examples=[
-            settings.build_url(path=f"{path_prefix}/LWlWthH", is_static=False).unicode_string(),
-        ],
-        return_type=str,
-    )
-    @property
-    def shortened_url(self) -> str:
-        return settings.build_url(path=f"{self.path_prefix}/{self.shortened}", is_static=False).unicode_string()
-
-    @classmethod
-    async def create(
-        cls,
-        session: AsyncSession,
-        data: BaseModel,
-        /,
-        extra_fields: dict[
-            str,
-            Any,
-        ]
-        | None = None,
-    ) -> Self:
-        for _ in range(3):
-            try:
-                return await super().create(session, data, extra_fields=extra_fields)
-            except ModelExistsError:
-                continue
-
-        raise ModelExistsError() from None
