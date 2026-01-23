@@ -1,11 +1,16 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
+from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import SecretStr
 
 from futuramaapi.routers.exceptions import UnauthorizedResponse
-from futuramaapi.routers.rest.users.schemas import User
+from futuramaapi.routers.services.tokens.get_auth_user_token import (
+    GetAuthUserTokenResponse,
+    GetAuthUserTokenService,
+)
 
-from .dependencies import from_form_data, refresh_token
+from .dependencies import refresh_token
 from .schemas import UserToken
 
 router: APIRouter = APIRouter(
@@ -21,12 +26,15 @@ router: APIRouter = APIRouter(
             "model": UnauthorizedResponse,
         },
     },
-    response_model=UserToken,
-    name="user_token_auth",
+    response_model=GetAuthUserTokenResponse,
+    name="get_user_auth_token",
 )
-async def token_auth_user(
-    user: Annotated[User, Depends(from_form_data)],
-) -> UserToken:
+async def get_user_auth_token(
+    form_data: Annotated[
+        OAuth2PasswordRequestForm,
+        Depends(),
+    ],
+) -> GetAuthUserTokenResponse:
     """Authenticate user.
 
     JSON Web Token (JWT) authentication is a popular method for securing web applications and APIs.
@@ -35,7 +43,11 @@ async def token_auth_user(
 
     Use a token in a response to get secured stored data of your user.
     """
-    return UserToken.from_user(user)
+    service: GetAuthUserTokenService = GetAuthUserTokenService(
+        username=form_data.username,
+        password=SecretStr(form_data.password),
+    )
+    return await service()
 
 
 @router.post(
