@@ -2,8 +2,10 @@ from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from typing import Any, ClassVar, TypeVar
 
+import jwt
 from fastapi import HTTPException, Request, status
 from fastapi_pagination import Page
+from jwt import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
 from pydantic import Field
 from sqlalchemy import Result, Select, select
 from sqlalchemy.exc import NoResultFound
@@ -15,10 +17,8 @@ from futuramaapi.__version__ import __version__
 from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.helpers.templates import templates
-from futuramaapi.mixins.pydantic import DecodedTokenError
 from futuramaapi.repositories.models import AuthSessionModel, UserModel
 from futuramaapi.repositories.session import session_manager
-from futuramaapi.routers.rest.tokens.schemas import DecodedUserToken
 from futuramaapi.utils import config, metadata
 
 TResponse = TypeVar(
@@ -147,14 +147,29 @@ class BaseUserAuthenticatedService[TResponse](BaseSessionService[TResponse], ABC
 
         return self._user
 
-    @property
-    def __get_user_statement(self) -> Select[tuple[UserModel]]:
+    def __get_decoded_token(
+        self,
+        *,
+        algorithm="HS256",
+    ) -> dict[str, Any]:
         try:
-            decoded_token: DecodedUserToken = DecodedUserToken.decode(self.token, allowed_type="access")
-        except DecodedTokenError:
+            decoded_token: dict[str, Any] = jwt.decode(
+                self.token,
+                key=settings.secret_key.get_secret_value(),
+                algorithms=[algorithm],
+            )
+        except (ExpiredSignatureError, InvalidSignatureError, InvalidTokenError):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
 
-        return select(UserModel).where(UserModel.id == decoded_token.user.id)
+        if decoded_token["type"] != "access":
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
+
+        return decoded_token
+
+    @property
+    def __get_user_statement(self) -> Select[tuple[UserModel]]:
+        decoded_token: dict[str, Any] = self.__get_decoded_token()
+        return select(UserModel).where(UserModel.id == decoded_token["user"]["id"])
 
     async def __set_user(self) -> None:
         try:
