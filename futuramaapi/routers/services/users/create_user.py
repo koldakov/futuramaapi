@@ -1,6 +1,11 @@
+import uuid
+from datetime import UTC, datetime, timedelta
+from typing import Any, ClassVar
+
+import jwt
 from asyncpg import UniqueViolationError
 from fastapi import HTTPException, status
-from pydantic import EmailStr, Field, SecretStr, field_validator
+from pydantic import EmailStr, Field, HttpUrl, SecretStr, field_validator
 from sqlalchemy import exc
 
 from futuramaapi.core import feature_flags, settings
@@ -9,7 +14,6 @@ from futuramaapi.repositories.models import UserModel
 from futuramaapi.routers.services import BaseSessionService
 
 from .get_user_me import GetUserMeResponse
-from .resend_user_confirmation import ConfirmationBody
 
 
 class CreateUserRequest(BaseModel):
@@ -49,28 +53,60 @@ class CreateUserResponse(GetUserMeResponse):
     pass
 
 
-async def _send_confirmation_email(user_model: UserModel, /) -> None:
-    if not feature_flags.activate_users:
-        return
-
-    await settings.email.send(
-        [user_model.email],
-        "FuturamaAPI - Account Activation",
-        ConfirmationBody.model_validate(
-            {
-                "user": {
-                    "id": user_model.id,
-                    "name": user_model.name,
-                    "surname": user_model.surname,
-                },
-            },
-        ),
-        "emails/confirmation.html",
-    )
-
-
 class CreateUserService(BaseSessionService[CreateUserResponse]):
     request_data: CreateUserRequest
+
+    expiration_time: ClassVar[int] = 3 * 24 * 60 * 60
+
+    def _get_signature(
+        self,
+        user: UserModel,
+        /,
+        *,
+        algorithm: str = "HS256",
+    ) -> str:
+        return jwt.encode(
+            {
+                "exp": datetime.now(UTC) + timedelta(seconds=self.expiration_time),
+                "nonce": uuid.uuid4().hex,
+                "type": "access",
+                "user": {
+                    "id": user.id,
+                },
+            },
+            settings.secret_key.get_secret_value(),
+            algorithm=algorithm,
+        )
+
+    def _get_confirmation_url(self, user: UserModel, /) -> str:
+        url: HttpUrl = HttpUrl.build(
+            scheme="https",
+            host=settings.trusted_host,
+            path="users/activate",
+            query=f"sig={self._get_signature(user)}",
+        )
+        return str(url)
+
+    def _get_template_body(self, user: UserModel, /) -> dict[str, Any]:
+        return {
+            "user": {
+                "id": user.id,
+                "name": user.name,
+                "surname": user.surname,
+            },
+            "url": self._get_confirmation_url(user),
+        }
+
+    async def _send_confirmation_email(self, user: UserModel, /) -> None:
+        if not feature_flags.activate_users:
+            return
+
+        await settings.email.send(
+            [user.email],
+            "FuturamaAPI - Account Activation",
+            self._get_template_body(user),
+            "emails/confirmation.html",
+        )
 
     def _get_user(self) -> UserModel:
         return UserModel(
@@ -82,8 +118,8 @@ class CreateUserService(BaseSessionService[CreateUserResponse]):
         )
 
     async def process(self, *args, **kwargs) -> CreateUserResponse:
-        user_model: UserModel = self._get_user()
-        self.session.add(user_model)
+        user: UserModel = self._get_user()
+        self.session.add(user)
 
         try:
             await self.session.commit()
@@ -95,6 +131,6 @@ class CreateUserService(BaseSessionService[CreateUserResponse]):
                 ) from None
             raise
 
-        await _send_confirmation_email(user_model)
+        await self._send_confirmation_email(user)
 
-        return CreateUserResponse.model_validate(user_model)
+        return CreateUserResponse.model_validate(user)
