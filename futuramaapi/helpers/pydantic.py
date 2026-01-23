@@ -1,11 +1,10 @@
 import json
-import uuid
 from typing import Any, ClassVar
 
 import pydash
 from cryptography.fernet import Fernet
 from pydantic import BaseModel as BaseModelOrig
-from pydantic import ConfigDict, Field, SecretStr
+from pydantic import ConfigDict, SecretStr
 from pydash import camel_case
 
 from futuramaapi.core import settings
@@ -38,14 +37,3 @@ class BaseModel(BaseModelOrig):
                     }
                 )
         return pydash.merge(result, secret_dict)
-
-
-class BaseTokenModel(BaseModel):
-    def refresh_nonce(self) -> None:
-        self.nonce = self._get_nonce()
-
-    @staticmethod
-    def _get_nonce() -> str:
-        return uuid.uuid4().hex
-
-    nonce: str = Field(default_factory=_get_nonce)
