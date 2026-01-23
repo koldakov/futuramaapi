@@ -1,14 +1,15 @@
-from typing import ClassVar, Self
+import uuid
+from datetime import UTC, datetime, timedelta
+from typing import Any, ClassVar
 
-from pydantic import EmailStr, HttpUrl, model_validator
+import jwt
+from pydantic import EmailStr, HttpUrl
 from sqlalchemy import Result, Select, select
 from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.core import feature_flags, settings
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.mixins.pydantic import TemplateBodyMixin
 from futuramaapi.repositories.models import UserModel
-from futuramaapi.routers.rest.tokens.schemas import DecodedUserToken
 from futuramaapi.routers.services import BaseSessionService
 
 
@@ -16,35 +17,53 @@ class RequestChangeUserPasswordRequest(BaseModel):
     email: EmailStr
 
 
-class PasswordResetBody(BaseModel, TemplateBodyMixin):
-    expiration_time: ClassVar[int] = 15 * 60
-
-    @property
-    def signature(self) -> str:
-        return DecodedUserToken(
-            type="access",
-            user={
-                "id": self.user.id,
-            },
-        ).tokenize(self.expiration_time)
-
-    @model_validator(mode="after")
-    def build_confirmation_url(self) -> Self:
-        self.url = HttpUrl.build(
-            scheme=self.url.scheme,
-            host=self.url.host,
-            path="passwords/change",
-            query=f"sig={self.signature}",
-        )
-        return self
-
-
 class RequestChangeUserPasswordService(BaseSessionService[None]):
     request_data: RequestChangeUserPasswordRequest
+
+    expiration_time: ClassVar[int] = 15 * 60
 
     @property
     def _user_statement(self) -> Select[tuple[UserModel]]:
         return select(UserModel).where(UserModel.email == self.request_data.email)
+
+    def _get_signature(
+        self,
+        user: UserModel,
+        /,
+        *,
+        algorithm: str = "HS256",
+    ) -> str:
+        return jwt.encode(
+            {
+                "exp": datetime.now(UTC) + timedelta(seconds=self.expiration_time),
+                "nonce": uuid.uuid4().hex,
+                "type": "access",
+                "user": {
+                    "id": user.id,
+                },
+            },
+            settings.secret_key.get_secret_value(),
+            algorithm=algorithm,
+        )
+
+    def _get_confirmation_url(self, user: UserModel, /) -> str:
+        url: HttpUrl = HttpUrl.build(
+            scheme="https",
+            host=settings.trusted_host,
+            path="passwords/change",
+            query=f"sig={self._get_signature(user)}",
+        )
+        return str(url)
+
+    def _get_template_body(self, user: UserModel, /) -> dict[str, Any]:
+        return {
+            "user": {
+                "id": user.id,
+                "name": user.name,
+                "surname": user.surname,
+            },
+            "url": self._get_confirmation_url(user),
+        }
 
     async def process(self, *args, **kwargs) -> None:
         if not feature_flags.activate_users:
@@ -52,21 +71,13 @@ class RequestChangeUserPasswordService(BaseSessionService[None]):
 
         result: Result[tuple[UserModel]] = await self.session.execute(self._user_statement)
         try:
-            user_model: UserModel = result.scalars().one()
+            user: UserModel = result.scalars().one()
         except NoResultFound:
             return
 
         await settings.email.send(
-            [user_model.email],
+            [user.email],
             "FuturamaAPI - Password Reset",
-            PasswordResetBody.model_validate(
-                {
-                    "user": {
-                        "id": user_model.id,
-                        "name": user_model.name,
-                        "surname": user_model.surname,
-                    },
-                }
-            ),
+            self._get_template_body(user),
             "emails/password_reset.html",
         )
