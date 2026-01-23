@@ -9,9 +9,11 @@ from futuramaapi.routers.services.tokens.get_auth_user_token import (
     GetAuthUserTokenResponse,
     GetAuthUserTokenService,
 )
-
-from .dependencies import refresh_token
-from .schemas import UserToken
+from futuramaapi.routers.services.tokens.get_refreshed_auth_user_token import (
+    GetRefreshedAuthUserTokenRequest,
+    GetRefreshedAuthUserTokenResponse,
+    GetRefreshedAuthUserTokenService,
+)
 
 router: APIRouter = APIRouter(
     prefix="/tokens",
@@ -57,15 +59,18 @@ async def get_user_auth_token(
             "model": UnauthorizedResponse,
         },
     },
-    response_model=UserToken,
-    name="user_token_auth_refresh",
+    response_model=GetRefreshedAuthUserTokenResponse,
+    name="get_refreshed_user_auth_token",
 )
-async def refresh_token_auth_user(
-    token: Annotated[UserToken, Depends(refresh_token)],
-) -> UserToken:
+async def get_refreshed_user_auth_token(
+    data: GetRefreshedAuthUserTokenRequest,
+) -> GetRefreshedAuthUserTokenResponse:
     """Refresh JWT.
 
     The Refresh JWT Token endpoint extends the lifespan of JSON Web Tokens (JWTs) without requiring user
     reauthentication. This API feature ensures uninterrupted access to secured resources.
     """
-    return token
+    service: GetRefreshedAuthUserTokenService = GetRefreshedAuthUserTokenService(
+        request_data=data,
+    )
+    return await service()
