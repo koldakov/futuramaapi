@@ -1,8 +1,21 @@
 .auth-page {
   min-height: 70vh;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: flex-start;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.auth-warning {
+  margin-top: 1.25rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.6rem;
+  background: rgba(234, 179, 8, 0.12); /* amber */
+  color: #92400e;
+  font-size: 0.8rem;
+  text-align: center;
+  line-height: 1.4;
 }
 
 .auth-container {
