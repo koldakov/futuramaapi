@@ -4,14 +4,14 @@
 
 {% block title %}Sign In{% endblock %}
 
-{% block extra_styles %}{% endblock %}
-
-{% block main_info %}
-<link
-  href="{{ relative_path_for('static', path='/css/auth.css') }}"
-  rel="stylesheet"
-/>
+{% block extra_styles %}
+  <link
+    href="{{ relative_path_for('static', path='/css/auth.css') }}"
+    rel="stylesheet"
+  />
 {% endblock %}
+
+{% block main_info %}{% endblock %}
 
 {% block main_content %}
 <div
