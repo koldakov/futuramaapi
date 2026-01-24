@@ -1,7 +1,7 @@
 from typing import Any, ClassVar
 
 import jwt
-from fastapi import HTTPException, Request, Response, status
+from fastapi import Request, Response
 from jwt import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
 from sqlalchemy import Result, Select, select
 
@@ -65,10 +65,14 @@ class GetSignatureUserPasswordChangeFormService(BaseSessionService[Response]):
         try:
             token_: dict[str, Any] = self._get_decoded_token()
         except TokenDecodeError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token expired or invalid.",
-            ) from None
+            return templates.TemplateResponse(
+                self.request,
+                self.template_name,
+                context={
+                    "_project": _project_context,
+                    "current_user": None,
+                },
+            )
 
         return templates.TemplateResponse(
             self.request,
