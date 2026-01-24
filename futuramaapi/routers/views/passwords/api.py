@@ -9,6 +9,7 @@ from futuramaapi.routers.services.passwords.change_signature_requested_user_pass
     ChangeSignatureRequestedUserPasswordService,
 )
 from futuramaapi.routers.services.passwords.get_signature_user_password_change_form import (
+    ChangeFormError,
     GetSignatureUserPasswordChangeFormService,
 )
 
@@ -30,11 +31,21 @@ router = APIRouter(
 )
 async def get_signature_user_password_change_form(
     request: Request,
-    sig: str,
+    sig: Annotated[
+        str,
+        Query(),
+    ],
+    error_type: Annotated[
+        ChangeFormError | None,
+        Query(
+            alias="errorType",
+        ),
+    ] = None,
 ) -> Response:
     """Show password change form."""
     service: GetSignatureUserPasswordChangeFormService = GetSignatureUserPasswordChangeFormService(
         signature=sig,
+        error_type=error_type,
         context={
             "request": request,
         },

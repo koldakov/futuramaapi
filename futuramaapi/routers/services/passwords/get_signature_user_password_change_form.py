@@ -1,3 +1,4 @@
+from enum import StrEnum
 from typing import Any, ClassVar
 
 import jwt
@@ -16,10 +17,15 @@ class TokenDecodeError(Exception):
     pass
 
 
+class ChangeFormError(StrEnum):
+    password_mismatch = "password_mismatch"  # noqa: S105
+
+
 class GetSignatureUserPasswordChangeFormService(BaseSessionService[Response]):
     template_name: ClassVar[str] = "password_change.html"
 
     signature: str
+    error_type: ChangeFormError | None
 
     algorithm: ClassVar[str] = "HS256"
 
@@ -59,6 +65,7 @@ class GetSignatureUserPasswordChangeFormService(BaseSessionService[Response]):
         return {
             "_project": _project_context,
             "current_user": await self._get_current_user(token["user"]["id"]),
+            "error_type": self.error_type,
         }
 
     async def process(self, *args, **kwargs) -> Response:

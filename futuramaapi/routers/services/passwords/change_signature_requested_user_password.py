@@ -1,7 +1,7 @@
 from typing import Any, ClassVar
 
 import jwt
-from fastapi import HTTPException, Request, status
+from fastapi import Request, status
 from fastapi.responses import RedirectResponse
 from jwt import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
 from pydantic import SecretStr
@@ -10,6 +10,8 @@ from sqlalchemy import Update, update
 from futuramaapi.core import settings
 from futuramaapi.repositories.models import UserModel
 from futuramaapi.routers.services import BaseSessionService
+
+from .get_signature_user_password_change_form import ChangeFormError
 
 
 class TokenDecodeError(Exception):
@@ -56,14 +58,14 @@ class ChangeSignatureRequestedUserPasswordService(BaseSessionService[RedirectRes
         try:
             token_: dict[str, Any] = self._get_decoded_token()
         except TokenDecodeError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token expired or invalid.",
-            ) from None
+            return RedirectResponse(
+                url=f"/passwords/change?sig={self.signature}",
+                status_code=status.HTTP_303_SEE_OTHER,
+            )
 
         if self.password1.get_secret_value() != self.password2.get_secret_value():
             return RedirectResponse(
-                self.request.headers.get("referer", self.request.url.path),
+                url=f"/passwords/change?sig={self.signature}&errorType={ChangeFormError.password_mismatch}",
                 status_code=status.HTTP_303_SEE_OTHER,
             )
 

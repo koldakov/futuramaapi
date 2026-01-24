@@ -7,15 +7,23 @@
   padding-bottom: 2rem;
 }
 
-.auth-warning {
+.auth-message {
   margin-top: 1.25rem;
   padding: 0.6rem 0.75rem;
   border-radius: 0.6rem;
-  background: rgba(234, 179, 8, 0.12); /* amber */
-  color: #92400e;
   font-size: 0.8rem;
   text-align: center;
   line-height: 1.4;
+}
+
+.auth-message.warning {
+  background: rgba(234, 179, 8, 0.12);
+  color: #92400e;
+}
+
+.auth-message.error {
+  background: rgba(220, 38, 38, 0.12);
+  color: #b91c1c;
 }
 
 .auth-container {
