@@ -8,6 +8,9 @@ from futuramaapi.repositories.models import AuthSessionModel
 from futuramaapi.routers.services import BaseSessionService
 
 
+class CookieAuthKeyIsNotDefinedError(Exception): ...
+
+
 class LogoutCookieSessionUserService(BaseSessionService[RedirectResponse]):
     cookie_auth_key: ClassVar[str] = "Authorization"
 
@@ -23,11 +26,22 @@ class LogoutCookieSessionUserService(BaseSessionService[RedirectResponse]):
 
     @property
     def _expire_session_statement(self) -> Update:
-        key: str = self.request.cookies[self.cookie_auth_key]
+        try:
+            key: str = self.request.cookies[self.cookie_auth_key]
+        except KeyError:
+            raise CookieAuthKeyIsNotDefinedError() from None
+
         return update(AuthSessionModel).where(AuthSessionModel.key == key).values(expired=True)
 
     async def process(self, *args, **kwargs) -> RedirectResponse:
-        await self.session.execute(self._expire_session_statement)
+        try:
+            await self.session.execute(self._expire_session_statement)
+        except CookieAuthKeyIsNotDefinedError:
+            return RedirectResponse(
+                "/auth",
+                status_code=status.HTTP_302_FOUND,
+            )
+
         await self.session.commit()
 
         response: RedirectResponse = RedirectResponse(
