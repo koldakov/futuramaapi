@@ -8,6 +8,7 @@ from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.repositories.models import AuthSessionModel, UserModel
 from futuramaapi.routers.services import BaseSessionService
+from futuramaapi.routers.services.auth.get_user_auth import UserAuthMessageType
 
 
 class AuthCookieSessionUserService(BaseSessionService[RedirectResponse]):
@@ -64,13 +65,13 @@ class AuthCookieSessionUserService(BaseSessionService[RedirectResponse]):
             user: UserModel = await self._get_user()
         except NoResultFound:
             return RedirectResponse(
-                url="/auth",
+                url=f"/auth?messageType={UserAuthMessageType.incorrect_login}",
                 status_code=status.HTTP_302_FOUND,
             )
 
         if not self.hasher.verify(self.password.get_secret_value(), user.password):
             return RedirectResponse(
-                url="/auth",
+                url=f"/auth?messageType={UserAuthMessageType.incorrect_login}",
                 status_code=status.HTTP_302_FOUND,
             )
 

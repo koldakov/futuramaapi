@@ -28,6 +28,19 @@
       >
         Welcome back
       </h1>
+        {% if message_type == 'password_changed' %}
+          <p
+            class="auth-message success"
+          >
+            Password changed! You’re all set to sign in.
+          </p>
+        {% elif message_type == 'incorrect_login' %}
+          <p
+            class="auth-message error"
+          >
+            Hmm… that username or password doesn’t match our records.
+          </p>
+        {% endif %}
         <p
           class="auth-subtitle"
         >

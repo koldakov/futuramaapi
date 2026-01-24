@@ -26,6 +26,11 @@
   color: #b91c1c;
 }
 
+.auth-message.success {
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+}
+
 .auth-container {
   width: 100%;
   max-width: 380px;

@@ -10,6 +10,7 @@ from sqlalchemy import Update, update
 from futuramaapi.core import settings
 from futuramaapi.repositories.models import UserModel
 from futuramaapi.routers.services import BaseSessionService
+from futuramaapi.routers.services.auth.get_user_auth import UserAuthMessageType
 
 from .get_signature_user_password_change_form import ChangeFormError
 
@@ -73,6 +74,6 @@ class ChangeSignatureRequestedUserPasswordService(BaseSessionService[RedirectRes
         await self.session.commit()
 
         return RedirectResponse(
-            url="/auth",
+            url=f"/auth?messageType={UserAuthMessageType.password_changed}",
             status_code=status.HTTP_302_FOUND,
         )

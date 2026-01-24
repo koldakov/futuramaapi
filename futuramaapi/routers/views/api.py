@@ -1,13 +1,13 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Request, Response, status
+from fastapi import APIRouter, Depends, Query, Request, Response, status
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
 from futuramaapi.routers.services.about.get_about import GetAboutService
 from futuramaapi.routers.services.auth.auth_cookie_session_user import AuthCookieSessionUserService
-from futuramaapi.routers.services.auth.get_user_auth import GetUserAuthService
+from futuramaapi.routers.services.auth.get_user_auth import GetUserAuthService, UserAuthMessageType
 from futuramaapi.routers.services.auth.logout_cookie_session_user import LogoutCookieSessionUserService
 from futuramaapi.routers.services.changelog.get_changelog import GetChangelogService
 from futuramaapi.routers.services.index.get_index import GetIndexService
@@ -125,8 +125,15 @@ async def get_changelog(
 )
 async def user_auth(
     request: Request,
+    message_type: Annotated[
+        UserAuthMessageType | None,
+        Query(
+            alias="messageType",
+        ),
+    ] = None,
 ) -> Response:
     service: GetUserAuthService = GetUserAuthService(
+        message_type=message_type,
         context={
             "request": request,
         },
