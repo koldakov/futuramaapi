@@ -126,7 +126,7 @@ class CreateUserService(BaseSessionService[CreateUserResponse]):
         except exc.IntegrityError as err:
             if err.orig.sqlstate == UniqueViolationError.sqlstate:
                 raise HTTPException(
-                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
                     detail="User already exists.",
                 ) from None
             raise

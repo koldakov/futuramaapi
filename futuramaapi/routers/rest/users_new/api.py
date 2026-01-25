@@ -43,7 +43,7 @@ router = APIRouter(
         status.HTTP_201_CREATED: {
             "model": CreateUserResponse,
         },
-        status.HTTP_422_UNPROCESSABLE_ENTITY: {
+        status.HTTP_422_UNPROCESSABLE_CONTENT: {
             "description": "User already exists.",
         },
     },

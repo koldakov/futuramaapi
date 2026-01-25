@@ -76,7 +76,7 @@ class GetCharacterNotificationService(BaseService):
                 character: CharacterModel = (await session.execute(self.statement)).scalars().one()
             except NoResultFound:
                 raise HTTPException(
-                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
                     detail=f"Character with id={self.pk} not found",
                 ) from None
 
