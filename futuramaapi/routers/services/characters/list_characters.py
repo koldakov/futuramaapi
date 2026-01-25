@@ -3,7 +3,7 @@ from typing import Literal
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from pydantic import Field
-from sqlalchemy import ColumnElement, Select, select
+from sqlalchemy import ColumnElement, Select, UnaryExpression, select
 
 from futuramaapi.repositories.models import CharacterModel
 from futuramaapi.routers.services import BaseSessionService
@@ -28,8 +28,7 @@ class ListCharactersService(BaseSessionService[Page[ListCharactersResponse]]):
     )
 
     @property
-    def statement(self) -> Select[tuple[CharacterModel]]:
-        statement: Select[tuple[CharacterModel]] = select(CharacterModel)
+    def __where(self) -> list[ColumnElement[bool]]:
         where: list[ColumnElement[bool]] = []
 
         if self.gender is not None:
@@ -53,13 +52,20 @@ class ListCharactersService(BaseSessionService[Page[ListCharactersResponse]]):
         if self.query is not None:
             where.append(CharacterModel.name.ilike(self.query))
 
+        return where
+
+    @property
+    def __order_by(self) -> UnaryExpression[CharacterModel]:
         order_by = CharacterModel.str_to_field(self.order_by)
         if self.direction == "asc":
-            order_by = order_by.asc()
-        else:
-            order_by = order_by.desc()
+            return order_by.asc()
 
-        return statement.where(*where).order_by(order_by)
+        return order_by.desc()
+
+    @property
+    def statement(self) -> Select[tuple[CharacterModel]]:
+        statement: Select[tuple[CharacterModel]] = select(CharacterModel)
+        return statement.where(*self.__where).order_by(self.__order_by)
 
     async def process(self, *args, **kwargs) -> Page[ListCharactersResponse]:
         return await paginate(
