@@ -5,7 +5,11 @@ import pytest
 from faker import Faker
 
 from futuramaapi.repositories import INT32
-from futuramaapi.repositories.models import CharacterModel
+from futuramaapi.repositories.models import (
+    CharacterModel,
+    EpisodeModel,
+    SeasonModel,
+)
 
 
 @pytest.fixture
@@ -21,6 +25,36 @@ def character(faker: Faker):
         species=CharacterModel.CharacterSpecies.HUMAN,
         created_at=datetime.now(UTC),
         image=faker.image_url(),
+    )
+
+
+@pytest.fixture
+def production_code():
+    return "1ACV01"
+
+
+@pytest.fixture
+def episode(faker: Faker, production_code):
+    return EpisodeModel(
+        id=faker.random_int(
+            min=1,
+            max=INT32,
+        ),
+        created_at=faker.date_time(),
+        name=faker.name(),
+        air_date=faker.date_object(),
+        duration=faker.random_int(),
+        production_code=production_code,
+        broadcast_number=faker.random_int(
+            min=1,
+            max=INT32,
+        ),
+        season=SeasonModel(
+            id=faker.random_int(
+                min=1,
+                max=INT32,
+            ),
+        ),
     )
 
 
