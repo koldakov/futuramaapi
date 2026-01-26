@@ -119,7 +119,7 @@ How are you? Hope You've enjoyed the project.
 There are my contacts:
 
 - [Linkedin](https://www.linkedin.com/in/aiv/)
-- [Send an Email](mailto:coldie322@gmail.com?subject=[GitHub]-qworpa)
+- [Send an Email](mailto:ivan.koldakov@gmail.com?subject=[GitHub]-qworpa)
 
 Project Link: https://github.com/koldakov/futuramaapi
 
