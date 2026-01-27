@@ -50,4 +50,4 @@ jobs:
 
       - name: Run unit tests
         run: |
-          poetry run pytest
+          poetry run pytest --cov=futuramaapi --cov-fail-under=70
