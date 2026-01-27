@@ -118,6 +118,12 @@ class CreateUserService(BaseSessionService[CreateUserResponse]):
         )
 
     async def process(self, *args, **kwargs) -> CreateUserResponse:
+        if not feature_flags.user_signup:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User registration is currently disabled",
+            )
+
         user: UserModel = self._get_user()
         self.session.add(user)
 

@@ -256,6 +256,7 @@ class FeatureFlags(BaseSettings):
     activate_users: bool = False
     enable_sentry: bool = False
     count_api_requests: bool = True
+    user_signup: bool = True
 
 
 feature_flags = FeatureFlags()
