@@ -1,0 +1,11 @@
+[run]
+omit =
+    */__main__.py
+    futuramaapi/workers/_dramatiq/_runner.py
+    futuramaapi/repositories/migrations/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    @abstractmethod
+    if TYPE_CHECKING:
