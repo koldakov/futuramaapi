@@ -3,6 +3,7 @@ omit =
     */__main__.py
     futuramaapi/workers/_dramatiq/_runner.py
     futuramaapi/repositories/migrations/*
+    futuramaapi/web_servers/hypercorn.py
 
 [report]
 exclude_lines =
