@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.2] - 2026-01-27
+
+### Improved
+
+- General codebase.
+
+### Security
+
+- Updated libraries. This addresses the following vulnerability:
+  - [CVE-2026-24486](https://nvd.nist.gov/vuln/detail/CVE-2026-24486).
+
 ## [1.12.1] - 2026-01-24
 
 ### Added
@@ -528,6 +539,7 @@ For now auto generation available only
 - GraphQL: Season selection by id
 - GraphQL: Paginated (Edged) seasons selection
 
+[1.12.2]: https://github.com/koldakov/futuramaapi/releases/tag/1.12.2
 [1.12.1]: https://github.com/koldakov/futuramaapi/releases/tag/1.12.1
 [1.11.8]: https://github.com/koldakov/futuramaapi/releases/tag/1.11.8
 [1.11.7]: https://github.com/koldakov/futuramaapi/releases/tag/1.11.7
