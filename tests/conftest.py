@@ -59,6 +59,33 @@ def episode(faker: Faker, production_code):
 
 
 @pytest.fixture
+def season(faker: Faker, production_code):
+    return SeasonModel(
+        id=faker.random_int(
+            min=1,
+            max=INT32,
+        ),
+        episodes=[
+            EpisodeModel(
+                id=faker.random_int(
+                    min=1,
+                    max=INT32,
+                ),
+                created_at=faker.date_time(),
+                name=faker.name(),
+                air_date=faker.date_object(),
+                duration=faker.random_int(),
+                production_code=production_code,
+                broadcast_number=faker.random_int(
+                    min=1,
+                    max=INT32,
+                ),
+            ),
+        ],
+    )
+
+
+@pytest.fixture
 def mock_session_manager(request):
     mock_context = AsyncMock()
     mock_session = AsyncMock()
