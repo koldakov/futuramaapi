@@ -1,3 +1,4 @@
+from asyncpg import UniqueViolationError
 from fastapi import HTTPException, status
 from sqlalchemy import Insert, Result, insert, select
 from sqlalchemy.exc import IntegrityError
@@ -21,11 +22,15 @@ class CreateFavoriteCharacterService(BaseUserAuthenticatedService[None]):
     async def process(self) -> None:
         try:
             result: Result[tuple[FavoriteCharacterModel]] = await self.session.execute(self._statement)
-        except IntegrityError:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Character is already in favorites",
-            ) from None
+        except IntegrityError as err:
+            await self.session.rollback()
+
+            if err.orig.sqlstate == UniqueViolationError.sqlstate:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="Character is already in favorites",
+                ) from None
+            raise
 
         if result.rowcount == 0:
             raise HTTPException(
