@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.12.3] - 2026-01-29
+## [1.13.1] - 2026-01-29
 
 ### Added
+
 - Character modal now dynamically loads character details from the API.
 - Badges for status, gender, and species added under the character image.
 - Endpoint display added next to character name.
@@ -547,7 +548,7 @@ For now auto generation available only
 - GraphQL: Season selection by id
 - GraphQL: Paginated (Edged) seasons selection
 
-[1.12.3]: https://github.com/koldakov/futuramaapi/releases/tag/1.12.3
+[1.13.1]: https://github.com/koldakov/futuramaapi/releases/tag/1.13.1
 [1.12.2]: https://github.com/koldakov/futuramaapi/releases/tag/1.12.2
 [1.12.1]: https://github.com/koldakov/futuramaapi/releases/tag/1.12.1
 [1.11.8]: https://github.com/koldakov/futuramaapi/releases/tag/1.11.8
