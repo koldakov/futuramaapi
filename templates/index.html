@@ -68,9 +68,11 @@
                     class="mt-auto d-flex justify-content-between align-items-center"
                   >
                     <a
-                      href="{{ relative_path_for('character', character_id=character.id) }}"
+                      href="#"
                       class="btn btn-sm btn-outline-secondary"
-                      target="_blank"
+                      data-bs-toggle="modal"
+                      data-bs-target="#character-modal"
+                      data-character-id="{{ character.id }}"
                     >
                       View
                     </a>
@@ -87,5 +89,101 @@
         </div>
       </div>
     </div>
+    <div
+      class="modal fade"
+      id="character-modal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"
+      >
+        <div
+          class="modal-content"
+        >
+          <div
+            class="modal-header align-items-start"
+          >
+            <div
+              class="flex-grow-1"
+            >
+              <h4
+                class="modal-title mb-0"
+                id="modal-character-name"
+              >
+                Loading...
+              </h4>
+              <code
+                id="modal-endpoint"
+                class="small text-muted"
+              ></code>
+            </div>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div
+            class="modal-body p-0"
+          >
+            <div
+              class="p-4 border-bottom text-center"
+            >
+              <div
+                class="mb-2"
+              >
+                <img
+                  id="modal-character-image"
+                  class="img-fluid rounded shadow-sm"
+                  width="280"
+                  height="280"
+                  alt=""
+                  src=""
+                  loading="lazy"
+                />
+              </div>
+              <div
+                class="d-flex justify-content-center gap-1 flex-wrap"
+              >
+                <span
+                  id="modal-status"
+                  class="badge"
+                ></span>
+                <span
+                  id="modal-gender"
+                  class="badge"
+                ></span>
+                <span
+                  id="modal-species"
+                  class="badge"
+                ></span>
+              </div>
+            </div>
+            <div
+              class="p-4"
+            >
+              <div
+                class="mb-1 fw-semibold small text-muted"
+              >
+                API response
+              </div>
+              <pre
+                id="modal-json"
+                class="bg-light p-3 rounded small"
+                style="max-height: 320px; overflow: auto;"
+              ></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   {% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+  <script
+    src="{{ relative_path_for('static', path='/js/index.js') }}"
+  ></script>
 {% endblock %}
