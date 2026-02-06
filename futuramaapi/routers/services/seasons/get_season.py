@@ -1,4 +1,3 @@
-from fastapi import HTTPException, status
 from pydantic import Field
 from sqlalchemy import Select, select
 from sqlalchemy.exc import NoResultFound
@@ -6,7 +5,7 @@ from sqlalchemy.orm import selectinload
 
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import SeasonModel
-from futuramaapi.routers.services._base import BaseSessionService
+from futuramaapi.routers.services._base import BaseSessionService, NotFoundError
 
 
 class GetSeasonResponse(BaseModel):
@@ -35,9 +34,6 @@ class GetSeasonService(BaseSessionService[GetSeasonResponse]):
         try:
             season_model: SeasonModel = (await self.session.execute(self.statement)).scalars().one()
         except NoResultFound:
-            raise HTTPException(
-                detail="Season not found",
-                status_code=status.HTTP_404_NOT_FOUND,
-            ) from None
+            raise NotFoundError("Season not found") from None
 
         return GetSeasonResponse.model_validate(season_model)

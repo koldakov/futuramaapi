@@ -1,8 +1,7 @@
-from fastapi import HTTPException, status
 from sqlalchemy import Delete, Result, delete, select
 
 from futuramaapi.repositories.models import CharacterModel, FavoriteCharacterModel
-from futuramaapi.routers.services import BaseUserAuthenticatedService
+from futuramaapi.routers.services import BaseUserAuthenticatedService, NotFoundError
 
 
 class DeleteFavoriteCharacterService(BaseUserAuthenticatedService[None]):
@@ -19,9 +18,6 @@ class DeleteFavoriteCharacterService(BaseUserAuthenticatedService[None]):
     async def process(self, *args, **kwargs) -> None:
         result: Result[tuple[FavoriteCharacterModel]] = await self.session.execute(self._statement)
         if result.rowcount == 0:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Character not found or not in favorites",
-            )
+            raise NotFoundError("Character not found or not in favorites")
 
         await self.session.commit()

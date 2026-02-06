@@ -28,6 +28,10 @@ class UnauthorizedError(ServiceError):
     """Unauthorized Error."""
 
 
+class NotFoundError(ServiceError):
+    """Not Found Error."""
+
+
 class BaseService[TResponse](BaseModel, ABC):
     context: dict[str, Any] | None = None
 

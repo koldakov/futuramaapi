@@ -1,10 +1,9 @@
-from fastapi import HTTPException, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy import Result, Select, select
 from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.repositories.models import LinkModel
-from futuramaapi.routers.services import BaseSessionService
+from futuramaapi.routers.services import BaseSessionService, NotFoundError
 
 
 class RedirectLinkService(BaseSessionService[RedirectResponse]):
@@ -19,10 +18,7 @@ class RedirectLinkService(BaseSessionService[RedirectResponse]):
         try:
             link: LinkModel = result.scalars().one()
         except NoResultFound:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Link not found.",
-            ) from None
+            raise NotFoundError("Link not found") from None
 
         link.counter += 1
         await self.session.commit()

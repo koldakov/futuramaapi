@@ -1,9 +1,8 @@
-from fastapi import HTTPException, status
 from sqlalchemy import Select, func, select
 from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.repositories.models import CharacterModel
-from futuramaapi.routers.services import BaseSessionService
+from futuramaapi.routers.services import BaseSessionService, NotFoundError
 from futuramaapi.routers.services.characters.get_character import GetCharacterResponse
 
 
@@ -20,6 +19,6 @@ class GetRandomCharacterService(BaseSessionService[GetRandomCharacterResponse]):
         try:
             result: CharacterModel = (await self.session.execute(self.statement)).scalars().one()
         except NoResultFound:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND) from None
+            raise NotFoundError() from None
 
         return GetRandomCharacterResponse.model_validate(result)

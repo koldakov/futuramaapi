@@ -99,12 +99,20 @@ class FuturamaAPI(FastAPI):
         )
 
     def _exception_handler(self, _: Request, exc) -> Response:
-        from futuramaapi.routers.services import ServiceError, UnauthorizedError  # noqa: PLC0415
+        from futuramaapi.routers.services import (  # noqa: PLC0415
+            NotFoundError,
+            ServiceError,
+            UnauthorizedError,
+        )
 
         exception_to_value: dict[type[ServiceError], _ExceptionValue] = {
             UnauthorizedError: _ExceptionValue(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 default_message="Unauthorized",
+            ),
+            NotFoundError: _ExceptionValue(
+                status_code=status.HTTP_404_NOT_FOUND,
+                default_message="Not Found",
             ),
         }
 

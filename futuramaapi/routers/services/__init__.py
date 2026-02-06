@@ -2,6 +2,7 @@ from ._base import (
     BaseService,
     BaseSessionService,
     BaseUserAuthenticatedService,
+    NotFoundError,
     ServiceError,
     UnauthorizedError,
 )
@@ -12,6 +13,7 @@ __all__ = [
     "BaseSessionService",
     "BaseTemplateService",
     "BaseUserAuthenticatedService",
+    "NotFoundError",
     "ServiceError",
     "UnauthorizedError",
 ]

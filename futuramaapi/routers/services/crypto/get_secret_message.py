@@ -2,14 +2,14 @@ import random
 from dataclasses import dataclass
 from typing import ClassVar
 
-from fastapi import HTTPException, Request, status
+from fastapi import Request
 from pydantic import field_serializer
 from sqlalchemy import Row, RowMapping, Select, case, select, update
 from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import SecretMessageModel
-from futuramaapi.routers.services import BaseSessionService
+from futuramaapi.routers.services import BaseSessionService, NotFoundError
 
 
 class GetSecretMessageResponse(BaseModel):
@@ -316,10 +316,7 @@ class GetSecretMessageService(BaseSessionService[GetSecretMessageResponse]):
         try:
             row: Row[tuple[SecretMessageRow]] = (await self.session.execute(self._get_statement(request))).one()
         except NoResultFound:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Not Found",
-            ) from None
+            raise NotFoundError() from None
 
         await self.session.commit()
 

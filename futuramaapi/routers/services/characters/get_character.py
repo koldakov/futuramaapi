@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from fastapi import HTTPException, status
 from fastapi_storages import StorageImage
 from pydantic import HttpUrl, field_validator
 from sqlalchemy import Select, select
@@ -9,7 +8,7 @@ from sqlalchemy.exc import NoResultFound
 from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import CharacterModel
-from futuramaapi.routers.services import BaseSessionService
+from futuramaapi.routers.services import BaseSessionService, NotFoundError
 
 
 class GetCharacterResponse(BaseModel):
@@ -42,6 +41,6 @@ class GetCharacterService(BaseSessionService[GetCharacterResponse]):
         try:
             result: CharacterModel = (await self.session.execute(self.statement)).scalars().one()
         except NoResultFound:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Character not found") from None
+            raise NotFoundError("Character not found") from None
 
         return GetCharacterResponse.model_validate(result)

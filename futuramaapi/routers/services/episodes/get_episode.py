@@ -1,6 +1,5 @@
 from datetime import date, datetime
 
-from fastapi import HTTPException, status
 from pydantic import Field, computed_field
 from sqlalchemy import Select, select
 from sqlalchemy.exc import NoResultFound
@@ -8,7 +7,7 @@ from sqlalchemy.orm import selectinload
 
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import EpisodeModel
-from futuramaapi.routers.services import BaseSessionService
+from futuramaapi.routers.services import BaseSessionService, NotFoundError
 
 
 class GetEpisodeResponse(BaseModel):
@@ -53,9 +52,6 @@ class GetEpisodeService(BaseSessionService[GetEpisodeResponse]):
         try:
             season_model: EpisodeModel = (await self.session.execute(self.statement)).scalars().one()
         except NoResultFound:
-            raise HTTPException(
-                detail="Episode not found",
-                status_code=status.HTTP_404_NOT_FOUND,
-            ) from None
+            raise NotFoundError("Episode not found") from None
 
         return GetEpisodeResponse.model_validate(season_model)

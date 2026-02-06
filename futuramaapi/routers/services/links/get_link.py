@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import ClassVar
 
-from fastapi import HTTPException, status
 from pydantic import Field, HttpUrl, computed_field
 from sqlalchemy import Result, Select, select
 from sqlalchemy.exc import NoResultFound
@@ -9,7 +8,7 @@ from sqlalchemy.exc import NoResultFound
 from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import LinkModel
-from futuramaapi.routers.services import BaseUserAuthenticatedService
+from futuramaapi.routers.services import BaseUserAuthenticatedService, NotFoundError
 
 
 class GetLinkResponse(BaseModel):
@@ -52,9 +51,6 @@ class GetLinkService(BaseUserAuthenticatedService[GetLinkResponse]):
         try:
             link: LinkModel = result.scalars().one()
         except NoResultFound:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Link not found.",
-            ) from None
+            raise NotFoundError("Link not found") from None
 
         return GetLinkResponse.model_validate(link)

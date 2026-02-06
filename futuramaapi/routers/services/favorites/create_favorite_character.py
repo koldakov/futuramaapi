@@ -4,7 +4,7 @@ from sqlalchemy import Insert, Result, insert, select
 from sqlalchemy.exc import IntegrityError
 
 from futuramaapi.repositories.models import CharacterModel, FavoriteCharacterModel
-from futuramaapi.routers.services import BaseUserAuthenticatedService
+from futuramaapi.routers.services import BaseUserAuthenticatedService, NotFoundError
 
 
 class CreateFavoriteCharacterService(BaseUserAuthenticatedService[None]):
@@ -33,9 +33,6 @@ class CreateFavoriteCharacterService(BaseUserAuthenticatedService[None]):
             raise
 
         if result.rowcount == 0:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Character not found",
-            )
+            raise NotFoundError("Character not found")
 
         await self.session.commit()
