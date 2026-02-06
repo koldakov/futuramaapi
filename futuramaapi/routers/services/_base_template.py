@@ -58,10 +58,11 @@ class BaseTemplateService(BaseSessionService[_TemplateResponse], ABC):
 
     @property
     def __auth_session_statement(self) -> Select[tuple[AuthSessionModel]]:
-        statement: Select[tuple[AuthSessionModel]] = select(AuthSessionModel)
-        statement = statement.where(AuthSessionModel.key == self.request.cookies[self._cookie_auth_key])
-        statement = statement.options(selectinload(AuthSessionModel.user))
-        return statement
+        return (
+            select(AuthSessionModel)
+            .where(AuthSessionModel.key == self.request.cookies[self._cookie_auth_key])
+            .options(selectinload(AuthSessionModel.user))
+        )
 
     async def _get_current_user(self) -> UserModel | None:
         if self._cookie_auth_key not in self.request.cookies:
