@@ -2,7 +2,6 @@ from unittest.mock import MagicMock
 
 import pytest
 from faker import Faker
-from fastapi import HTTPException
 from fastapi_storages import FileSystemStorage, StorageImage
 from pydantic import HttpUrl
 from sqlalchemy.exc import NoResultFound
@@ -10,6 +9,7 @@ from sqlalchemy.exc import NoResultFound
 from futuramaapi.core import settings
 from futuramaapi.repositories import INT32
 from futuramaapi.repositories.models import CharacterModel
+from futuramaapi.routers.services import NotFoundError
 from futuramaapi.routers.services.characters.get_character import GetCharacterService
 
 
@@ -94,5 +94,5 @@ class TestGetCharacterService:
         )
 
         # Act & Assert
-        with pytest.raises(HTTPException):
+        with pytest.raises(NotFoundError):
             await service()

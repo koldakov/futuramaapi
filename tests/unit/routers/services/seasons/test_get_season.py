@@ -2,11 +2,11 @@ from unittest.mock import MagicMock
 
 import pytest
 from faker import Faker
-from fastapi import HTTPException
 from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.repositories import INT32
 from futuramaapi.repositories.models import SeasonModel
+from futuramaapi.routers.services import NotFoundError
 from futuramaapi.routers.services.seasons.get_season import GetSeasonService
 
 
@@ -42,5 +42,5 @@ class TestGetSeasonService:
         )
 
         # Act & Assert
-        with pytest.raises(HTTPException):
+        with pytest.raises(NotFoundError):
             await service()

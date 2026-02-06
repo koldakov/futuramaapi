@@ -1,10 +1,10 @@
 from unittest.mock import MagicMock
 
 import pytest
-from fastapi import HTTPException
 from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.repositories.models import SeasonModel
+from futuramaapi.routers.services import NotFoundError
 from futuramaapi.routers.services.randoms.get_random_season import GetRandomSeasonService
 
 
@@ -35,5 +35,5 @@ class TestGetRandomSeasonService:
         service = GetRandomSeasonService()
 
         # Act & Assert
-        with pytest.raises(HTTPException):
+        with pytest.raises(NotFoundError):
             await service()
