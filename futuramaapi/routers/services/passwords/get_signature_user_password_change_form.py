@@ -10,7 +10,7 @@ from futuramaapi.core import settings
 from futuramaapi.helpers.templates import templates
 from futuramaapi.repositories.models import UserModel
 from futuramaapi.routers.services import BaseSessionService
-from futuramaapi.routers.services._base import _project_context
+from futuramaapi.routers.services._base_template import _project_context
 
 
 class TokenDecodeError(Exception):
