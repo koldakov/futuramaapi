@@ -1,10 +1,11 @@
 import mimetypes
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, NamedTuple, Self
 
 import sentry_sdk
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response, status
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import add_pagination
 from starlette.routing import Host, Mount, Route, WebSocketRoute
@@ -21,6 +22,11 @@ if TYPE_CHECKING:
     from pydantic import HttpUrl
 
 mimetypes.add_type("image/webp", ".webp")
+
+
+class _ExceptionValue(NamedTuple):
+    status_code: int
+    default_message: str
 
 
 class FuturamaAPI(FastAPI):
@@ -92,12 +98,36 @@ class FuturamaAPI(FastAPI):
             name="static",
         )
 
+    def _exception_handler(self, _: Request, exc) -> Response:
+        from futuramaapi.routers.services import ServiceError, UnauthorizedError  # noqa: PLC0415
+
+        exception_to_value: dict[type[ServiceError], _ExceptionValue] = {
+            UnauthorizedError: _ExceptionValue(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                default_message="Unauthorized",
+            ),
+        }
+
+        exc_value = exception_to_value[type(exc)]
+        return JSONResponse(
+            status_code=exc_value.status_code,
+            content={
+                "detail": str(exc) or exc_value.default_message,
+            },
+        )
+
+    def _setup_exceptions(self) -> None:
+        from futuramaapi.routers.services import ServiceError  # noqa: PLC0415
+
+        self.add_exception_handler(ServiceError, self._exception_handler)
+
     def setup(self) -> None:
         super().setup()
 
         self._setup_middlewares()
         self._setup_routers()
         self._setup_static()
+        self._setup_exceptions()
 
         add_pagination(self)
 

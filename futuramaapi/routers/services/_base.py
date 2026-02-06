@@ -3,7 +3,6 @@ from collections.abc import Sequence
 from typing import Any, TypeVar
 
 import jwt
-from fastapi import HTTPException, status
 from fastapi_pagination import Page
 from jwt import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
 from sqlalchemy import Select, select
@@ -19,6 +18,14 @@ TResponse = TypeVar(
     "TResponse",
     bound=BaseModel | Sequence[BaseModel] | Page[BaseModel] | None,
 )
+
+
+class ServiceError(Exception):
+    """Service Error."""
+
+
+class UnauthorizedError(ServiceError):
+    """Unauthorized Error."""
 
 
 class BaseService[TResponse](BaseModel, ABC):
@@ -79,10 +86,10 @@ class BaseUserAuthenticatedService[TResponse](BaseSessionService[TResponse], ABC
                 algorithms=[algorithm],
             )
         except (ExpiredSignatureError, InvalidSignatureError, InvalidTokenError):
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
+            raise UnauthorizedError() from None
 
         if decoded_token["type"] != "access":
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
+            raise UnauthorizedError() from None
 
         return decoded_token
 
@@ -95,7 +102,7 @@ class BaseUserAuthenticatedService[TResponse](BaseSessionService[TResponse], ABC
         try:
             self._user = (await self.session.execute(self.__get_user_statement)).scalars().one()
         except NoResultFound:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
+            raise UnauthorizedError() from None
 
     async def __call__(self, *args, **kwargs) -> TResponse:
         async with session_manager.session() as session:

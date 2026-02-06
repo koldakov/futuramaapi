@@ -1,14 +1,14 @@
 from typing import Any, ClassVar
 
 import jwt
-from fastapi import HTTPException, Request, status
+from fastapi import Request, status
 from jwt import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
 from sqlalchemy import Result, Select, Update, select, update
 from starlette.responses import RedirectResponse
 
 from futuramaapi.core import settings
 from futuramaapi.repositories.models import UserModel
-from futuramaapi.routers.services import BaseSessionService
+from futuramaapi.routers.services import BaseSessionService, UnauthorizedError
 
 
 class TokenDecodeError(Exception):
@@ -59,18 +59,12 @@ class ActivateSignatureUserService(BaseSessionService[RedirectResponse]):
         try:
             token_: dict[str, Any] = self._get_decoded_token()
         except TokenDecodeError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token expired or invalid.",
-            ) from None
+            raise UnauthorizedError("Token expired or invalid.") from None
 
         user: UserModel = await self._get_current_user(token_["user"]["id"])
 
         if user.is_confirmed:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="User already activated.",
-            )
+            raise UnauthorizedError("User already activated.")
 
         await self.session.execute(self.__get_update_user_statement(user.id))
         await self.session.commit()

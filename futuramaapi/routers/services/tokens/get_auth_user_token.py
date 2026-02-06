@@ -3,7 +3,6 @@ from datetime import UTC, datetime, timedelta
 from typing import Any, ClassVar, Self
 
 import jwt
-from fastapi import HTTPException, status
 from pydantic import Field, SecretStr
 from sqlalchemy import Result, Select, select
 from sqlalchemy.exc import NoResultFound
@@ -11,7 +10,7 @@ from sqlalchemy.exc import NoResultFound
 from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import UserModel
-from futuramaapi.routers.services import BaseSessionService
+from futuramaapi.routers.services import BaseSessionService, UnauthorizedError
 
 
 class GetAuthUserTokenResponse(BaseModel):
@@ -76,13 +75,11 @@ class GetAuthUserTokenService(BaseSessionService[GetAuthUserTokenResponse]):
         try:
             return result.scalars().one()
         except NoResultFound:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-            ) from None
+            raise UnauthorizedError() from None
 
     async def process(self, *args, **kwargs) -> GetAuthUserTokenResponse:
         user: UserModel = await self._get_user()
         if not self.hasher.verify(self.password.get_secret_value(), user.password):
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+            raise UnauthorizedError()
 
         return GetAuthUserTokenResponse.from_user_model(user)

@@ -1,7 +1,6 @@
 from typing import Any, ClassVar
 
 import jwt
-from fastapi import HTTPException, status
 from jwt import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
 from pydantic import Field
 from sqlalchemy import Result, Select, select
@@ -10,7 +9,7 @@ from sqlalchemy.exc import NoResultFound
 from futuramaapi.core import settings
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import UserModel
-from futuramaapi.routers.services import BaseSessionService
+from futuramaapi.routers.services import BaseSessionService, UnauthorizedError
 
 from .get_auth_user_token import GetAuthUserTokenResponse
 
@@ -38,7 +37,7 @@ class GetRefreshedAuthUserTokenService(BaseSessionService[GetRefreshedAuthUserTo
         try:
             user: UserModel = result.scalars().one()
         except NoResultFound:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
+            raise UnauthorizedError() from None
 
         return user
 
@@ -50,10 +49,10 @@ class GetRefreshedAuthUserTokenService(BaseSessionService[GetRefreshedAuthUserTo
                 algorithms=[self.algorithm],
             )
         except (ExpiredSignatureError, InvalidSignatureError, InvalidTokenError):
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from None
+            raise UnauthorizedError() from None
 
         if decoded_token["type"] != "refresh":
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+            raise UnauthorizedError()
 
         user: UserModel = await self._get_user(decoded_token)
 
