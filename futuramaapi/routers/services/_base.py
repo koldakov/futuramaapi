@@ -32,6 +32,10 @@ class NotFoundError(ServiceError):
     """Not Found Error."""
 
 
+class ConflictError(ServiceError):
+    """Conflict Error."""
+
+
 class BaseService[TResponse](BaseModel, ABC):
     context: dict[str, Any] | None = None
 

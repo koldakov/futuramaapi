@@ -1,10 +1,9 @@
 from asyncpg import UniqueViolationError
-from fastapi import HTTPException, status
 from sqlalchemy import Insert, Result, insert, select
 from sqlalchemy.exc import IntegrityError
 
 from futuramaapi.repositories.models import CharacterModel, FavoriteCharacterModel
-from futuramaapi.routers.services import BaseUserAuthenticatedService, NotFoundError
+from futuramaapi.routers.services import BaseUserAuthenticatedService, ConflictError, NotFoundError
 
 
 class CreateFavoriteCharacterService(BaseUserAuthenticatedService[None]):
@@ -26,10 +25,7 @@ class CreateFavoriteCharacterService(BaseUserAuthenticatedService[None]):
             await self.session.rollback()
 
             if err.orig.sqlstate == UniqueViolationError.sqlstate:
-                raise HTTPException(
-                    status_code=status.HTTP_409_CONFLICT,
-                    detail="Character is already in favorites",
-                ) from None
+                raise ConflictError("Character is already in favorites") from None
             raise
 
         if result.rowcount == 0:
