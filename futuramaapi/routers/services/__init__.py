@@ -3,9 +3,12 @@ from ._base import (
     BaseSessionService,
     BaseUserAuthenticatedService,
     ConflictError,
+    EmptyUpdateError,
     NotFoundError,
+    RegistrationDisabledError,
     ServiceError,
     UnauthorizedError,
+    ValidationError,
 )
 from ._base_template import BaseTemplateService
 
@@ -15,7 +18,10 @@ __all__ = [
     "BaseTemplateService",
     "BaseUserAuthenticatedService",
     "ConflictError",
+    "EmptyUpdateError",
     "NotFoundError",
+    "RegistrationDisabledError",
     "ServiceError",
     "UnauthorizedError",
+    "ValidationError",
 ]

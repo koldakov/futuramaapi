@@ -46,7 +46,7 @@ router = APIRouter(
         status.HTTP_403_FORBIDDEN: {
             "description": "User registration is currently disabled.",
         },
-        status.HTTP_422_UNPROCESSABLE_CONTENT: {
+        status.HTTP_409_CONFLICT: {
             "description": "User already exists.",
         },
     },
@@ -155,7 +155,7 @@ async def update_user(
     "/confirmations/resend",
     status_code=status.HTTP_202_ACCEPTED,
     responses={
-        status.HTTP_400_BAD_REQUEST: {
+        status.HTTP_409_CONFLICT: {
             "description": "User already activated.",
         },
         status.HTTP_401_UNAUTHORIZED: {

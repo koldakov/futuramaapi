@@ -3,11 +3,10 @@ from datetime import UTC, datetime, timedelta
 from typing import Any, ClassVar
 
 import jwt
-from fastapi import HTTPException, status
 from pydantic import HttpUrl
 
 from futuramaapi.core import feature_flags, settings
-from futuramaapi.routers.services import BaseUserAuthenticatedService
+from futuramaapi.routers.services import BaseUserAuthenticatedService, ConflictError
 
 
 class ResendUserConfirmationService(BaseUserAuthenticatedService[None]):
@@ -52,10 +51,7 @@ class ResendUserConfirmationService(BaseUserAuthenticatedService[None]):
 
     async def process(self, *args, **kwargs) -> None:
         if self.user.is_confirmed:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User already activated.",
-            ) from None
+            raise ConflictError("User already confirmed.") from None
 
         if not feature_flags.activate_users:
             return

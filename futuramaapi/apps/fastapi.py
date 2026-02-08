@@ -101,7 +101,9 @@ class FuturamaAPI(FastAPI):
     def _exception_handler(self, _: Request, exc) -> Response:
         from futuramaapi.routers.services import (  # noqa: PLC0415
             ConflictError,
+            EmptyUpdateError,
             NotFoundError,
+            RegistrationDisabledError,
             ServiceError,
             UnauthorizedError,
         )
@@ -118,6 +120,14 @@ class FuturamaAPI(FastAPI):
             NotFoundError: _ExceptionValue(
                 status_code=status.HTTP_404_NOT_FOUND,
                 default_message="Not Found",
+            ),
+            RegistrationDisabledError: _ExceptionValue(
+                status_code=status.HTTP_403_FORBIDDEN,
+                default_message="User registration is currently disabled.",
+            ),
+            EmptyUpdateError: _ExceptionValue(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                default_message="No data to update.",
             ),
         }
 

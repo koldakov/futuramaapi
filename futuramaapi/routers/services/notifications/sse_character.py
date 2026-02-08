@@ -4,7 +4,7 @@ from datetime import datetime
 from random import randint
 from typing import TYPE_CHECKING
 
-from fastapi import HTTPException, Request, status
+from fastapi import Request
 from pydantic import Field
 from sqlalchemy import Select, select
 from sqlalchemy.exc import NoResultFound
@@ -13,7 +13,7 @@ from sse_starlette import EventSourceResponse, ServerSentEvent
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import CharacterModel
 from futuramaapi.repositories.session import session_manager
-from futuramaapi.routers.services import BaseService
+from futuramaapi.routers.services import BaseService, NotFoundError
 from futuramaapi.routers.services.characters.get_character import GetCharacterResponse
 
 if TYPE_CHECKING:
@@ -75,9 +75,6 @@ class GetCharacterNotificationService(BaseService):
             try:
                 character: CharacterModel = (await session.execute(self.statement)).scalars().one()
             except NoResultFound:
-                raise HTTPException(
-                    status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-                    detail=f"Character with id={self.pk} not found",
-                ) from None
+                raise NotFoundError(f"Character with id={self.pk} not found") from None
 
         return EventSourceResponse(self.get_move(request, character))

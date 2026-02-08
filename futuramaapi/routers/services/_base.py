@@ -36,6 +36,18 @@ class ConflictError(ServiceError):
     """Conflict Error."""
 
 
+class RegistrationDisabledError(ServiceError):
+    """Registration Disabled Error."""
+
+
+class ValidationError(ServiceError):
+    """Validation Error."""
+
+
+class EmptyUpdateError(ValidationError):
+    """Empty Update Error."""
+
+
 class BaseService[TResponse](BaseModel, ABC):
     context: dict[str, Any] | None = None
 

@@ -4,6 +4,7 @@ from fastapi import APIRouter, Path, Request, status
 from sse_starlette.sse import EventSourceResponse
 
 from futuramaapi.repositories import INT32
+from futuramaapi.routers.exceptions import NotFoundResponse
 from futuramaapi.routers.services.notifications.sse_character import (
     CharacterNotificationResponse,
     GetCharacterNotificationService,
@@ -21,7 +22,10 @@ router: APIRouter = APIRouter(
     responses={
         status.HTTP_200_OK: {
             "model": CharacterNotificationResponse,
-        }
+        },
+        status.HTTP_404_NOT_FOUND: {
+            "model": NotFoundResponse,
+        },
     },
     status_code=status.HTTP_200_OK,
 )

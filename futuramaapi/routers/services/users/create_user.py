@@ -4,14 +4,13 @@ from typing import Any, ClassVar
 
 import jwt
 from asyncpg import UniqueViolationError
-from fastapi import HTTPException, status
 from pydantic import EmailStr, Field, HttpUrl, SecretStr, field_validator
 from sqlalchemy import exc
 
 from futuramaapi.core import feature_flags, settings
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories.models import UserModel
-from futuramaapi.routers.services import BaseSessionService
+from futuramaapi.routers.services import BaseSessionService, ConflictError, RegistrationDisabledError
 
 from .get_user_me import GetUserMeResponse
 
@@ -119,10 +118,7 @@ class CreateUserService(BaseSessionService[CreateUserResponse]):
 
     async def process(self, *args, **kwargs) -> CreateUserResponse:
         if not feature_flags.user_signup:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="User registration is currently disabled",
-            )
+            raise RegistrationDisabledError()
 
         user: UserModel = self._get_user()
         self.session.add(user)
@@ -131,10 +127,7 @@ class CreateUserService(BaseSessionService[CreateUserResponse]):
             await self.session.commit()
         except exc.IntegrityError as err:
             if err.orig.sqlstate == UniqueViolationError.sqlstate:
-                raise HTTPException(
-                    status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-                    detail="User already exists.",
-                ) from None
+                raise ConflictError("User already exists.") from None
             raise
 
         await self._send_confirmation_email(user)

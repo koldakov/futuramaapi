@@ -1,8 +1,7 @@
-from fastapi import HTTPException, status
 from pydantic import Field, SecretStr, field_validator
 
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.routers.services import BaseUserAuthenticatedService
+from futuramaapi.routers.services import BaseUserAuthenticatedService, EmptyUpdateError
 
 from .get_user_me import GetUserMeResponse
 
@@ -48,10 +47,7 @@ class UpdateUserService(BaseUserAuthenticatedService[UpdateUserResponse]):
     async def process(self, *args, **kwargs) -> UpdateUserResponse:
         data: dict[str, str] = self.request_data.to_dict(by_alias=False, reveal_secrets=True, exclude_unset=True)
         if not data:
-            raise HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-                detail="No data to update.",
-            )
+            raise EmptyUpdateError()
 
         for field, value in data.items():
             setattr(self.user, field, value)
