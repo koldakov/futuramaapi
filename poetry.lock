@@ -650,14 +650,14 @@ idna = ">=2.0.0"
 
 [[package]]
 name = "faker"
-version = "40.1.2"
+version = "40.4.0"
 description = "Faker is a Python package that generates fake data for you."
 optional = false
 python-versions = ">=3.10"
 groups = ["test"]
 files = [
-    {file = "faker-40.1.2-py3-none-any.whl", hash = "sha256:93503165c165d330260e4379fd6dc07c94da90c611ed3191a0174d2ab9966a42"},
-    {file = "faker-40.1.2.tar.gz", hash = "sha256:b76a68163aa5f171d260fc24827a8349bc1db672f6a665359e8d0095e8135d30"},
+    {file = "faker-40.4.0-py3-none-any.whl", hash = "sha256:486d43c67ebbb136bc932406418744f9a0bdf2c07f77703ea78b58b77e9aa443"},
+    {file = "faker-40.4.0.tar.gz", hash = "sha256:76f8e74a3df28c3e2ec2caafa956e19e37a132fdc7ea067bc41783affcfee364"},
 ]
 
 [package.dependencies]
@@ -668,14 +668,14 @@ tzdata = ["tzdata"]
 
 [[package]]
 name = "fastapi"
-version = "0.128.3"
+version = "0.128.5"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "fastapi-0.128.3-py3-none-any.whl", hash = "sha256:c8cdf7c2182c9a06bf9cfa3329819913c189dc86389b90d5709892053582db29"},
-    {file = "fastapi-0.128.3.tar.gz", hash = "sha256:ed99383fd96063447597d5aa2a9ec3973be198e3b4fc10c55f15c62efdb21c60"},
+    {file = "fastapi-0.128.5-py3-none-any.whl", hash = "sha256:bceec0de8aa6564599c5bcc0593b0d287703562c848271fca8546fd2c87bf4dd"},
+    {file = "fastapi-0.128.5.tar.gz", hash = "sha256:a7173579fc162d6471e3c6fbd9a4b7610c7a3b367bcacf6c4f90d5d022cab711"},
 ]
 
 [package.dependencies]
@@ -720,14 +720,14 @@ redis = ["redis (>=6.4.0,<7.0.0)"]
 
 [[package]]
 name = "fastapi-pagination"
-version = "0.15.9"
+version = "0.15.10"
 description = "FastAPI pagination"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "fastapi_pagination-0.15.9-py3-none-any.whl", hash = "sha256:21f5ab465fb75e21a3454234603071711b679b1973ba2428e7a63db2221abc09"},
-    {file = "fastapi_pagination-0.15.9.tar.gz", hash = "sha256:e24b0419a6077a75f38970ada2a57e277845fb177cc2da7300374ee8be32e8b5"},
+    {file = "fastapi_pagination-0.15.10-py3-none-any.whl", hash = "sha256:d50071ebc93b519391f16ff6c3ba9e3603bd659963fe6774ba2f4d5037e17fd8"},
+    {file = "fastapi_pagination-0.15.10.tar.gz", hash = "sha256:0ba7d4f795059a91a9e89358af129f2114876452c1defaf198ea8e3419e9a3cd"},
 ]
 
 [package.dependencies]
@@ -2218,14 +2218,14 @@ full = ["httpx (>=0.27.0,<0.29.0)", "itsdangerous", "jinja2", "python-multipart 
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.291.2"
+version = "0.291.3"
 description = "A library for creating GraphQL APIs"
 optional = false
 python-versions = "<4.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "strawberry_graphql-0.291.2-py3-none-any.whl", hash = "sha256:f71d3669086c6747fd4760e6fafe3605d9a33f7d168886e5edd2b61a04972e56"},
-    {file = "strawberry_graphql-0.291.2.tar.gz", hash = "sha256:e6076604a786e8437bc64a27348584c082113442f072daf757b56e4863543a97"},
+    {file = "strawberry_graphql-0.291.3-py3-none-any.whl", hash = "sha256:ca0a2fdcaf631d05363d3a53390dc6829e7bd5948579ff185b6e4e1478687f95"},
+    {file = "strawberry_graphql-0.291.3.tar.gz", hash = "sha256:81414e99bf84b08df9dae1709798a3d31a6bfe40635b58fd4b2904cd71759491"},
 ]
 
 [package.dependencies]
@@ -2427,4 +2427,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "92f253dbd5a227877e37a5db4b021478c6b21c0027760aa24180d7fc076c6844"
+content-hash = "90fde2f1200a3c1d75604edd586e88b2640e01bf9406c33d4ab95b4e7e337e15"
