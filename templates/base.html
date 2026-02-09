@@ -121,8 +121,9 @@
           Futurama API
           <span
             class="ms-2 mt-1 px-2 py-1 bg-light border rounded text-primary fs-6"
+            title="Cached at {{ total_api_requests.cache.cached_at.strftime('%d.%m.%Y %H:%M:%S UTC') }}, new value in {{ total_api_requests.cache.ttl }} seconds."
           >
-            handled {{ total_api_requests }} requests
+            handled {{ total_api_requests.cache.value }} requests
           </span>
         </h1>
           <div
