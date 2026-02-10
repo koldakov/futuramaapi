@@ -5,8 +5,8 @@ from sqlalchemy import Result, insert
 from sqlalchemy.sql.dml import ReturningInsert
 
 from futuramaapi.core import settings
+from futuramaapi.db.models import SecretMessageModel
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.repositories.models import SecretMessageModel
 from futuramaapi.routers.services import BaseSessionService
 
 

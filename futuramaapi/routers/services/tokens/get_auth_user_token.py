@@ -8,8 +8,8 @@ from sqlalchemy import Result, Select, select
 from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.core import settings
+from futuramaapi.db.models import UserModel
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.repositories.models import UserModel
 from futuramaapi.routers.services import BaseSessionService, UnauthorizedError
 
 

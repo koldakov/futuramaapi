@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Path, Request, status
 from sse_starlette.sse import EventSourceResponse
 
-from futuramaapi.repositories import INT32
+from futuramaapi.db import INT32
 from futuramaapi.routers.exceptions import NotFoundResponse
 from futuramaapi.routers.services.notifications.sse_character import (
     CharacterNotificationResponse,

@@ -10,9 +10,9 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from futuramaapi.core import settings
+from futuramaapi.db.models import UserModel
+from futuramaapi.db.session import session_manager
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.repositories.models import UserModel
-from futuramaapi.repositories.session import session_manager
 
 TResponse = TypeVar(
     "TResponse",

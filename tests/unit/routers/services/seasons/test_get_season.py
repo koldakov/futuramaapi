@@ -4,8 +4,8 @@ import pytest
 from faker import Faker
 from sqlalchemy.exc import NoResultFound
 
-from futuramaapi.repositories import INT32
-from futuramaapi.repositories.models import SeasonModel
+from futuramaapi.db import INT32
+from futuramaapi.db.models import SeasonModel
 from futuramaapi.routers.services import NotFoundError
 from futuramaapi.routers.services.seasons.get_season import GetSeasonService
 

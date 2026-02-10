@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, Path, status
 from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from futuramaapi.repositories import INT32
-from futuramaapi.repositories.session import get_async_session
+from futuramaapi.db import INT32
+from futuramaapi.db.session import get_async_session
 from futuramaapi.routers.exceptions import NotFoundResponse
 from futuramaapi.routers.services.episodes.get_episode import (
     GetEpisodeResponse,

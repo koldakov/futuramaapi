@@ -7,8 +7,8 @@ from pydantic import HttpUrl
 from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.core import settings
-from futuramaapi.repositories import INT32
-from futuramaapi.repositories.models import CharacterModel
+from futuramaapi.db import INT32
+from futuramaapi.db.models import CharacterModel
 from futuramaapi.routers.services import NotFoundError
 from futuramaapi.routers.services.characters.get_character import GetCharacterService
 

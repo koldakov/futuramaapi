@@ -6,7 +6,7 @@ from aiocache import cached
 from sqlalchemy import Result, Select, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from futuramaapi.repositories.models import CharacterModel, RequestsCounterModel, SystemMessage, UserModel
+from futuramaapi.db.models import CharacterModel, RequestsCounterModel, SystemMessage, UserModel
 from futuramaapi.routers.services import BaseTemplateService
 
 _TOTAL_REQUESTS_TTL: Final[int] = 60 * 60

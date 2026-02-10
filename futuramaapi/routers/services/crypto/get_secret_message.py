@@ -7,8 +7,8 @@ from pydantic import field_serializer
 from sqlalchemy import Row, RowMapping, Select, case, select, update
 from sqlalchemy.exc import NoResultFound
 
+from futuramaapi.db.models import SecretMessageModel
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.repositories.models import SecretMessageModel
 from futuramaapi.routers.services import BaseSessionService, NotFoundError
 
 

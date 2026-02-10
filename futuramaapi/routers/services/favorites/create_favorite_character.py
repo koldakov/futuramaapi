@@ -2,7 +2,7 @@ from asyncpg import UniqueViolationError
 from sqlalchemy import Insert, Result, insert, select
 from sqlalchemy.exc import IntegrityError
 
-from futuramaapi.repositories.models import CharacterModel, FavoriteCharacterModel
+from futuramaapi.db.models import CharacterModel, FavoriteCharacterModel
 from futuramaapi.routers.services import BaseUserAuthenticatedService, ConflictError, NotFoundError
 
 

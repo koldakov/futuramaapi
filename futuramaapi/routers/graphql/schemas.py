@@ -5,8 +5,8 @@ from typing import Any, ClassVar
 import strawberry
 from strawberry.types import Info
 
-from futuramaapi.repositories import Base, FilterStatementKwargs
-from futuramaapi.repositories.models import CharacterModel, EpisodeModel, SeasonModel
+from futuramaapi.db import Base, FilterStatementKwargs
+from futuramaapi.db.models import CharacterModel, EpisodeModel, SeasonModel
 
 from .mixins import StrawberryDatabaseMixin
 from .validators import LimitsRule

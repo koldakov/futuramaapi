@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Path, status
 from fastapi_pagination import Page
 
-from futuramaapi.repositories import INT32
+from futuramaapi.db import INT32
 from futuramaapi.routers.rest.users.dependencies import _oauth2_scheme
 from futuramaapi.routers.services.links.create_link import (
     CreateLinkRequest,

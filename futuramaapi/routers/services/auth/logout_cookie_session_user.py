@@ -4,7 +4,7 @@ from fastapi import Request, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy import Update, update
 
-from futuramaapi.repositories.models import AuthSessionModel
+from futuramaapi.db.models import AuthSessionModel
 from futuramaapi.routers.services import BaseSessionService
 
 

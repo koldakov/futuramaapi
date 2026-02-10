@@ -6,8 +6,8 @@ from sqlalchemy import Select, select
 from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.core import settings
+from futuramaapi.db.models import CharacterModel
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.repositories.models import CharacterModel
 from futuramaapi.routers.services import BaseSessionService, NotFoundError
 
 

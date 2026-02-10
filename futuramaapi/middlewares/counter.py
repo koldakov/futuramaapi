@@ -2,7 +2,7 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.requests import Request
 from starlette.responses import Response
 
-from futuramaapi.repositories.models import RequestsCounterModel
+from futuramaapi.db.models import RequestsCounterModel
 
 
 def _get_url(request: Request, /) -> str:

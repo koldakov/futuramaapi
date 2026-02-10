@@ -2,7 +2,7 @@ from sqlalchemy import Select, func, select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import selectinload
 
-from futuramaapi.repositories.models import SeasonModel
+from futuramaapi.db.models import SeasonModel
 from futuramaapi.routers.services import BaseSessionService, NotFoundError
 from futuramaapi.routers.services.seasons.get_season import GetSeasonResponse
 

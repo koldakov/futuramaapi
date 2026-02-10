@@ -4,8 +4,8 @@ from pydantic import Field
 from sqlalchemy import Select, select
 from sqlalchemy.orm import selectinload
 
+from futuramaapi.db.models import SeasonModel
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.repositories.models import SeasonModel
 
 from ._base import (
     DoesNotExistCallbackResponse,

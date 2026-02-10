@@ -8,7 +8,7 @@ from pydantic import SecretStr
 from sqlalchemy import Update, update
 
 from futuramaapi.core import settings
-from futuramaapi.repositories.models import UserModel
+from futuramaapi.db.models import UserModel
 from futuramaapi.routers.services import BaseSessionService
 from futuramaapi.routers.services.auth.get_user_auth import UserAuthMessageType
 

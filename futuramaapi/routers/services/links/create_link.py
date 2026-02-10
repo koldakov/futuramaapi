@@ -1,7 +1,7 @@
 from pydantic import HttpUrl
 
+from futuramaapi.db.models import LinkModel
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.repositories.models import LinkModel
 from futuramaapi.routers.services import BaseUserAuthenticatedService
 
 from .get_link import GetLinkResponse

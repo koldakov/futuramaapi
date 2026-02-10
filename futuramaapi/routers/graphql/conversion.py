@@ -13,7 +13,7 @@ from strawberry.types.enum import EnumDefinition
 from strawberry.types.union import StrawberryUnion
 
 from futuramaapi.core import settings
-from futuramaapi.repositories import Base
+from futuramaapi.db import Base
 
 if TYPE_CHECKING:
     from strawberry.types.field import StrawberryField

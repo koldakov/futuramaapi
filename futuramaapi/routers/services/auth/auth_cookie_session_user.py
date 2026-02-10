@@ -6,7 +6,7 @@ from pydantic import SecretStr
 from sqlalchemy import Result, Select, select
 from sqlalchemy.exc import NoResultFound
 
-from futuramaapi.repositories.models import AuthSessionModel, UserModel
+from futuramaapi.db.models import AuthSessionModel, UserModel
 from futuramaapi.routers.services import BaseSessionService
 from futuramaapi.routers.services.auth.get_user_auth import UserAuthMessageType
 

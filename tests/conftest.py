@@ -4,8 +4,8 @@ from unittest.mock import AsyncMock, patch
 import pytest
 from faker import Faker
 
-from futuramaapi.repositories import INT32
-from futuramaapi.repositories.models import (
+from futuramaapi.db import INT32
+from futuramaapi.db.models import (
     CharacterModel,
     EpisodeModel,
     SeasonModel,

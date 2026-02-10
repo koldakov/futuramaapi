@@ -10,9 +10,9 @@ from sqlalchemy import Select, select
 from sqlalchemy.exc import NoResultFound
 from sse_starlette import EventSourceResponse, ServerSentEvent
 
+from futuramaapi.db.models import CharacterModel
+from futuramaapi.db.session import session_manager
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.repositories.models import CharacterModel
-from futuramaapi.repositories.session import session_manager
 from futuramaapi.routers.services import BaseService, NotFoundError
 from futuramaapi.routers.services.characters.get_character import GetCharacterResponse
 

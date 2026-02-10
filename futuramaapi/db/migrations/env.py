@@ -7,7 +7,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from futuramaapi.core import settings
-from futuramaapi.repositories import (
+from futuramaapi.db import (
     Base,
     models,  # noqa: F401, do not remove.
 )

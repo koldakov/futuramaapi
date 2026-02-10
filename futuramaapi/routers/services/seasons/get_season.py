@@ -3,8 +3,8 @@ from sqlalchemy import Select, select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import selectinload
 
+from futuramaapi.db.models import SeasonModel
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.repositories.models import SeasonModel
 from futuramaapi.routers.services._base import BaseSessionService, NotFoundError
 
 

@@ -3,7 +3,7 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import Select, select
 from sqlalchemy.orm import selectinload
 
-from futuramaapi.repositories.models import SeasonModel
+from futuramaapi.db.models import SeasonModel
 from futuramaapi.routers.services._base import BaseSessionService
 from futuramaapi.routers.services.seasons.get_season import GetSeasonResponse
 

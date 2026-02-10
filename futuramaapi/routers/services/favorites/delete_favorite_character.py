@@ -1,6 +1,6 @@
 from sqlalchemy import Delete, Result, delete, select
 
-from futuramaapi.repositories.models import CharacterModel, FavoriteCharacterModel
+from futuramaapi.db.models import CharacterModel, FavoriteCharacterModel
 from futuramaapi.routers.services import BaseUserAuthenticatedService, NotFoundError
 
 

@@ -3,7 +3,7 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from pydantic import Field
 from sqlalchemy import Select, select
 
-from futuramaapi.repositories.models import LinkModel
+from futuramaapi.db.models import LinkModel
 from futuramaapi.routers.services import BaseUserAuthenticatedService
 
 from .get_link import GetLinkResponse

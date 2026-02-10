@@ -7,7 +7,7 @@ from sqlalchemy import Result, Select, Update, select, update
 from starlette.responses import RedirectResponse
 
 from futuramaapi.core import settings
-from futuramaapi.repositories.models import UserModel
+from futuramaapi.db.models import UserModel
 from futuramaapi.routers.services import BaseSessionService, UnauthorizedError
 
 

@@ -2,7 +2,7 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy import Result, Select, select
 from sqlalchemy.exc import NoResultFound
 
-from futuramaapi.repositories.models import LinkModel
+from futuramaapi.db.models import LinkModel
 from futuramaapi.routers.services import BaseSessionService, NotFoundError
 
 

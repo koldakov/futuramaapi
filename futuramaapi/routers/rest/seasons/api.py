@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Path, status
 from fastapi_pagination import Page
 
-from futuramaapi.repositories import INT32
+from futuramaapi.db import INT32
 from futuramaapi.routers.exceptions import NotFoundResponse
 from futuramaapi.routers.services.seasons.get_season import (
     GetSeasonResponse,

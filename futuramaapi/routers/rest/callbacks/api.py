@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, BackgroundTasks, Path, status
 
-from futuramaapi.repositories import INT32
+from futuramaapi.db import INT32
 from futuramaapi.routers.services.callbacks import (
     CallbackRequest,
     CallbackResponse,

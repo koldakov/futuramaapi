@@ -5,7 +5,7 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from pydantic import Field
 from sqlalchemy import ColumnElement, Select, UnaryExpression, select
 
-from futuramaapi.repositories.models import CharacterModel
+from futuramaapi.db.models import CharacterModel
 from futuramaapi.routers.services import BaseSessionService
 
 from .get_character import GetCharacterResponse

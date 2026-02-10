@@ -5,8 +5,8 @@ from fastapi_storages import StorageImage
 from pydantic import Field, HttpUrl, field_validator
 
 from futuramaapi.core import settings
+from futuramaapi.db.models import CharacterModel
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.repositories.models import CharacterModel
 
 from ._base import (
     DoesNotExistCallbackResponse,

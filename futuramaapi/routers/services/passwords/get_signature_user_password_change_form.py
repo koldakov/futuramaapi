@@ -7,8 +7,8 @@ from jwt import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
 from sqlalchemy import Result, Select, select
 
 from futuramaapi.core import settings
+from futuramaapi.db.models import UserModel
 from futuramaapi.helpers.templates import templates
-from futuramaapi.repositories.models import UserModel
 from futuramaapi.routers.services import BaseSessionService
 from futuramaapi.routers.services._base_template import _project_context
 

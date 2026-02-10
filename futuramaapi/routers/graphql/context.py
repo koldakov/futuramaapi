@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from strawberry.fastapi import BaseContext
 
-from futuramaapi.repositories.session import get_async_session
+from futuramaapi.db.session import get_async_session
 
 
 class Context(BaseContext):

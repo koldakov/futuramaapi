@@ -3,7 +3,7 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import Select, select
 from sqlalchemy.orm import selectinload
 
-from futuramaapi.repositories.models import EpisodeModel
+from futuramaapi.db.models import EpisodeModel
 from futuramaapi.routers.services._base import BaseSessionService
 from futuramaapi.routers.services.episodes.get_episode import GetEpisodeResponse
 

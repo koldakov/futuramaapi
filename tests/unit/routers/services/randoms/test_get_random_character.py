@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 import pytest
 from sqlalchemy.exc import NoResultFound
 
-from futuramaapi.repositories.models import CharacterModel
+from futuramaapi.db.models import CharacterModel
 from futuramaapi.routers.services import NotFoundError
 from futuramaapi.routers.services.randoms.get_random_character import GetRandomCharacterService
 

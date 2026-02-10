@@ -5,8 +5,8 @@ from pydantic import Field, computed_field
 from sqlalchemy import Select, select
 from sqlalchemy.orm import selectinload
 
+from futuramaapi.db.models import EpisodeModel
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.repositories.models import EpisodeModel
 
 from ._base import (
     DoesNotExistCallbackResponse,

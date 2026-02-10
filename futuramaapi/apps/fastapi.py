@@ -12,10 +12,10 @@ from starlette.routing import Host, Mount, Route, WebSocketRoute
 
 from futuramaapi.__version__ import __version__
 from futuramaapi.core import feature_flags, settings
+from futuramaapi.db.session import session_manager
 from futuramaapi.middlewares.cors import CORSMiddleware
 from futuramaapi.middlewares.counter import APIRequestsCounter
 from futuramaapi.middlewares.secure import HTTPSRedirectMiddleware
-from futuramaapi.repositories.session import session_manager
 from futuramaapi.utils import metadata
 
 if TYPE_CHECKING:

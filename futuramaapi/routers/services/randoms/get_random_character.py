@@ -1,7 +1,7 @@
 from sqlalchemy import Select, func, select
 from sqlalchemy.exc import NoResultFound
 
-from futuramaapi.repositories.models import CharacterModel
+from futuramaapi.db.models import CharacterModel
 from futuramaapi.routers.services import BaseSessionService, NotFoundError
 from futuramaapi.routers.services.characters.get_character import GetCharacterResponse
 

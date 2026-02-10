@@ -8,8 +8,8 @@ from pydantic import EmailStr, Field, HttpUrl, SecretStr, field_validator
 from sqlalchemy import exc
 
 from futuramaapi.core import feature_flags, settings
+from futuramaapi.db.models import UserModel
 from futuramaapi.helpers.pydantic import BaseModel
-from futuramaapi.repositories.models import UserModel
 from futuramaapi.routers.services import BaseSessionService, ConflictError, RegistrationDisabledError
 
 from .get_user_me import GetUserMeResponse
