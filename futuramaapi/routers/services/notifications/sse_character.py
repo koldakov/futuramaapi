@@ -44,7 +44,7 @@ class CharacterNotificationResponse(BaseModel):
 class GetCharacterNotificationService(BaseService):
     pk: int
 
-    async def get_move(self, request: Request, character: CharacterModel, /) -> AsyncGenerator[ServerSentEvent]:
+    async def get_move(self, request: Request, character: GetCharacterResponse, /) -> AsyncGenerator[ServerSentEvent]:
         while True:
             if await request.is_disconnected():
                 # Can be removed. Do not trust lib, force connection close.
@@ -77,8 +77,9 @@ class GetCharacterNotificationService(BaseService):
         session: AsyncSession
         async with session_manager.session() as session:
             try:
-                character: CharacterModel = (await session.execute(self.statement)).scalars().one()
+                character_model: CharacterModel = (await session.execute(self.statement)).scalars().one()
             except NoResultFound:
                 raise NotFoundError(f"Character with id={self.pk} not found") from None
 
+        character: GetCharacterResponse = GetCharacterResponse.model_validate(character_model)
         return EventSourceResponse(self.get_move(request, character))
