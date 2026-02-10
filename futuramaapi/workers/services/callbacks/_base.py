@@ -1,4 +1,5 @@
 from asyncio import sleep
+from http import HTTPMethod
 from typing import Any, ClassVar
 
 from pydantic import Field, HttpUrl
@@ -6,7 +7,7 @@ from sqlalchemy import Select, select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from futuramaapi.api_clients import HttpMethod, RequestData
+from futuramaapi.api_clients import RequestData
 from futuramaapi.helpers.pydantic import BaseModel
 from futuramaapi.repositories import Base
 from futuramaapi.repositories.session import session_manager
@@ -60,7 +61,7 @@ class GetItemCallbackTaskService(BaseAPITaskService):
     async def _send(self, callback_response: BaseModel, /) -> None:
         request_data: RequestData = RequestData(
             url=str(self.callback_url),
-            method=HttpMethod.POST,
+            method=HTTPMethod.POST,
             json=callback_response.to_dict(),
         )
         await self.api.request(request_data)

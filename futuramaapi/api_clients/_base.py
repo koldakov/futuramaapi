@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from contextlib import AbstractAsyncContextManager
 from dataclasses import dataclass
 from enum import StrEnum
+from http import HTTPMethod
 from typing import TYPE_CHECKING, Any, TypeVar
 
 if TYPE_CHECKING:
@@ -18,16 +19,6 @@ RT = TypeVar("RT", bound="BaseClient")
 class HTTPVersion(StrEnum):
     HTTP1_1 = "1.1"
     HTTP2 = "2.0"
-
-
-class HttpMethod(StrEnum):
-    GET = "GET"
-    HEAD = "HEAD"
-    POST = "POST"
-    PUT = "PUT"
-    PATCH = "PATCH"
-    DELETE = "DELETE"
-    OPTIONS = "OPTIONS"
 
 
 class ApiErrorType(StrEnum):
@@ -125,7 +116,7 @@ class RequestData:
     """
 
     url: str
-    method: HttpMethod = HttpMethod.OPTIONS
+    method: HTTPMethod = HTTPMethod.OPTIONS
     params: dict[str, Any] | None = None
     data: dict[str, Any] | None = None
     headers: dict[str, Any] | None = None
