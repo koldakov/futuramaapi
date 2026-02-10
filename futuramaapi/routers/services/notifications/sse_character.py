@@ -59,7 +59,9 @@ class GetCharacterNotificationService(BaseService):
                             "y": randint(MIN_COORDINATE, MAX_COORDINATE),  # noqa: S311
                         },
                     }
-                ).model_dump()
+                ).model_dump(
+                    mode="json",
+                )
             )
             await sleep(
                 randint(1, 3),  # noqa: S311
@@ -70,6 +72,8 @@ class GetCharacterNotificationService(BaseService):
         return select(CharacterModel).where(CharacterModel.id == self.pk)
 
     async def __call__(self, request: Request, *args, **kwargs) -> EventSourceResponse:
+        # TODO: read data from mem bus instead of using DB session.
+        #  Memory leak possible.
         session: AsyncSession
         async with session_manager.session() as session:
             try:
