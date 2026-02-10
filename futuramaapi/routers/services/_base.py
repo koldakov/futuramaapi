@@ -49,14 +49,18 @@ class EmptyUpdateError(ValidationError):
 
 
 class BaseService[TResponse](BaseModel, ABC):
+    """Base interface for async application services."""
+
     context: dict[str, Any] | None = None
 
     @abstractmethod
     async def __call__(self, *args, **kwargs) -> TResponse:
-        pass
+        """Execute service logic."""
 
 
 class BaseSessionService[TResponse](BaseService[TResponse], ABC):
+    """Base service with managed database session."""
+
     def __init__(self, /, **data: Any) -> None:
         super().__init__(**data)
 
@@ -70,7 +74,12 @@ class BaseSessionService[TResponse](BaseService[TResponse], ABC):
         return self._session
 
     @abstractmethod
-    async def process(self, *args, **kwargs) -> TResponse: ...
+    async def process(self, *args, **kwargs) -> TResponse:
+        """
+        Execute the main logic of the service.
+
+        A database session is available via ``self.session``.
+        """
 
     async def __call__(self, *args, **kwargs) -> TResponse:
         async with session_manager.session() as session:
@@ -80,6 +89,8 @@ class BaseSessionService[TResponse](BaseService[TResponse], ABC):
 
 
 class BaseUserAuthenticatedService[TResponse](BaseSessionService[TResponse], ABC):
+    """Base service with an authenticated user available via ``self.user``."""
+
     token: str
 
     def __init__(self, /, **data: Any) -> None:

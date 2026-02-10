@@ -39,6 +39,13 @@ _project_context: _ProjectContext = _ProjectContext()
 
 
 class BaseTemplateService(BaseSessionService[_TemplateResponse], ABC):
+    """
+    Base service for rendering templates with a populated request context.
+
+    Attributes:
+        template_name: Name of the template to render. Must be set in subclasses.
+    """
+
     template_name: ClassVar[str]
 
     _cookie_auth_key: ClassVar[str] = "Authorization"
