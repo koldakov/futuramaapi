@@ -4,13 +4,13 @@ from fastapi import APIRouter, Depends, status
 from fastapi_pagination import Page
 
 from futuramaapi.routers.exceptions import NotFoundResponse
-from futuramaapi.routers.rest.users.dependencies import _oauth2_scheme
 from futuramaapi.routers.services.favorites.create_favorite_character import CreateFavoriteCharacterService
 from futuramaapi.routers.services.favorites.delete_favorite_character import DeleteFavoriteCharacterService
 from futuramaapi.routers.services.favorites.list_favorite_characters import (
     ListFavoriteCharacters,
     ListFavoriteCharactersResponse,
 )
+from futuramaapi.security import oauth2_scheme
 
 router: APIRouter = APIRouter(
     prefix="/favorites/characters",
@@ -35,7 +35,7 @@ router: APIRouter = APIRouter(
 )
 async def create_favorite_character(
     character_id: int,
-    token: Annotated[str, Depends(_oauth2_scheme)],
+    token: Annotated[str, Depends(oauth2_scheme)],
 ) -> None:
     """
     Add character to favorites.
@@ -61,7 +61,7 @@ async def create_favorite_character(
     name="list_favorite_characters",
 )
 async def get_favorite_characters(
-    token: Annotated[str, Depends(_oauth2_scheme)],
+    token: Annotated[str, Depends(oauth2_scheme)],
 ) -> Page[ListFavoriteCharactersResponse]:
     """
     Retrieve favorite characters.
@@ -92,7 +92,7 @@ async def get_favorite_characters(
 )
 async def delete_favorite_character(
     character_id: int,
-    token: Annotated[str, Depends(_oauth2_scheme)],
+    token: Annotated[str, Depends(oauth2_scheme)],
 ) -> None:
     """
     Remove character from favorites.

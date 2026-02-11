@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends, Path, status
 from fastapi_pagination import Page
 
 from futuramaapi.db import INT32
-from futuramaapi.routers.rest.users.dependencies import _oauth2_scheme
 from futuramaapi.routers.services.links.create_link import (
     CreateLinkRequest,
     CreateLinkResponse,
@@ -15,6 +14,7 @@ from futuramaapi.routers.services.links.list_links import (
     ListLinksResponse,
     ListLinksService,
 )
+from futuramaapi.security import oauth2_scheme
 
 router = APIRouter(
     prefix="/links",
@@ -27,7 +27,7 @@ router = APIRouter(
     name="create_link",
 )
 async def create_link(
-    token: Annotated[str, Depends(_oauth2_scheme)],
+    token: Annotated[str, Depends(oauth2_scheme)],
     data: CreateLinkRequest,
 ) -> CreateLinkResponse:
     """Generate shortened URL."""
@@ -51,7 +51,7 @@ async def get_link(
             le=INT32,
         ),
     ],
-    token: Annotated[str, Depends(_oauth2_scheme)],
+    token: Annotated[str, Depends(oauth2_scheme)],
 ) -> GetLinkResponse:
     service: GetLinkService = GetLinkService(
         token=token,
@@ -67,7 +67,7 @@ async def get_link(
     name="list_links",
 )
 async def list_links(
-    token: Annotated[str, Depends(_oauth2_scheme)],
+    token: Annotated[str, Depends(oauth2_scheme)],
 ) -> Page[ListLinksResponse]:
     """Retrieve user links."""
     service: ListLinksService = ListLinksService(

@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends, Query, status
 from fastapi_pagination import Page
 
 from futuramaapi.routers.exceptions import UnauthorizedResponse
-from futuramaapi.routers.rest.users.dependencies import _oauth2_scheme
 from futuramaapi.routers.services.users.create_user import (
     CreateUserRequest,
     CreateUserResponse,
@@ -29,6 +28,7 @@ from futuramaapi.routers.services.users.update_user import (
     UpdateUserResponse,
     UpdateUserService,
 )
+from futuramaapi.security import oauth2_scheme
 
 router = APIRouter(
     prefix="/users",
@@ -84,7 +84,7 @@ async def create_user(
     name="user_me",
 )
 async def get_me(
-    token: Annotated[str, Depends(_oauth2_scheme)],
+    token: Annotated[str, Depends(oauth2_scheme)],
 ) -> GetUserMeResponse:
     """Get user details.
 
@@ -137,7 +137,7 @@ async def list_users(
     name="update_user",
 )
 async def update_user(
-    token: Annotated[str, Depends(_oauth2_scheme)],
+    token: Annotated[str, Depends(oauth2_scheme)],
     data: UpdateUserRequest,
 ) -> UpdateUserResponse:
     """Update user details.
@@ -166,7 +166,7 @@ async def update_user(
     name="request_user_deletion",
 )
 async def request_user_deletion(
-    token: Annotated[str, Depends(_oauth2_scheme)],
+    token: Annotated[str, Depends(oauth2_scheme)],
 ) -> None:
     service: RequestUserDeletionService = RequestUserDeletionService(token=token)
     return await service()
@@ -186,7 +186,7 @@ async def request_user_deletion(
     name="resend_user_confirmation",
 )
 async def resend_user_confirmation(
-    token: Annotated[str, Depends(_oauth2_scheme)],
+    token: Annotated[str, Depends(oauth2_scheme)],
 ) -> None:
     """Resend user confirmation.
 
