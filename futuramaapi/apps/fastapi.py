@@ -106,6 +106,7 @@ class FuturamaAPI(FastAPI):
             RegistrationDisabledError,
             ServiceError,
             UnauthorizedError,
+            UserDeletionDisabledError,
         )
 
         exception_to_value: dict[type[ServiceError], _ExceptionValue] = {
@@ -124,6 +125,10 @@ class FuturamaAPI(FastAPI):
             RegistrationDisabledError: _ExceptionValue(
                 status_code=status.HTTP_403_FORBIDDEN,
                 default_message="User registration is currently disabled.",
+            ),
+            UserDeletionDisabledError: _ExceptionValue(
+                status_code=status.HTTP_403_FORBIDDEN,
+                default_message="User deletion is currently disabled.",
             ),
             EmptyUpdateError: _ExceptionValue(
                 status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,

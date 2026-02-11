@@ -22,6 +22,7 @@ from futuramaapi.routers.services.users.request_change_user_password import (
     RequestChangeUserPasswordRequest,
     RequestChangeUserPasswordService,
 )
+from futuramaapi.routers.services.users.request_user_deletion import RequestUserDeletionService
 from futuramaapi.routers.services.users.resend_user_confirmation import ResendUserConfirmationService
 from futuramaapi.routers.services.users.update_user import (
     UpdateUserRequest,
@@ -148,6 +149,26 @@ async def update_user(
         token=token,
         request_data=data,
     )
+    return await service()
+
+
+@router.post(
+    "/ddd",
+    status_code=status.HTTP_202_ACCEPTED,
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {
+            "model": UnauthorizedResponse,
+        },
+        status.HTTP_403_FORBIDDEN: {
+            "description": "User deletion is currently disabled.",
+        },
+    },
+    name="request_user_deletion",
+)
+async def request_user_deletion(
+    token: Annotated[str, Depends(_oauth2_scheme)],
+) -> None:
+    service: RequestUserDeletionService = RequestUserDeletionService(token=token)
     return await service()
 
 

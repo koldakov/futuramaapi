@@ -257,6 +257,7 @@ class FeatureFlags(BaseSettings):
     enable_sentry: bool = False
     count_api_requests: bool = True
     user_signup: bool = True
+    user_deletion: bool = False
 
 
 feature_flags = FeatureFlags()

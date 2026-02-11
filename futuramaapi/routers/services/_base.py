@@ -48,6 +48,10 @@ class EmptyUpdateError(ValidationError):
     """Empty Update Error."""
 
 
+class UserDeletionDisabledError(ServiceError):
+    """User Deletion Disabled Error."""
+
+
 class BaseService[TResponse](BaseModel, ABC):
     """Base interface for async application services."""
 

@@ -8,6 +8,7 @@ from ._base import (
     RegistrationDisabledError,
     ServiceError,
     UnauthorizedError,
+    UserDeletionDisabledError,
     ValidationError,
 )
 from ._base_template import BaseTemplateService
@@ -23,5 +24,6 @@ __all__ = [
     "RegistrationDisabledError",
     "ServiceError",
     "UnauthorizedError",
+    "UserDeletionDisabledError",
     "ValidationError",
 ]
