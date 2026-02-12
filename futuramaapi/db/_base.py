@@ -5,10 +5,9 @@ from enum import Enum
 from typing import TYPE_CHECKING, Any, Final, Literal, NamedTuple, Self
 from uuid import UUID, uuid4
 
-from asyncpg.exceptions import ForeignKeyViolationError, UniqueViolationError
 from sqlalchemy import UUID as COLUMN_UUID
 from sqlalchemy import Column, DateTime, Row, Select, select
-from sqlalchemy.exc import IntegrityError, NoResultFound
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.inspection import Inspectable
 from sqlalchemy.orm import DeclarativeBaseNoMeta as _DeclarativeBaseNoMeta
@@ -20,8 +19,6 @@ from sqlalchemy.sql import func
 from sqlalchemy.sql._typing import _HasClauseElement
 from sqlalchemy.sql.elements import BinaryExpression, ColumnElement, SQLCoreOperations, UnaryExpression
 from sqlalchemy.sql.roles import ColumnsClauseRole, TypedColumnsClauseRole
-
-from futuramaapi.helpers.pydantic import BaseModel
 
 if TYPE_CHECKING:
     from sqlalchemy.engine.result import Result
@@ -35,15 +32,6 @@ class ModelBaseError(Exception): ...
 
 
 class ModelDoesNotExistError(ModelBaseError): ...
-
-
-class ModelAlreadyExistsError(ModelBaseError): ...
-
-
-class ModelForeignKeyViolationError(ModelBaseError): ...
-
-
-class ModelFieldError(ModelBaseError): ...
 
 
 class FilterStatementKwargs(NamedTuple):
@@ -160,19 +148,6 @@ class Base(
             raise ModelDoesNotExistError() from err
 
     @classmethod
-    async def get_or_none(
-        cls,
-        session: AsyncSession,
-        val: int | str | UUID,
-        /,
-        field: InstrumentedAttribute | None = None,
-    ) -> Self | None:
-        try:
-            return await cls.get(session, val, field=field)
-        except ModelDoesNotExistError:
-            return None
-
-    @classmethod
     def get_order_by(
         cls,
         *,
@@ -226,87 +201,6 @@ class Base(
         return field == value
 
     @classmethod
-    async def create(
-        cls,
-        session: AsyncSession,
-        data: BaseModel,
-        /,
-        *,
-        commit: bool = True,
-        extra_fields: dict[
-            str,
-            Any,
-        ]
-        | None = None,
-    ) -> Self:
-        obj: Self = cls(**data.to_dict(by_alias=False, reveal_secrets=True))
-        if extra_fields is not None:
-            for name, value in extra_fields.items():
-                setattr(obj, name, value)
-        session.add(obj)
-        if commit is True:
-            try:
-                await session.commit()
-            except IntegrityError as err:
-                await session.rollback()
-
-                if err.orig.sqlstate == UniqueViolationError.sqlstate:
-                    raise ModelAlreadyExistsError() from None
-                elif err.orig.sqlstate == ForeignKeyViolationError.sqlstate:
-                    raise ModelForeignKeyViolationError() from None
-                raise
-        return obj
-
-    @classmethod
-    def validate_field(cls, field: str, value: Any, /) -> None:
-        try:
-            field_: InstrumentedAttribute = getattr(cls, field)
-        except AttributeError as err:
-            logger.exception(
-                "Field does not exist.",
-                extra={
-                    "data": {
-                        "field": field,
-                        "err": err,
-                        "model": cls,
-                    }
-                },
-            )
-            raise ModelFieldError() from None
-        if field_.nullable is False and value is None:
-            logger.exception(
-                "Attempt to assign None to non nullable field.",
-                extra={
-                    "data": {
-                        "field": field,
-                        "model": cls,
-                    }
-                },
-            )
-            raise ModelFieldError() from None
-
-    @classmethod
-    async def update(
-        cls,
-        session: AsyncSession,
-        id_: int,
-        data: dict,
-        /,
-    ) -> Self:
-        try:
-            obj: Self = await cls.get(session, id_)
-        except ModelDoesNotExistError:
-            raise
-
-        for field, value in data.items():
-            if value is not None:
-                setattr(obj, field, value)
-
-        await session.commit()
-
-        return obj
-
-    @classmethod
     async def filter(
         cls,
         session: AsyncSession,
@@ -316,23 +210,3 @@ class Base(
         statement = cls.get_filter_statement(kwargs)
         cursor: Result = await session.execute(statement)
         return cursor.scalars().all()
-
-    @classmethod
-    async def get_random(
-        cls,
-        session: AsyncSession,
-        /,
-        *,
-        extra_where: list[ColumnElement[bool]] | None = None,
-    ) -> Self:
-        # TODO: Implement extra where
-        options: list[Load] = cls.get_options()
-        statement: Select[tuple[Base]] = select(cls).order_by(func.random()).limit(1)
-        if options:
-            statement = statement.options(*options)
-
-        cursor: Result = await session.execute(statement)
-        try:
-            return cursor.scalars().one()
-        except NoResultFound as err:
-            raise ModelDoesNotExistError() from err
