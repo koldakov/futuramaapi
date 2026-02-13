@@ -3,15 +3,6 @@ from pydantic import Field
 from futuramaapi.helpers.pydantic import BaseModel
 
 
-class ModelNotFoundError(Exception): ...
-
-
-class ModelExistsError(Exception): ...
-
-
-class UpdateArgsNotDefined(Exception): ...
-
-
 class NotFoundResponse(BaseModel):
     detail: str = Field("Not Found")
 
