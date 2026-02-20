@@ -1,11 +1,9 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Path, status
+from fastapi import APIRouter, Path, status
 from fastapi_pagination import Page
-from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from futuramaapi.db import INT32
-from futuramaapi.db.session import get_async_session
 from futuramaapi.routers.exceptions import NotFoundResponse
 from futuramaapi.routers.services.episodes.get_episode import (
     GetEpisodeResponse,
@@ -40,7 +38,6 @@ async def get_episode(
             le=INT32,
         ),
     ],
-    session: AsyncSession = Depends(get_async_session),  # noqa: B008
 ) -> GetEpisodeResponse:
     """Retrieve specific episode.
 
@@ -52,7 +49,7 @@ async def get_episode(
     episode of Futurama.
     """
     service: GetEpisodeService = GetEpisodeService(pk=episode_id)
-    return await service(session)
+    return await service()
 
 
 @router.get(
