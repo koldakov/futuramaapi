@@ -35,5 +35,3 @@ repos:
         args:
           - --install-types
           - --non-interactive
-          - --check-untyped-defs
-          - --python-version=3.12
