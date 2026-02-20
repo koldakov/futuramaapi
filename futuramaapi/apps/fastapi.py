@@ -55,8 +55,7 @@ class FuturamaAPI(FastAPI):
     @asynccontextmanager
     async def _lifespan(self, _: Self, /) -> AsyncGenerator[None, Any]:
         yield
-        if session_manager.engine is not None:
-            await session_manager.close()
+        await session_manager.close()
 
     @staticmethod
     def _setup_sentry() -> None:

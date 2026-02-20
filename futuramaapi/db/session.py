@@ -1,7 +1,6 @@
 import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import Any
 
 from pydantic import PostgresDsn
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
@@ -12,30 +11,47 @@ logger = logging.getLogger(__name__)
 
 
 class SessionManager:
-    def __init__(self, host: PostgresDsn, /, *, kwargs: dict[str, Any] | None = None) -> None:
-        if kwargs is None:
-            kwargs = {}
-
-        self.engine: AsyncEngine | None = create_async_engine(str(host), **kwargs)
-        self._session_maker: async_sessionmaker[AsyncSession] | None = async_sessionmaker(
-            autocommit=False,
-            bind=self.engine,
-            expire_on_commit=False,
+    def __init__(  # noqa: PLR0913
+        self,
+        host: PostgresDsn,
+        /,
+        *,
+        echo: bool = False,
+        max_overflow: int = settings.pool_max_overflow,
+        pool_size: int = settings.pool_size,
+        pool_timeout: int = settings.pool_timeout,
+        pool_recycle: int = settings.pool_recycle,
+        autocommit: bool = False,
+        expire_on_commit: bool = False,
+    ) -> None:
+        self.engine: AsyncEngine = create_async_engine(
+            str(host),
+            echo=echo,
+            max_overflow=max_overflow,
+            pool_size=pool_size,
+            pool_timeout=pool_timeout,
+            pool_recycle=pool_recycle,
         )
 
+        self._session_maker: async_sessionmaker[AsyncSession] = async_sessionmaker(
+            autocommit=autocommit,
+            bind=self.engine,
+            expire_on_commit=expire_on_commit,
+        )
+        self._is_closed: bool = False
+
     async def close(self) -> None:
-        if self.engine is None:
-            raise Exception("DatabaseSessionManager is not initialized")
+        if self._is_closed:
+            raise RuntimeError("SessionManager has been closed.")
 
         await self.engine.dispose()
 
-        self.engine = None
-        self._session_maker = None
+        self._is_closed = True
 
     @asynccontextmanager
     async def session(self) -> AsyncIterator[AsyncSession]:
-        if self._session_maker is None:
-            raise Exception("DatabaseSessionManager is not initialized")
+        if self._is_closed:
+            raise RuntimeError("SessionManager has been closed.")
 
         session = self._session_maker()
         try:
@@ -47,16 +63,7 @@ class SessionManager:
             await session.close()
 
 
-session_manager: SessionManager = SessionManager(
-    settings.database_url,
-    kwargs={
-        "echo": False,
-        "max_overflow": settings.pool_max_overflow,
-        "pool_size": settings.pool_size,
-        "pool_timeout": settings.pool_timeout,
-        "pool_recycle": settings.pool_recycle,
-    },
-)
+session_manager: SessionManager = SessionManager(settings.database_url)
 
 
 async def get_async_session():
