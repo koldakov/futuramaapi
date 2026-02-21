@@ -58,7 +58,7 @@ async def get_episode(
     response_model=Page[ListEpisodesResponse],
     name="episodes",
 )
-async def get_episodes() -> Page[ListEpisodesResponse]:
+async def list_episodes() -> Page[ListEpisodesResponse]:
     """Retrieve episodes.
 
     This endpoint provides a paginated list of Futurama episodes, offering a comprehensive overview

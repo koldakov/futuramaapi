@@ -60,7 +60,7 @@ async def create_favorite_character(
     response_model=Page[ListFavoriteCharactersResponse],
     name="list_favorite_characters",
 )
-async def get_favorite_characters(
+async def list_favorite_characters(
     token: Annotated[str, Depends(oauth2_scheme)],
 ) -> Page[ListFavoriteCharactersResponse]:
     """

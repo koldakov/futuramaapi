@@ -58,7 +58,7 @@ async def get_character(
     response_model=Page[ListCharactersResponse],
     name="characters",
 )
-async def get_characters(  # noqa: PLR0913
+async def list_characters(  # noqa: PLR0913
     gender: Literal[
         "male",
         "!male",

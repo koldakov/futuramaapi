@@ -56,7 +56,7 @@ async def get_season(
     response_model=Page[ListSeasonsResponse],
     name="seasons",
 )
-async def get_seasons() -> Page[ListSeasonsResponse]:
+async def list_seasons() -> Page[ListSeasonsResponse]:
     """Retrieve specific seasons.
 
     Access a comprehensive list of all Futurama seasons using this endpoint,
