@@ -3,7 +3,7 @@ from typing import Any, ClassVar
 
 import pydash
 from cryptography.fernet import Fernet
-from pydantic import BaseModel as BaseModelOrig
+from pydantic import BaseModel as _BaseModel
 from pydantic import ConfigDict, SecretStr
 from pydash import camel_case
 
@@ -11,7 +11,7 @@ from futuramaapi.core import settings
 from futuramaapi.helpers.hashers import PasswordHasherBase, hasher
 
 
-class BaseModel(BaseModelOrig):
+class BaseModel(_BaseModel):
     hasher: ClassVar[PasswordHasherBase] = hasher
     encryptor: ClassVar[Fernet] = settings.fernet
 
