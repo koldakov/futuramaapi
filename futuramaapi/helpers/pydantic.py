@@ -1,4 +1,3 @@
-import json
 from typing import Any, ClassVar
 
 import pydash
@@ -22,7 +21,7 @@ class BaseModel(_BaseModel):
     )
 
     def to_dict(self, *, by_alias: bool = True, reveal_secrets: bool = False, exclude_unset=False) -> dict:
-        result: dict = json.loads(self.model_dump_json(by_alias=by_alias, exclude_unset=exclude_unset))
+        result: dict = self.model_dump(by_alias=by_alias, exclude_unset=exclude_unset, mode="json")
         if not reveal_secrets:
             return result
 
