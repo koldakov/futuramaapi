@@ -668,14 +668,14 @@ tzdata = ["tzdata"]
 
 [[package]]
 name = "fastapi"
-version = "0.129.2"
+version = "0.131.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "fastapi-0.129.2-py3-none-any.whl", hash = "sha256:e21d9f6e8db376655187905ad0145edd6f6a4e5f2bff241c4efb8a0bffd6a540"},
-    {file = "fastapi-0.129.2.tar.gz", hash = "sha256:e2b3637a2b47856e704dbd9a3a09393f6df48e8b9cb6c7a3e26ba44d2053f9ab"},
+    {file = "fastapi-0.131.0-py3-none-any.whl", hash = "sha256:ed0e53decccf4459de78837ce1b867cd04fa9ce4579497b842579755d20b405a"},
+    {file = "fastapi-0.131.0.tar.gz", hash = "sha256:6531155e52bee2899a932c746c9a8250f210e3c3303a5f7b9f8a808bfe0548ff"},
 ]
 
 [package.dependencies]
@@ -686,7 +686,7 @@ typing-extensions = ">=4.8.0"
 typing-inspection = ">=0.4.2"
 
 [package.extras]
-all = ["email-validator (>=2.0.0)", "fastapi-cli[standard] (>=0.0.8)", "httpx (>=0.23.0,<1.0.0)", "itsdangerous (>=1.1.0)", "jinja2 (>=3.1.5)", "orjson (>=3.9.3)", "pydantic-extra-types (>=2.0.0)", "pydantic-settings (>=2.0.0)", "python-multipart (>=0.0.18)", "pyyaml (>=5.3.1)", "ujson (>=5.8.0)", "uvicorn[standard] (>=0.12.0)"]
+all = ["email-validator (>=2.0.0)", "fastapi-cli[standard] (>=0.0.8)", "httpx (>=0.23.0,<1.0.0)", "itsdangerous (>=1.1.0)", "jinja2 (>=3.1.5)", "pydantic-extra-types (>=2.0.0)", "pydantic-settings (>=2.0.0)", "python-multipart (>=0.0.18)", "pyyaml (>=5.3.1)", "uvicorn[standard] (>=0.12.0)"]
 standard = ["email-validator (>=2.0.0)", "fastapi-cli[standard] (>=0.0.8)", "httpx (>=0.23.0,<1.0.0)", "jinja2 (>=3.1.5)", "pydantic-extra-types (>=2.0.0)", "pydantic-settings (>=2.0.0)", "python-multipart (>=0.0.18)", "uvicorn[standard] (>=0.12.0)"]
 standard-no-fastapi-cloud-cli = ["email-validator (>=2.0.0)", "fastapi-cli[standard-no-fastapi-cloud-cli] (>=0.0.8)", "httpx (>=0.23.0,<1.0.0)", "jinja2 (>=3.1.5)", "pydantic-extra-types (>=2.0.0)", "pydantic-settings (>=2.0.0)", "python-multipart (>=0.0.18)", "uvicorn[standard] (>=0.12.0)"]
 
@@ -2220,14 +2220,14 @@ full = ["httpx (>=0.27.0,<0.29.0)", "itsdangerous", "jinja2", "python-multipart 
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.300.0"
+version = "0.303.1"
 description = "A library for creating GraphQL APIs"
 optional = false
 python-versions = "<4.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "strawberry_graphql-0.300.0-py3-none-any.whl", hash = "sha256:5a3c6f754219152446f933a6f9a9f0e6783aab5c3a568aff63a7f869ae81e18b"},
-    {file = "strawberry_graphql-0.300.0.tar.gz", hash = "sha256:6695777ae0565a7ca04b3b02b194ec7607244c739bc10e33a8cf9207ee8f61bd"},
+    {file = "strawberry_graphql-0.303.1-py3-none-any.whl", hash = "sha256:2ff821ad0b9d366ceb1caec14fc24f9e00a1e0e249ddc3453e1620ae0e2a0a16"},
+    {file = "strawberry_graphql-0.303.1.tar.gz", hash = "sha256:a4ad6420600d1f70564bfa88a1033a8dfbe881dfa1368d43121e54211f61a369"},
 ]
 
 [package.dependencies]
@@ -2428,4 +2428,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "f254281120efc1fccf1e0ef7d127d46bccf2ff5bae71d28c9a982c5f890f878e"
+content-hash = "21945169746249172fd6fef1066d88a7e29ae005fffb565bc2f8a411b330b7eb"
