@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 from fastapi_storages.base import StorageImage
 from strawberry.types.base import StrawberryList, StrawberryOptional, has_object_definition
-from strawberry.types.enum import EnumDefinition
+from strawberry.types.enum import StrawberryEnumDefinition
 from strawberry.types.union import StrawberryUnion
 
 from futuramaapi.core import settings
@@ -61,7 +61,7 @@ def _(type_: StrawberryUnion, data: Any, /):
 
 
 @_convert.register
-def _(type_: EnumDefinition, data: Any, /):
+def _(type_: StrawberryEnumDefinition, data: Any, /):
     return data
 
 
