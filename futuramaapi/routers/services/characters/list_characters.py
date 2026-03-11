@@ -45,7 +45,7 @@ class ListCharactersService(BaseSessionService[Page[ListCharactersResponse]]):
 
         if self.species is not None:
             if self.species.startswith("!"):
-                where.append(CharacterModel.species == CharacterModel.CharacterSpecies[self.species[1:].upper()])
+                where.append(CharacterModel.species != CharacterModel.CharacterSpecies[self.species[1:].upper()])
             else:
                 where.append(CharacterModel.species == CharacterModel.CharacterSpecies[self.species.upper()])
 
