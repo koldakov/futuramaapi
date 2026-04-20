@@ -1,14 +1,17 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, Request, Response, status
+from fastapi import APIRouter, Depends, Form, Query, Request, Response, status
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import ValidationError
 
 from futuramaapi.routers.services.about.get_about import GetAboutService
 from futuramaapi.routers.services.auth.auth_cookie_session_user import AuthCookieSessionUserService
 from futuramaapi.routers.services.auth.get_user_auth import GetUserAuthService, UserAuthMessageType
+from futuramaapi.routers.services.auth.get_user_signup import GetUserSignupService, UserSignupMessageType
 from futuramaapi.routers.services.auth.logout_cookie_session_user import LogoutCookieSessionUserService
+from futuramaapi.routers.services.auth.signup_cookie_session_user import SignupCookieSessionUserService
 from futuramaapi.routers.services.changelog.get_changelog import GetChangelogService
 from futuramaapi.routers.services.index.get_index import GetIndexService
 from futuramaapi.routers.services.sitemaps.get_sitemap import GetSiteMapService
@@ -154,6 +157,66 @@ async def logout_cookie_session_user(
             "request": request,
         },
     )
+    return await service()
+
+
+@router.get(
+    "/signup",
+    include_in_schema=False,
+    name="user_signup",
+)
+async def user_signup(
+    request: Request,
+    message_type: Annotated[
+        UserSignupMessageType | None,
+        Query(
+            alias="messageType",
+        ),
+    ] = None,
+) -> Response:
+    service: GetUserSignupService = GetUserSignupService(
+        message_type=message_type,
+        context={
+            "request": request,
+        },
+    )
+    return await service()
+
+
+@router.post(
+    "/signup",
+    include_in_schema=False,
+    name="signup_cookie_session_user",
+)
+async def signup_cookie_session_user(  # noqa: PLR0913
+    request: Request,
+    name: Annotated[str, Form()] = "",
+    surname: Annotated[str, Form()] = "",
+    email: Annotated[str, Form()] = "",
+    username: Annotated[str, Form()] = "",
+    password: Annotated[str, Form()] = "",
+) -> RedirectResponse:
+    if not all([name.strip(), surname.strip(), email.strip(), username.strip(), password]):
+        return RedirectResponse(
+            url=f"/signup?messageType={UserSignupMessageType.validation_error}",
+            status_code=status.HTTP_302_FOUND,
+        )
+    try:
+        service: SignupCookieSessionUserService = SignupCookieSessionUserService(
+            name=name,
+            surname=surname,
+            email=email,
+            username=username,
+            password=password,
+            context={
+                "request": request,
+            },
+        )
+    except ValidationError:
+        return RedirectResponse(
+            url=f"/signup?messageType={UserSignupMessageType.validation_error}",
+            status_code=status.HTTP_302_FOUND,
+        )
     return await service()
 
 

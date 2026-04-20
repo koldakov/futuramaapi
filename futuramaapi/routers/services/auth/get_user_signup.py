@@ -4,16 +4,17 @@ from typing import Any
 from futuramaapi.routers.services import BaseTemplateService
 
 
-class UserAuthMessageType(StrEnum):
-    password_changed = "password_changed"  # noqa: S105
-    incorrect_login = "incorrect_login"
+class UserSignupMessageType(StrEnum):
+    signup_disabled = "signup_disabled"
+    user_exists = "user_exists"
     signup_success = "signup_success"
+    validation_error = "validation_error"
 
 
-class GetUserAuthService(BaseTemplateService):
-    template_name = "auth.html"
+class GetUserSignupService(BaseTemplateService):
+    template_name = "signup.html"
 
-    message_type: UserAuthMessageType | None
+    message_type: UserSignupMessageType | None
 
     async def get_context(self, *args, **kwargs) -> dict[str, Any]:
         return {
