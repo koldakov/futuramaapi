@@ -83,9 +83,7 @@
   border: 1px solid #e5e7eb;
   font-size: 0.9rem;
   color: #111827;
-  transition:
-    border-color 150ms ease,
-    box-shadow 150ms ease;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .auth-field input:focus {
@@ -105,9 +103,7 @@
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition:
-    background-color 150ms ease,
-    box-shadow 150ms ease,
+  transition: background-color 150ms ease, box-shadow 150ms ease,
     transform 120ms ease;
 }
 
@@ -122,7 +118,10 @@
 
 .auth-button:focus-visible {
   outline: none;
-  box-shadow:
-    0 0 0 2px #ffffff,
-    0 0 0 4px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(37, 99, 235, 0.4);
+}
+
+.auth-footer-link {
+  margin-top: 1.5rem;
+  margin-bottom: 0;
 }

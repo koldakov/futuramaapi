@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% set active_page = "user_signup" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block extra_styles %}
+  <link
+    href="{{ relative_path_for('static', path='/css/auth.css') }}"
+    rel="stylesheet"
+  />
+{% endblock %}
+
+{% block main_info %}{% endblock %}
+
+{% block main_content %}
+<div
+  class="container"
+>
+  <div
+    class="auth-page"
+  >
+    <div
+      class="auth-container"
+    >
+      <h1
+        class="auth-title"
+      >
+        Create an account
+      </h1>
+        {% if message_type == 'signup_disabled' %}
+          <p
+            class="auth-message warning"
+          >
+            Sign up is currently disabled. Please try again later.
+          </p>
+        {% elif message_type == 'user_exists' %}
+          <p
+            class="auth-message error"
+          >
+            An account with that username or email already exists.
+          </p>
+        {% elif message_type == 'validation_error' %}
+          <p
+            class="auth-message error"
+          >
+            Please check your input. Name and surname must contain only letters. Username must start with a letter, be at least 5 characters, and contain only letters, numbers, or underscores. Password must be at least 8 characters with both letters and numbers.
+          </p>
+        {% elif message_type == 'signup_success' %}
+          <p
+            class="auth-message success"
+          >
+            Account created! You can now <a href="{{ relative_path_for('user_auth') }}">sign in</a>.
+          </p>
+        {% endif %}
+        <p
+          class="auth-subtitle"
+        >
+          Sign up to get started with Futurama API
+        </p>
+      <form
+        method="POST"
+        action="{{ relative_path_for('signup_cookie_session_user') }}"
+      >
+        <div
+          class="auth-field"
+        >
+          <label
+            for="name"
+          >
+            Name
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            pattern="[A-Za-z\s\-']+"
+            title="Letters, spaces, hyphens, and apostrophes only"
+            minlength="1"
+            maxlength="64"
+            required
+            autofocus
+          >
+        </div>
+        <div
+          class="auth-field"
+        >
+          <label
+            for="surname"
+          >
+            Surname
+          </label>
+          <input
+            type="text"
+            id="surname"
+            name="surname"
+            pattern="[A-Za-z\s\-']+"
+            title="Letters, spaces, hyphens, and apostrophes only"
+            minlength="1"
+            maxlength="64"
+            required
+          >
+        </div>
+        <div
+          class="auth-field"
+        >
+          <label
+            for="email"
+          >
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            maxlength="320"
+            required
+          >
+        </div>
+        <div
+          class="auth-field"
+        >
+          <label
+            for="username"
+          >
+            Username
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            pattern="[A-Za-z][A-Za-z0-9_]{4,}"
+            title="Must start with a letter, at least 5 characters, only letters, numbers, and underscores"
+            minlength="5"
+            maxlength="64"
+            required
+          >
+        </div>
+        <div
+          class="auth-field"
+        >
+          <label
+            for="password"
+          >
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            minlength="8"
+            maxlength="128"
+            pattern="(?=.*[A-Za-z])(?=.*\d).{8,}"
+            title="Must be at least 8 characters with both letters and numbers"
+            required
+          >
+        </div>
+        <button
+          type="submit"
+          class="auth-button"
+        >
+          Sign up
+        </button>
+      </form>
+      <p
+        class="auth-subtitle auth-footer-link"
+      >
+        Already have an account?
+        <a href="{{ relative_path_for('user_auth') }}">Sign in</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -39,8 +39,12 @@
             class="auth-message error"
           >
             Hmm… that username or password doesn’t match our records.
-          </p>
-        {% endif %}
+          </p>        {% elif message_type == 'signup_success' %}
+          <p
+            class="auth-message success"
+          >
+            Account created! You can now sign in.
+          </p>        {% endif %}
         <p
           class="auth-subtitle"
         >
@@ -88,6 +92,12 @@
           Sign in
         </button>
       </form>
+      <p
+        class="auth-subtitle auth-footer-link"
+      >
+        Don't have an account?
+        <a href="{{ relative_path_for('user_signup') }}">Sign up</a>
+      </p>
 
     </div>
   </div>

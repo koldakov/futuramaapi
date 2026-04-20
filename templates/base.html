@@ -88,6 +88,16 @@
                 </form>
                 {% endif %}
               </li>
+              {% if not current_user %}
+              <li
+                class="nav-item"
+              >
+                <a
+                  class="nav-link{% if active_page == 'user_signup' %} active{% endif %}"
+                  href="{{ relative_path_for('user_signup') }}"
+                >Sign Up</a>
+              </li>
+              {% endif %}
             </ul>
           </div>
         </div>
