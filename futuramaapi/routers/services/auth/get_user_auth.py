@@ -1,6 +1,7 @@
 from enum import StrEnum
 from typing import Any
 
+from futuramaapi.core import settings
 from futuramaapi.routers.services import BaseTemplateService
 
 
@@ -18,4 +19,5 @@ class GetUserAuthService(BaseTemplateService):
     async def get_context(self, *args, **kwargs) -> dict[str, Any]:
         return {
             "message_type": self.message_type,
+            "backend_url": str(settings.backend_url),
         }

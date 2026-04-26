@@ -7,14 +7,9 @@ from urllib.parse import urlparse
 
 from cryptography.fernet import Fernet
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-from pydantic import BaseModel, EmailStr, Field, HttpUrl, PostgresDsn, RedisDsn, SecretStr
+from pydantic import BaseModel, EmailStr, Field, HttpUrl, PostgresDsn, RedisDsn, SecretStr, computed_field
 from pydantic.fields import FieldInfo
-from pydantic_settings import (
-    BaseSettings,
-    EnvSettingsSource,
-    PydanticBaseSettingsSource,
-    SettingsConfigDict,
-)
+from pydantic_settings import BaseSettings, EnvSettingsSource, PydanticBaseSettingsSource, SettingsConfigDict
 from redis.asyncio import ConnectionPool
 
 from futuramaapi.helpers.templates import TEMPLATES_PATH
@@ -188,10 +183,20 @@ class _EnvSource(EnvSettingsSource):
 
 class Settings(BaseSettings):
     allow_origins: list[str]
+    backend_url: HttpUrl
+
+    @computed_field
+    def scheme(self) -> str:
+        return self.backend_url.scheme
+
+    @computed_field
+    def trusted_host(self) -> str:
+        return self.backend_url.host
+
     database_url: PostgresDsn
     project_root: Path = Path(__file__).parent.parent.parent.resolve()
     static: Path = Path("static")
-    trusted_host: str
+
     secret_key: SecretStr
     email: EmailSettings = email_settings
     redis: RedisSettings = redis_settings
@@ -241,7 +246,7 @@ class Settings(BaseSettings):
             path = f"{self.static}/{path}" if path else f"{self.static}"
 
         return HttpUrl.build(
-            scheme="https",
+            scheme=self.scheme,
             host=self.trusted_host,
             path=path,
         )

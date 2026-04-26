@@ -47,9 +47,11 @@ class RequestChangeUserPasswordService(BaseSessionService[None]):
         )
 
     def _get_confirmation_url(self, user: UserModel, /) -> str:
+
         url: HttpUrl = HttpUrl.build(
-            scheme="https",
+            scheme=settings.scheme,
             host=settings.trusted_host,
+            port=settings.backend_url.port,
             path="passwords/change",
             query=f"sig={self._get_signature(user)}",
         )

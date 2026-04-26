@@ -1,10 +1,11 @@
+import re
 from typing import Any, ClassVar
 
 import jwt
 from fastapi import Request, status
 from fastapi.responses import RedirectResponse
 from jwt import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
-from pydantic import SecretStr
+from pydantic import Field, SecretStr, field_validator
 from sqlalchemy import Update, update
 
 from futuramaapi.core import settings
@@ -20,9 +21,24 @@ class TokenDecodeError(Exception):
 
 
 class ChangeSignatureRequestedUserPasswordService(BaseSessionService[RedirectResponse]):
-    password1: SecretStr
-    password2: SecretStr
+    password1: SecretStr = Field(
+        min_length=8,
+        max_length=128,
+    )
+    password2: SecretStr = Field(
+        min_length=8,
+        max_length=128,
+    )
     signature: str
+
+    @field_validator("password1", "password2")
+    @classmethod
+    def validate_password_strength(cls, v: SecretStr) -> SecretStr:
+        """Validate password has 8+ chars with letters and numbers."""
+        password_str = v.get_secret_value()
+        if not re.match(r"(?=.*[A-Za-z])(?=.*\d).{8,}", password_str):
+            raise ValueError("Password must contain at least 8 characters with letters and numbers")
+        return v
 
     algorithm: ClassVar[str] = "HS256"
 
