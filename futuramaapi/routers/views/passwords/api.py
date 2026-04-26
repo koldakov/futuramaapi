@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Form, Query, Request, Response, status
-from pydantic import SecretStr
+from pydantic import ValidationError
 from starlette.responses import RedirectResponse
 
 from futuramaapi.routers.exceptions import UnauthorizedResponse
@@ -65,18 +65,12 @@ async def get_signature_user_password_change_form(
 )
 async def change_signature_requested_user_password(
     password1: Annotated[
-        SecretStr,
-        Form(
-            min_length=8,
-            max_length=128,
-        ),
+        str,
+        Form(...),
     ],
     password2: Annotated[
-        SecretStr,
-        Form(
-            min_length=8,
-            max_length=128,
-        ),
+        str,
+        Form(...),
     ],
     sig: Annotated[
         str,
@@ -85,12 +79,18 @@ async def change_signature_requested_user_password(
     request: Request,
 ) -> RedirectResponse:
     """Change user password."""
-    service: ChangeSignatureRequestedUserPasswordService = ChangeSignatureRequestedUserPasswordService(
-        password1=password1,
-        password2=password2,
-        signature=sig,
-        context={
-            "request": request,
-        },
-    )
+    try:
+        service: ChangeSignatureRequestedUserPasswordService = ChangeSignatureRequestedUserPasswordService(
+            password1=password1,
+            password2=password2,
+            signature=sig,
+            context={
+                "request": request,
+            },
+        )
+    except ValidationError:
+        return RedirectResponse(
+            url=f"/passwords/change?sig={sig}&errorType={ChangeFormError.invalid_password}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
     return await service()

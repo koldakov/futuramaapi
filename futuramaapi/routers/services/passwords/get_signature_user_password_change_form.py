@@ -19,6 +19,7 @@ class TokenDecodeError(Exception):
 
 class ChangeFormError(StrEnum):
     password_mismatch = "password_mismatch"  # noqa: S105
+    invalid_password = "invalid_password"  # noqa: S105
 
 
 class GetSignatureUserPasswordChangeFormService(BaseSessionService[Response]):

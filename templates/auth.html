@@ -11,6 +11,13 @@
   />
 {% endblock %}
 
+{% block extra_scripts %}
+  <script>
+    const BACKEND_URL = "{{ backend_url }}";
+  </script>
+  <script src="{{ relative_path_for('static', path='/js/auth.js') }}"></script>
+{% endblock %}
+
 {% block main_info %}{% endblock %}
 
 {% block main_content %}
@@ -73,11 +80,16 @@
         <div
           class="auth-field"
         >
-          <label
-            for="password"
-          >
-            Password
-          </label>
+          <div class="auth-field-header">
+            <label for="password">Password</label>
+            <button
+              type="button"
+              class="forgot-password-link"
+              onclick="openForgotPasswordModal(event)"
+            >
+              Forgot password?
+            </button>
+          </div>
           <input
             type="password"
             id="password"
@@ -100,6 +112,32 @@
       </p>
 
     </div>
+  </div>
+</div>
+
+
+<div id="forgotPasswordModal" class="modal">
+  <div class="modal-content">
+    <button type="button" class="close" onclick="closeForgotPasswordModal()" title="Close">&times;</button>
+    <h2>Forgot Your Password?</h2>
+    <p class="modal-subtitle">Enter your email address and we'll send you a link to reset your password.</p>
+    
+    <form id="forgotPasswordForm" onsubmit="handleForgotPassword(event)">
+      <div class="auth-field">
+        <label for="reset-email">Email Address</label>
+        <input
+          type="email"
+          id="reset-email"
+          name="email"
+          required
+          placeholder="your@email.com"
+          autofocus
+        >
+      </div>
+      <button type="submit" class="auth-button">Send Reset Link</button>
+    </form>
+    
+    <div id="forgotPasswordMessage" class="auth-message hidden"></div>
   </div>
 </div>
 {% endblock %}

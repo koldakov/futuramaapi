@@ -69,11 +69,22 @@
   margin-bottom: 1.25rem;
 }
 
+.auth-field-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
 .auth-field label {
   display: block;
   margin-bottom: 0.35rem;
   font-size: 0.8rem;
   color: #374151;
+}
+
+.auth-field-header label {
+  margin-bottom: 0;
 }
 
 .auth-field input {
@@ -93,7 +104,6 @@
 }
 
 .auth-button {
-  margin-top: 1.25rem;
   width: 100%;
   padding: 0.75rem;
   border-radius: 0.6rem;
@@ -124,4 +134,137 @@
 .auth-footer-link {
   margin-top: 1.5rem;
   margin-bottom: 0;
+}
+
+/* Forgot Password Link */
+.forgot-password-link {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.8rem;
+  color: #2563eb;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 150ms ease;
+  font-weight: 400;
+}
+
+.forgot-password-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.forgot-password-link:focus {
+  outline: none;
+  color: #1d4ed8;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  animation: fadeIn 150ms ease-in;
+}
+
+.modal.show {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 50px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 2rem;
+  border: none;
+  border-radius: 0.6rem;
+  width: 95%;
+  max-width: 380px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  animation: slideDown 250ms ease-out;
+  position: relative;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #111827;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.modal-subtitle {
+  color: #6b7280;
+  font-size: 0.8rem;
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+}
+
+.close {
+  color: #d1d5db;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  font-weight: normal;
+  cursor: pointer;
+  transition: color 150ms ease;
+  line-height: 1;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.close:hover,
+.close:focus {
+  color: #6b7280;
+  outline: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Button disabled state */
+.auth-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.auth-button:disabled:hover {
+  background-color: #9ca3af;
+  box-shadow: none;
 }
