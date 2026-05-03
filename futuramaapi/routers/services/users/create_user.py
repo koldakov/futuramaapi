@@ -4,6 +4,7 @@ from typing import Any, ClassVar
 
 import jwt
 from asyncpg import UniqueViolationError
+from fastapi import HTTPException, status
 from pydantic import EmailStr, Field, HttpUrl, SecretStr, field_validator
 from sqlalchemy import exc
 
@@ -42,10 +43,24 @@ class CreateUserRequest(BaseModel):
         default=True,
     )
 
+    forbidden_usernames: ClassVar[set[str]] = {"autostepik"}
+
     @field_validator("password", mode="after")
     @classmethod
     def hash_password(cls, value: SecretStr, /) -> SecretStr:
         return SecretStr(cls.hasher.encode(value.get_secret_value()))
+
+    @field_validator("username", mode="after")
+    @classmethod
+    def check_username(cls, value: str) -> str:
+        username = value.lower()
+        if any(forbidden_username in username for forbidden_username in cls.forbidden_usernames):
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Forbidden username.",
+            )
+
+        return value
 
 
 class CreateUserResponse(GetUserMeResponse):
