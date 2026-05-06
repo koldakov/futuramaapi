@@ -191,6 +191,9 @@ class Settings(BaseSettings):
 
     @computed_field
     def trusted_host(self) -> str:
+        if not self.backend_url.host:
+            raise ValueError("Invalid URL: host is missing")
+
         return self.backend_url.host
 
     database_url: PostgresDsn
