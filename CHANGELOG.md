@@ -595,6 +595,8 @@ For now auto generation available only
 - GraphQL: Season selection by id
 - GraphQL: Paginated (Edged) seasons selection
 
+[1.13.8]: https://github.com/koldakov/futuramaapi/releases/tag/1.13.8
+[1.13.7]: https://github.com/koldakov/futuramaapi/releases/tag/1.13.7
 [1.13.6]: https://github.com/koldakov/futuramaapi/releases/tag/1.13.6
 [1.13.5]: https://github.com/koldakov/futuramaapi/releases/tag/1.13.5
 [1.13.4]: https://github.com/koldakov/futuramaapi/releases/tag/1.13.4
