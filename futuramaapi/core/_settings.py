@@ -191,7 +191,7 @@ class Settings(BaseSettings):
 
     @computed_field
     def trusted_host(self) -> str:
-        if not self.backend_url.host:
+        if self.backend_url.host is None:
             raise ValueError("Invalid URL: host is missing")
 
         return self.backend_url.host
