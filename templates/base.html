@@ -213,13 +213,13 @@
     {% if _project.g_tag %}
     <script
       async
-      src="https://www.googletagmanager.com/gtag/js?id={{ _project.G_TAG }}"
+      src="https://www.googletagmanager.com/gtag/js?id={{ _project.g_tag }}"
     ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', '{{ _project.G_TAG }}');
+      gtag('config', '{{ _project.g_tag }}');
     </script>
     {% endif %}
     <script
