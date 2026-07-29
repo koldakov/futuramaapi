@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING, Any, ClassVar, Literal, NamedTuple, Self
 import sentry_sdk
 from fastapi import FastAPI, Request, Response, status
 from fastapi.responses import JSONResponse
+from fastapi.routing import RouteContext, iter_route_contexts
 from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import add_pagination
-from starlette.routing import Host, Mount, Route, WebSocketRoute
 
 from futuramaapi.__version__ import __version__
 from futuramaapi.core import feature_flags, settings
@@ -166,18 +166,18 @@ class FuturamaAPI(FastAPI):
 
     def _is_route_public(
         self,
-        url: Route | WebSocketRoute | Mount | Host,
+        url: RouteContext,
         /,
         *,
         allowed_methods: list[Literal["GET", "POST", "HEAD", "PUT"]] | None = None,
     ) -> bool:
-        if url.path.startswith(self.BOTS_FORBIDDEN_URLS):
+        if url.path is None or url.path.startswith(self.BOTS_FORBIDDEN_URLS):
             return False
 
         if allowed_methods is None:
             allowed_methods = ["GET"]
 
-        if not hasattr(url, "methods"):
+        if not url.methods:
             return True
 
         if not any(x in allowed_methods for x in url.methods):
@@ -186,10 +186,9 @@ class FuturamaAPI(FastAPI):
         return True
 
     @property
-    def public_urls(self) -> list[Route | WebSocketRoute | Mount | Host]:
-        urls: list[Route | WebSocketRoute | Mount | Host] = []
-        route: Route | WebSocketRoute | Mount | Host
-        for route in self.routes:
+    def public_urls(self) -> list[RouteContext]:
+        urls: list[RouteContext] = []
+        for route in iter_route_contexts(self.routes):
             if self._is_route_public(route) and route.path not in [u.path for u in urls]:
                 urls.append(route)
 
