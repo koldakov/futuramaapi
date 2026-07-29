@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.12] - 2026-07-29
+
+### Fixed
+
+- `/sitemap.xml` crashing with `AttributeError` after upgrading FastAPI.
+
 ## [1.13.11] - 2026-07-29
 
 ### Fixed
