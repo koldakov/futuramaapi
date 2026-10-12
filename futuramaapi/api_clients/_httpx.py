@@ -24,7 +24,7 @@ class HTTPKwargs(TypedDict):
 
 
 class HTTPXClient(BaseClient):
-    def __init__(  # noqa: PLR0913
+    def __init__(  # noqa: PLR0913, PLR0917
         self,
         max_connections: int = 256,
         max_keepalive_connections: int | None = None,

@@ -137,7 +137,7 @@ class Query:
             LimitsRule(),
         ],
     )
-    async def characters(  # noqa: PLR0913
+    async def characters(  # noqa: PLR0913, PLR0917
         self,
         info: Info,
         limit: int | None = 50,

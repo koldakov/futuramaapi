@@ -188,7 +188,7 @@ async def user_signup(
     include_in_schema=False,
     name="signup_cookie_session_user",
 )
-async def signup_cookie_session_user(  # noqa: PLR0913
+async def signup_cookie_session_user(  # noqa: PLR0913, PLR0917
     request: Request,
     name: Annotated[str, Form()] = "",
     surname: Annotated[str, Form()] = "",
