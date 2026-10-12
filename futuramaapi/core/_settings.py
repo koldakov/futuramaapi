@@ -199,6 +199,9 @@ class Settings(BaseSettings):
     database_url: PostgresDsn
     project_root: Path = Path(__file__).parent.parent.parent.resolve()
     static: Path = Path("static")
+    cdn_base_url: HttpUrl = Field(
+        description="Base URL of the CDN serving static media (e.g. character images).",
+    )
 
     secret_key: SecretStr
     email: EmailSettings = email_settings
@@ -253,6 +256,9 @@ class Settings(BaseSettings):
             host=self.trusted_host,
             path=path,
         )
+
+    def build_cdn_url(self, path: str, /) -> HttpUrl:
+        return HttpUrl(f"{self.cdn_base_url.unicode_string().rstrip('/')}/{self._clean_path(path)}")
 
 
 settings = Settings()

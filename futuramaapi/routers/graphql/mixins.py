@@ -1,10 +1,8 @@
 from typing import ClassVar, Self, cast
 
-from fastapi_storages.base import StorageImage
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from strawberry.types.field import StrawberryField
 
-from futuramaapi.core import settings
 from futuramaapi.db import Base, FilterStatementKwargs, ModelDoesNotExistError
 
 from .conversion import ConverterBase, converter
@@ -18,13 +16,6 @@ class StrawberryDatabaseMixin:
     @classmethod
     def get_fields(cls) -> list[StrawberryField]:
         return cls.__strawberry_definition__.fields  # type: ignore[attr-defined]
-
-    @staticmethod
-    def to_img(field: StorageImage | None, /) -> str | None:
-        if field is None:
-            return None
-
-        return settings.build_url(path=field._name)
 
     @classmethod
     def from_model(cls, instance: Base, /) -> Self:

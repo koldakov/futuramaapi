@@ -7,12 +7,10 @@ from abc import ABC, abstractmethod
 from functools import singledispatch
 from typing import TYPE_CHECKING, Any, cast
 
-from fastapi_storages.base import StorageImage
 from strawberry.types.base import StrawberryList, StrawberryOptional, has_object_definition
 from strawberry.types.enum import StrawberryEnumDefinition
 from strawberry.types.union import StrawberryUnion
 
-from futuramaapi.core import settings
 from futuramaapi.db import Base
 
 if TYPE_CHECKING:
@@ -31,12 +29,6 @@ def _convert(
         if hasattr(type_, "from_model"):
             return type_.from_model(data)
         return _convert(type_, data)
-
-    if isinstance(data, StorageImage):
-        if data is None:
-            return None
-
-        return settings.build_url(path=data._name)
 
     return data
 

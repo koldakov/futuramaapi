@@ -24,7 +24,7 @@ def character(faker: Faker):
         status=CharacterModel.CharacterStatus.ALIVE,
         species=CharacterModel.CharacterSpecies.HUMAN,
         created_at=datetime.now(UTC),
-        image=faker.image_url(),
+        image=f"img/{faker.word()}.webp",
     )
 
 

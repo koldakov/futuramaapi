@@ -9,10 +9,6 @@ from collections.abc import Sequence
 
 import sqlalchemy as sa
 from alembic import op
-from fastapi_storages import FileSystemStorage
-from fastapi_storages.integrations.sqlalchemy import ImageType
-
-from futuramaapi.core import settings
 
 # revision identifiers, used by Alembic.
 revision: str = "928d4358646c"
@@ -26,11 +22,7 @@ def upgrade() -> None:
         "characters",
         sa.Column(
             "image",
-            ImageType(
-                storage=FileSystemStorage(
-                    path=settings.project_root / settings.static,
-                ),
-            ),
+            sa.Unicode(),
             nullable=True,
         ),
     )

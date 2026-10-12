@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from fastapi_storages import StorageImage
 from pydantic import HttpUrl, field_validator
 from sqlalchemy import Select, select
 from sqlalchemy.exc import NoResultFound
@@ -22,12 +21,10 @@ class GetCharacterResponse(BaseModel):
 
     @field_validator("image", mode="before")
     @classmethod
-    def make_url(cls, value: StorageImage | str | None, /) -> HttpUrl | None:
+    def make_url(cls, value: str | None, /) -> HttpUrl | None:
         if value is None:
             return None
-        if isinstance(value, StorageImage):
-            return settings.build_url(path=value._name)
-        return HttpUrl(value)
+        return settings.build_cdn_url(value)
 
 
 class GetCharacterService(BaseSessionService[GetCharacterResponse]):

@@ -29,7 +29,7 @@ class Character(StrawberryDatabaseMixin):
     status: strawberry.enum(CharacterModel.CharacterStatus)  # type: ignore[valid-type]
     gender: strawberry.enum(CharacterModel.CharacterGender)  # type: ignore[valid-type]
     species: strawberry.enum(CharacterModel.CharacterSpecies)  # type: ignore[valid-type]
-    image: str | None
+    image_url: str | None = strawberry.field(name="image")
 
 
 @strawberry.type

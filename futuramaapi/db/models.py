@@ -3,8 +3,6 @@ from datetime import UTC, datetime, timedelta
 from enum import Enum
 from functools import partial
 
-from fastapi_storages import FileSystemStorage
-from fastapi_storages.integrations.sqlalchemy import ImageType
 from sqlalchemy import (
     BIGINT,
     TEXT,
@@ -15,6 +13,7 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     SmallInteger,
+    Unicode,
     UniqueConstraint,
     Update,
     update,
@@ -154,10 +153,8 @@ class CharacterModel(Base):
         ),
         nullable=False,
     )
-    image: Mapped[ImageType | None] = mapped_column(
-        ImageType(
-            storage=FileSystemStorage(path=settings.project_root / settings.static),
-        ),
+    image: Mapped[str | None] = mapped_column(
+        Unicode,
     )
 
     # Mappers
@@ -170,11 +167,11 @@ class CharacterModel(Base):
     )
 
     @property
-    def relative_image_url(self) -> str | None:
+    def image_url(self) -> str | None:
         if self.image is None:
             return self.image
 
-        return settings.build_url(path=self.image._name, is_static=True).path
+        return settings.build_cdn_url(self.image).unicode_string()
 
     @classmethod
     def get_cond_list(cls, **kwargs) -> list[BinaryExpression]:

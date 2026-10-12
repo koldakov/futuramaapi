@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Literal
 
-from fastapi_storages import StorageImage
 from pydantic import Field, HttpUrl, field_validator
 
 from futuramaapi.core import settings
@@ -26,12 +25,10 @@ class GetCharacterCallbackResponse(BaseModel):
 
         @field_validator("image", mode="before")
         @classmethod
-        def make_url(cls, value: StorageImage | str | None, /) -> HttpUrl | None:
+        def make_url(cls, value: str | None, /) -> HttpUrl | None:
             if value is None:
                 return None
-            if isinstance(value, StorageImage):
-                return settings.build_url(path=value._name)
-            return HttpUrl(value)
+            return settings.build_cdn_url(value)
 
     kind: Literal["Character"] = Field(
         "Character",

@@ -2,7 +2,6 @@ from unittest.mock import MagicMock
 
 import pytest
 from faker import Faker
-from fastapi_storages import FileSystemStorage, StorageImage
 from pydantic import HttpUrl
 from sqlalchemy.exc import NoResultFound
 
@@ -50,20 +49,17 @@ class TestGetCharacterService:
         assert result.image is None
 
     @pytest.mark.asyncio
-    async def test_get_character_service_success_image_is_storage_image(
+    async def test_get_character_service_success_image_is_path(
         self,
         faker: Faker,
         character: CharacterModel,
         mock_session_manager,
+        monkeypatch: pytest.MonkeyPatch,
     ):
         # Arrange
-        image_name: str = faker.word()
-        character.image = StorageImage(
-            name=image_name,
-            storage=FileSystemStorage(path=settings.project_root / settings.static),
-            width=faker.random_int(),
-            height=faker.random_int(),
-        )
+        monkeypatch.setattr(settings, "cdn_base_url", HttpUrl("https://cdn.localhost"))
+        image_name: str = f"img/{faker.word()}.webp"
+        character.image = image_name
 
         mock_result = MagicMock()
         mock_result.scalars.return_value.one.return_value = character
@@ -77,7 +73,7 @@ class TestGetCharacterService:
         # Assert
         assert result.id == character.id
         assert result.name == character.name
-        assert result.image == HttpUrl(f"https://localhost/static/{image_name}")
+        assert result.image == HttpUrl(f"https://cdn.localhost/{image_name}")
 
     @pytest.mark.asyncio
     async def test_get_character_service_not_found(self, faker: Faker, mock_session_manager):
