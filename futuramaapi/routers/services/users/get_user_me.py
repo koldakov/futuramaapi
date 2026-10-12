@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import EmailStr, Field, SecretStr
 
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 from futuramaapi.routers.services import BaseUserAuthenticatedService
 
 

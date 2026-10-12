@@ -6,7 +6,7 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import selectinload
 
 from futuramaapi.db.models import EpisodeModel
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 from futuramaapi.routers.services import BaseSessionService, NotFoundError
 
 

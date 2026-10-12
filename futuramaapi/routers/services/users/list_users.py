@@ -6,7 +6,7 @@ from pydantic import Field
 from sqlalchemy import Select, select
 
 from futuramaapi.db.models import UserModel
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 from futuramaapi.routers.services import BaseSessionService
 
 

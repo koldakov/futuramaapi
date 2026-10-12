@@ -9,7 +9,7 @@ from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.core import feature_flags, settings
 from futuramaapi.db.models import UserModel
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 from futuramaapi.routers.services import BaseSessionService
 
 

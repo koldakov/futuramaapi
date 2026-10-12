@@ -6,7 +6,7 @@ from sqlalchemy import Select, select
 from sqlalchemy.orm import selectinload
 
 from futuramaapi.db.models import EpisodeModel
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 
 from ._base import (
     DoesNotExistCallbackResponse,

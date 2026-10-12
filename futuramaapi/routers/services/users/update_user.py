@@ -1,6 +1,6 @@
 from pydantic import Field, SecretStr, field_validator
 
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 from futuramaapi.routers.services import BaseUserAuthenticatedService, EmptyUpdateError
 
 from .get_user_me import GetUserMeResponse

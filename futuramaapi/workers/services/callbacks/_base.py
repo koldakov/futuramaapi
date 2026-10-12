@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from futuramaapi.api_clients import RequestData
 from futuramaapi.db import Base
 from futuramaapi.db.session import session_manager
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 from futuramaapi.workers.services._base import BaseAPITaskService
 
 

@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 
 
 class NotFoundResponse(BaseModel):

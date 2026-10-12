@@ -5,7 +5,7 @@ from pydantic import Field, HttpUrl, field_validator
 
 from futuramaapi.core import settings
 from futuramaapi.db.models import CharacterModel
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 
 from ._base import (
     DoesNotExistCallbackResponse,

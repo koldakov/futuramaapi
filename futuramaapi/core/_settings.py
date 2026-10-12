@@ -12,7 +12,7 @@ from pydantic.fields import FieldInfo
 from pydantic_settings import BaseSettings, EnvSettingsSource, PydanticBaseSettingsSource, SettingsConfigDict
 from redis.asyncio import ConnectionPool
 
-from futuramaapi.helpers.templates import TEMPLATES_PATH
+TEMPLATES_PATH: Path = Path("templates")
 
 
 class EmailSettings(BaseSettings):

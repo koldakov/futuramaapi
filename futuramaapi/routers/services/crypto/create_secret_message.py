@@ -6,7 +6,7 @@ from sqlalchemy.sql.dml import ReturningInsert
 
 from futuramaapi.core import settings
 from futuramaapi.db.models import SecretMessageModel
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 from futuramaapi.routers.services import BaseSessionService
 
 

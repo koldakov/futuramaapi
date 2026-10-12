@@ -2,7 +2,7 @@ from random import randint
 
 from pydantic import Field, HttpUrl
 
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 
 MIN_DELAY: int = 5
 MAX_DELAY: int = 10

@@ -3,7 +3,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from futuramaapi.api_clients import BaseClient, HTTPXClient
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 
 
 class BaseTaskService[T: Mapping[str, Any]](BaseModel, ABC):

@@ -11,7 +11,7 @@ from starlette.templating import _TemplateResponse
 from futuramaapi.__version__ import __version__
 from futuramaapi.core import settings
 from futuramaapi.db.models import AuthSessionModel, UserModel
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 from futuramaapi.helpers.templates import templates
 from futuramaapi.utils import config, metadata
 

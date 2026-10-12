@@ -12,7 +12,7 @@ from sse_starlette import EventSourceResponse, ServerSentEvent
 
 from futuramaapi.db.models import CharacterModel
 from futuramaapi.db.session import session_manager
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 from futuramaapi.routers.services import BaseService, NotFoundError
 from futuramaapi.routers.services.characters.get_character import GetCharacterResponse
 

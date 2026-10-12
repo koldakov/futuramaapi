@@ -8,7 +8,7 @@ from sqlalchemy import Row, RowMapping, Select, case, select, update
 from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.db.models import SecretMessageModel
-from futuramaapi.helpers.pydantic import BaseModel
+from futuramaapi.helpers import BaseModel
 from futuramaapi.routers.services import BaseSessionService, NotFoundError
 
 

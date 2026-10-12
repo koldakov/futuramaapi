@@ -1,14 +1,13 @@
-from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from fastapi.templating import Jinja2Templates as _Jinja2Templates
 from jinja2 import Environment, pass_context
 from starlette.datastructures import URL
 
+from futuramaapi.core import TEMPLATES_PATH
+
 if TYPE_CHECKING:
     from fastapi import Request
-
-TEMPLATES_PATH: Path = Path("templates")
 
 
 class Jinja2Templates(_Jinja2Templates):
