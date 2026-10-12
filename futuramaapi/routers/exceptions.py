@@ -1,11 +1,11 @@
 from pydantic import Field
 
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 
 
-class NotFoundResponse(BaseModel):
+class NotFoundResponse(BaseSchema):
     detail: str = Field("Not Found")
 
 
-class UnauthorizedResponse(BaseModel):
+class UnauthorizedResponse(BaseSchema):
     detail: str = Field("Unauthorized")

@@ -8,11 +8,11 @@ from sqlalchemy import Row, RowMapping, Select, case, select, update
 from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.db.models import SecretMessageModel
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.routers.services import BaseSessionService, NotFoundError
 
 
-class GetSecretMessageResponse(BaseModel):
+class GetSecretMessageResponse(BaseSchema):
     id: int
     visit_counter: int
     ip_address: str

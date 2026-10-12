@@ -6,7 +6,7 @@ from sqlalchemy import Select, select
 from sqlalchemy.orm import selectinload
 
 from futuramaapi.db.models import EpisodeModel
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 
 from ._base import (
     DoesNotExistCallbackResponse,
@@ -14,8 +14,8 @@ from ._base import (
 )
 
 
-class GetEpisodeCallbackResponse(BaseModel):
-    class EpisodeItem(BaseModel):
+class GetEpisodeCallbackResponse(BaseSchema):
+    class EpisodeItem(BaseSchema):
         id: int
         name: str
         broadcast_number: int = Field(
@@ -27,7 +27,7 @@ class GetEpisodeCallbackResponse(BaseModel):
             ],
         )
 
-        class Season(BaseModel):
+        class Season(BaseSchema):
             id: int
 
         air_date: date | None

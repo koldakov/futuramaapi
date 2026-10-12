@@ -11,14 +11,14 @@ from starlette.templating import _TemplateResponse
 from futuramaapi.__version__ import __version__
 from futuramaapi.core import settings
 from futuramaapi.db.models import AuthSessionModel, UserModel
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.helpers.templates import templates
 from futuramaapi.utils import config, metadata
 
 from ._base import BaseSessionService
 
 
-class _ProjectContext(BaseModel):
+class _ProjectContext(BaseSchema):
     version: str = Field(
         default=__version__,
     )

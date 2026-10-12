@@ -10,11 +10,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from futuramaapi.api_clients import RequestData
 from futuramaapi.db import Base
 from futuramaapi.db.session import session_manager
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.workers.services._base import BaseAPITaskService
 
 
-class DoesNotExistCallbackResponse(BaseModel):
+class DoesNotExistCallbackResponse(BaseSchema):
     id: int = Field(
         description="Requested Object ID.",
     )
@@ -32,7 +32,7 @@ class GetItemCallbackTaskService(BaseAPITaskService):
     callback_url: HttpUrl
 
     model_class: ClassVar[type[Base]]
-    response_class: ClassVar[type[BaseModel]]
+    response_class: ClassVar[type[BaseSchema]]
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -58,7 +58,7 @@ class GetItemCallbackTaskService(BaseAPITaskService):
 
         return {"item": obj}
 
-    async def _send(self, callback_response: BaseModel, /) -> None:
+    async def _send(self, callback_response: BaseSchema, /) -> None:
         request_data: RequestData = RequestData(
             url=str(self.callback_url),
             method=HTTPMethod.POST,
@@ -69,7 +69,7 @@ class GetItemCallbackTaskService(BaseAPITaskService):
     async def _process(self, *args, **kwargs) -> dict[str, Any]:
         await sleep(self.delay)
 
-        callback_response: BaseModel = self.response_class.model_validate(await self._get_item())
+        callback_response: BaseSchema = self.response_class.model_validate(await self._get_item())
         await self._send(callback_response)
 
         return {}

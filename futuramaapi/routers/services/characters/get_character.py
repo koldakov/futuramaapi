@@ -6,11 +6,11 @@ from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.core import settings
 from futuramaapi.db.models import CharacterModel
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.routers.services import BaseSessionService, NotFoundError
 
 
-class GetCharacterResponse(BaseModel):
+class GetCharacterResponse(BaseSchema):
     id: int
     name: str
     gender: CharacterModel.CharacterGender

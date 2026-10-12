@@ -9,11 +9,11 @@ from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.core import feature_flags, settings
 from futuramaapi.db.models import UserModel
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.routers.services import BaseSessionService
 
 
-class RequestChangeUserPasswordRequest(BaseModel):
+class RequestChangeUserPasswordRequest(BaseSchema):
     email: EmailStr
 
 

@@ -12,7 +12,7 @@ from sse_starlette import EventSourceResponse, ServerSentEvent
 
 from futuramaapi.db.models import CharacterModel
 from futuramaapi.db.session import session_manager
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.routers.services import BaseService, NotFoundError
 from futuramaapi.routers.services.characters.get_character import GetCharacterResponse
 
@@ -23,8 +23,8 @@ MIN_COORDINATE: int = 0
 MAX_COORDINATE: int = 2**6
 
 
-class CharacterNotificationResponse(BaseModel):
-    class Notification(BaseModel):
+class CharacterNotificationResponse(BaseSchema):
+    class Notification(BaseSchema):
         time: datetime = Field(default_factory=datetime.now)
         x: int = Field(
             description="Character X coordinate",

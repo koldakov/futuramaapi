@@ -7,11 +7,11 @@ from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.core import settings
 from futuramaapi.db.models import LinkModel
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.routers.services import BaseUserAuthenticatedService, NotFoundError
 
 
-class GetLinkResponse(BaseModel):
+class GetLinkResponse(BaseSchema):
     url: HttpUrl = Field(
         examples=[
             "https://example.com",

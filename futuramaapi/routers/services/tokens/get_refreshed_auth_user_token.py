@@ -8,13 +8,13 @@ from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.core import settings
 from futuramaapi.db.models import UserModel
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.routers.services import BaseSessionService, UnauthorizedError
 
 from .get_auth_user_token import GetAuthUserTokenResponse
 
 
-class GetRefreshedAuthUserTokenRequest(BaseModel):
+class GetRefreshedAuthUserTokenRequest(BaseSchema):
     refresh_token: str = Field(
         alias="refresh_token",
     )

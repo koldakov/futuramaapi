@@ -6,11 +6,11 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import selectinload
 
 from futuramaapi.db.models import EpisodeModel
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.routers.services import BaseSessionService, NotFoundError
 
 
-class GetEpisodeResponse(BaseModel):
+class GetEpisodeResponse(BaseSchema):
     id: int
     name: str
     broadcast_number: int = Field(
@@ -22,7 +22,7 @@ class GetEpisodeResponse(BaseModel):
         ],
     )
 
-    class Season(BaseModel):
+    class Season(BaseSchema):
         id: int
 
     air_date: date | None

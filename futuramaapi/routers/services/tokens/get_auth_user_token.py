@@ -9,11 +9,11 @@ from sqlalchemy.exc import NoResultFound
 
 from futuramaapi.core import settings
 from futuramaapi.db.models import UserModel
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.routers.services import BaseSessionService, UnauthorizedError
 
 
-class GetAuthUserTokenResponse(BaseModel):
+class GetAuthUserTokenResponse(BaseSchema):
     access_token: str = Field(
         alias="access_token",
         description="Keep in mind, that the field is not in a camel case. That's the standard.",

@@ -3,10 +3,10 @@ from collections.abc import Mapping
 from typing import Any
 
 from futuramaapi.api_clients import BaseClient, HTTPXClient
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 
 
-class BaseTaskService[T: Mapping[str, Any]](BaseModel, ABC):
+class BaseTaskService[T: Mapping[str, Any]](BaseSchema, ABC):
     @abstractmethod
     async def __call__(self, *args, **kwargs) -> T:
         pass

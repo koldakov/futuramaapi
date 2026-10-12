@@ -10,13 +10,13 @@ from sqlalchemy import exc
 
 from futuramaapi.core import feature_flags, settings
 from futuramaapi.db.models import UserModel
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.routers.services import BaseSessionService, ConflictError, RegistrationDisabledError
 
 from .get_user_me import GetUserMeResponse
 
 
-class CreateUserRequest(BaseModel):
+class CreateUserRequest(BaseSchema):
     name: str = Field(
         min_length=1,
         max_length=64,

@@ -10,7 +10,7 @@ from futuramaapi.core import settings
 from futuramaapi.helpers.hashers import PasswordHasherBase, hasher
 
 
-class BaseModel(_BaseModel):
+class BaseSchema(_BaseModel):
     hasher: ClassVar[PasswordHasherBase] = hasher
     encryptor: ClassVar[Fernet] = settings.fernet
 

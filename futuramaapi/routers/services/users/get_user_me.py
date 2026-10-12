@@ -2,11 +2,11 @@ from datetime import datetime
 
 from pydantic import EmailStr, Field, SecretStr
 
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.routers.services import BaseUserAuthenticatedService
 
 
-class GetUserMeResponse(BaseModel):
+class GetUserMeResponse(BaseSchema):
     id: int
     created_at: datetime
     name: str = Field(

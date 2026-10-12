@@ -12,11 +12,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from futuramaapi.core import settings
 from futuramaapi.db.models import UserModel
 from futuramaapi.db.session import session_manager
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 
 TResponse = TypeVar(
     "TResponse",
-    bound=BaseModel | Sequence[BaseModel] | Page[BaseModel] | None,
+    bound=BaseSchema | Sequence[BaseSchema] | Page[BaseSchema] | None,
 )
 
 
@@ -52,7 +52,7 @@ class UserDeletionDisabledError(ServiceError):
     """User Deletion Disabled Error."""
 
 
-class BaseService[TResponse](BaseModel, ABC):
+class BaseService[TResponse](BaseSchema, ABC):
     """Base interface for async application services."""
 
     context: dict[str, Any] | None = None

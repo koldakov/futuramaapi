@@ -2,13 +2,13 @@ from random import randint
 
 from pydantic import Field, HttpUrl
 
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 
 MIN_DELAY: int = 5
 MAX_DELAY: int = 10
 
 
-class DoesNotExist(BaseModel):
+class DoesNotExist(BaseSchema):
     id: int = Field(
         description="Requested Object ID.",
     )
@@ -20,11 +20,11 @@ class DoesNotExist(BaseModel):
     )
 
 
-class CallbackRequest(BaseModel):
+class CallbackRequest(BaseSchema):
     callback_url: HttpUrl
 
 
-class CallbackResponse(BaseModel):
+class CallbackResponse(BaseSchema):
     @staticmethod
     def _generate_random_delay() -> int:
         return randint(MIN_DELAY, MAX_DELAY)  # noqa: S311

@@ -6,11 +6,11 @@ from sqlalchemy.sql.dml import ReturningInsert
 
 from futuramaapi.core import settings
 from futuramaapi.db.models import SecretMessageModel
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.routers.services import BaseSessionService
 
 
-class CreateSecretMessageRequest(BaseModel):
+class CreateSecretMessageRequest(BaseSchema):
     text: str = Field(
         min_length=1,
         max_length=8192,
@@ -22,7 +22,7 @@ class CreateSecretMessageRequest(BaseModel):
         return cls.encryptor.encrypt(value.encode()).decode()
 
 
-class CreateSecretMessageResponse(BaseModel):
+class CreateSecretMessageResponse(BaseSchema):
     url: str
 
     _base_path: ClassVar[str] = "/api/crypto/secret_message/"

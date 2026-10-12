@@ -6,11 +6,11 @@ from pydantic import Field
 from sqlalchemy import Select, select
 
 from futuramaapi.db.models import UserModel
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.routers.services import BaseSessionService
 
 
-class ListUsersResponse(BaseModel):
+class ListUsersResponse(BaseSchema):
     id: int
     is_confirmed: bool
     created_at: datetime

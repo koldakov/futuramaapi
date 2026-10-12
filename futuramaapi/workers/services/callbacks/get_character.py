@@ -5,7 +5,7 @@ from pydantic import Field, HttpUrl, field_validator
 
 from futuramaapi.core import settings
 from futuramaapi.db.models import CharacterModel
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 
 from ._base import (
     DoesNotExistCallbackResponse,
@@ -13,8 +13,8 @@ from ._base import (
 )
 
 
-class GetCharacterCallbackResponse(BaseModel):
-    class CharacterItem(BaseModel):
+class GetCharacterCallbackResponse(BaseSchema):
+    class CharacterItem(BaseSchema):
         id: int
         name: str
         gender: CharacterModel.CharacterGender

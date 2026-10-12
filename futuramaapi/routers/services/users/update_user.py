@@ -1,12 +1,12 @@
 from pydantic import Field, SecretStr, field_validator
 
-from futuramaapi.helpers import BaseModel
+from futuramaapi.helpers import BaseSchema
 from futuramaapi.routers.services import BaseUserAuthenticatedService, EmptyUpdateError
 
 from .get_user_me import GetUserMeResponse
 
 
-class UpdateUserRequest(BaseModel):
+class UpdateUserRequest(BaseSchema):
     name: str | None = Field(
         min_length=1,
         max_length=64,
