@@ -1,12 +1,50 @@
 [project]
 name = "futuramaapi"
-
-[tool.poetry]
-name = "futuramaapi"
 version = "1.13.12"
 description = "Inspired REST and GraphQL API based on TV show Futurama."
-authors = ["Ivan Koldakov <ivan.koldakov@gmail.com>"]
+authors = [{ name = "Ivan Koldakov", email = "ivan.koldakov@gmail.com" }]
+requires-python = ">=3.12,<4"
 readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "hypercorn[uvloop]>=0.18.0,<0.19",
+    "pydantic-settings>=2.14.2,<3",
+    "asyncpg>=0.31.0,<0.32",
+    "anyio>=4.14.2,<5",
+    "pydash>=8.0.6,<9",
+    "pyjwt>=2.13.0,<3",
+    "pyyaml>=6.0.3,<7",
+    "python-multipart>=0.0.32,<0.0.33",
+    "greenlet>=3.5.4,<4",
+    "httpx>=0.28.1,<0.29",
+    "aiocache>=0.12.3,<0.13",
+    "cryptography>=49.0.0,<50",
+    "sqlalchemy>=2.0.51,<3",
+    "fastapi>=0.141.0,<0.142",
+    "sse-starlette>=3.4.6,<4",
+    "fastapi-mail>=1.6.5,<2",
+    "sentry-sdk>=2.66.1,<3",
+    "fastapi-pagination>=0.15.16,<0.16",
+    "redis>=8.0.1,<9",
+    "pydantic>=2.13.4,<3",
+    "alembic>=1.18.5,<2",
+    "strawberry-graphql>=0.323.2,<0.324",
+    "markdown>=3.10.2,<4",
+    "bleach>=6.4.0,<7",
+    "aiofiles>=25.1.0,<26",
+    "dramatiq[rabbitmq]>=2.2.0,<3",
+    "urllib3>=2.7.0,<3",
+    "python-dotenv>=1.2.2,<2",
+    "filelock>=3.32.0,<4",
+    "virtualenv>=21.7.0,<22",
+    "mako>=1.3.12,<2",
+    "idna>=3.18,<4",
+]
 
 [project.urls]
 Homepage = "https://futuramaapi.com"
@@ -15,54 +53,25 @@ Repository = "https://github.com/koldakov/futuramaapi"
 Issues = "https://github.com/koldakov/futuramaapi/issues"
 Changelog = "https://github.com/koldakov/futuramaapi/blob/main/CHANGELOG.md"
 
-[tool.poetry.dependencies]
-python = "^3.12"
-hypercorn = {extras = ["uvloop"], version = "^0.18.0"}
-pydantic-settings = "^2.14.2"
-asyncpg = "^0.31.0"
-anyio = "^4.14.2"
-pydash = "^8.0.6"
-pyjwt = "^2.13.0"
-pyyaml = "^6.0.3"
-python-multipart = "^0.0.32"
-greenlet = "^3.5.4"
-httpx = "^0.28.1"
-aiocache = "^0.12.3"
-cryptography = "^49.0.0"
-sqlalchemy = "^2.0.51"
-fastapi = "^0.141.0"
-sse-starlette = "^3.4.6"
-fastapi-mail = "^1.6.5"
-sentry-sdk = "^2.66.1"
-fastapi-pagination = "^0.15.16"
-redis = "^8.0.1"
-pydantic = "^2.13.4"
-alembic = "^1.18.5"
-strawberry-graphql = "^0.323.2"
-markdown = "^3.10.2"
-bleach = "^6.4.0"
-aiofiles = "^25.1.0"
-dramatiq = {extras = ["rabbitmq"], version = "^2.2.0"}
-urllib3 = "^2.7.0"
-python-dotenv = "^1.2.2"
-filelock = "^3.32.0"
-virtualenv = "^21.7.0"
-mako = "^1.3.12"
-idna = "^3.18"
+[dependency-groups]
+dev = ["pre-commit>=4.6.1,<5"]
+test = [
+    "pytest>=9.1.1,<10",
+    "pytest-asyncio>=1.4.0,<2",
+    "pytest-cov>=7.1.0,<8",
+    "faker>=40.36.0,<41",
+    "pygments>=2.20.0,<3",
+]
 
-[tool.poetry.group.dev.dependencies]
-pre-commit = "^4.6.1"
+[tool.uv]
+default-groups = "all"
 
-[tool.poetry.group.test.dependencies]
-pytest = "^9.1.1"
-pytest-asyncio = "^1.4.0"
-pytest-cov = "^7.1.0"
-faker = "^40.36.0"
-pygments = "^2.20.0"
+[tool.uv.build-backend]
+module-root = ""
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.11.8,<0.12.0"]
+build-backend = "uv_build"
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.

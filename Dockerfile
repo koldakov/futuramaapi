@@ -1,45 +1,27 @@
-FROM python:3.12.0-slim-bullseye AS python-base
-
-# Environ
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PATH="${PATH}:/root/.local/bin" \
-    POETRY_HOME=/opt/poetry \
-    POETRY_VENV=/opt/poetry-venv \
-    POETRY_CACHE_DIR=/opt/.cache
-
-RUN curl -sSL https://install.python-poetry.org | python3 -
-
-# Install dependencies
-RUN apt-get update
-RUN apt-get -y install make
-
-# Create stage for Poetry installation
-FROM python-base AS poetry-base
-
-# Creating a virtual environment just for poetry and install it with pip
-RUN python3 -m venv $POETRY_VENV \
-	&& $POETRY_VENV/bin/pip install poetry
-
-# Create a new stage from the base python image
-FROM python-base AS futuramaapi-app
+FROM python:3.12.0-slim-bullseye AS futuramaapi-app
 
 ARG APP_USER=futuramaapi
 ARG WORK_DIR=/app
 
-# Copy Poetry to app image
-COPY --from=poetry-base ${POETRY_VENV} ${POETRY_VENV}
+# Environ
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_NO_CACHE=1 \
+    PATH="${WORK_DIR}/.venv/bin:${PATH}"
 
-# Add Poetry to PATH
-ENV PATH="${PATH}:${POETRY_VENV}/bin"
+# Copy uv to app image
+COPY --from=ghcr.io/astral-sh/uv:0.11.8 /uv /uvx /bin/
 
 WORKDIR ${WORK_DIR}
 
-# Copy Dependencies
-COPY . ${WORK_DIR}
+# Install Dependencies (cached until the lock file changes)
+COPY pyproject.toml uv.lock ${WORK_DIR}/
+RUN uv sync --locked --no-default-groups --no-install-project
 
-# Install Dependencies
-RUN poetry install --no-interaction --no-cache --without dev --without test
+# Copy project and install it
+COPY . ${WORK_DIR}
+RUN uv sync --locked --no-default-groups
 
 EXPOSE 8000
 

@@ -37,7 +37,7 @@ this project embraces cutting-edge technologies to provide a modern development 
 
 1. Python >= 3.12
 2. PostgreSQL
-3. poetry
+3. [uv](https://docs.astral.sh/uv/)
 
 ## Installation
 
@@ -46,9 +46,9 @@ this project embraces cutting-edge technologies to provide a modern development 
 # Clone repo
 git clone git@github.com:koldakov/futuramaapi.git
 # Instal dependencies
-poetry install
+uv sync
 # Initiate pre-commit
-poetry run pre-commit install
+uv run pre-commit install
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -59,8 +59,8 @@ If you create models in a new file please import it in env.py.
 Because alembic does not detect child classes.
 
 ```commandline
-poetry run alembic revision --autogenerate -m "Revision Name"
-poetry run alembic upgrade head
+uv run alembic revision --autogenerate -m "Revision Name"
+uv run alembic upgrade head
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>

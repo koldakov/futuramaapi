@@ -14,19 +14,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
 
       - name: Install dependencies
         run: |
-          pip install poetry
-          poetry install
+          uv sync --locked
 
       - name: Run pre-commit
         run: |
-          poetry run pre-commit run --all-files
+          uv run pre-commit run --all-files
 
   unit-tests:
     runs-on: ubuntu-latest
@@ -34,15 +33,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
 
       - name: Install dependencies
         run: |
-          pip install poetry
-          poetry install
+          uv sync --locked
 
       - name: Load env file
         run: |
@@ -50,4 +48,4 @@ jobs:
 
       - name: Run unit tests
         run: |
-          poetry run pytest --cov=futuramaapi --cov-fail-under=70
+          uv run pytest --cov=futuramaapi --cov-fail-under=70

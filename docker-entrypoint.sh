@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
 # Migrations
-make migrate
+python -m alembic upgrade head
 
-poetry run python -m futuramaapi -b :"${PORT:-8080}" "$@"
+python -m futuramaapi -b :"${PORT:-8080}" "$@"
