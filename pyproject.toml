@@ -149,6 +149,15 @@ unfixable = []
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
+[tool.ruff.lint.flake8-type-checking]
+# SQLAlchemy resolves Mapped[...] annotations at runtime, pydantic resolves field annotations.
+runtime-evaluated-base-classes = [
+    "futuramaapi.db.BaseModel",
+    "futuramaapi.db._base.BaseModel",
+    "futuramaapi.helpers.BaseSchema",
+    "futuramaapi.helpers._pydantic.BaseSchema",
+]
+
 [tool.ruff.format]
 # Like Black, use double quotes for strings.
 quote-style = "double"
