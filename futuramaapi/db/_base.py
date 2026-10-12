@@ -68,7 +68,7 @@ class DeclarativeAttributeIntercept(_DeclarativeAttributeIntercept):
         return select
 
 
-class Base(
+class BaseModel(
     DeclarativeBaseNoMeta,
     metaclass=DeclarativeAttributeIntercept,
 ):
@@ -171,7 +171,7 @@ class Base(
         /,
     ) -> Select[tuple[Self]]:
         # TODO: I mean fix ignoring
-        statement: Select[tuple[Base]] = cls.select_(cls)  # type: ignore[call-arg]
+        statement: Select[tuple[BaseModel]] = cls.select_(cls)  # type: ignore[call-arg]
         statement = statement.order_by(
             cls.get_order_by(
                 field_name=kwargs.order_by,

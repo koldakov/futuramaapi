@@ -27,11 +27,11 @@ from sqlalchemy.sql.elements import BinaryExpression
 from futuramaapi.core import settings
 from futuramaapi.helpers.hashers import hasher
 
-from ._base import Base
+from ._base import BaseModel
 from .session import session_manager
 
 
-class SeasonModel(Base):
+class SeasonModel(BaseModel):
     __tablename__ = "seasons"
 
     # Mappers
@@ -44,7 +44,7 @@ class SeasonModel(Base):
         return [selectinload(SeasonModel.episodes)]
 
 
-class EpisodeCharacterAssociationModel(Base):
+class EpisodeCharacterAssociationModel(BaseModel):
     __tablename__ = "episode_character_association"
 
     id = None
@@ -61,7 +61,7 @@ class EpisodeCharacterAssociationModel(Base):
     )
 
 
-class EpisodeModel(Base):
+class EpisodeModel(BaseModel):
     __tablename__ = "episodes"
 
     name: Mapped[str | None] = mapped_column(
@@ -107,7 +107,7 @@ class EpisodeModel(Base):
         return [selectinload(EpisodeModel.season)]
 
 
-class CharacterModel(Base):
+class CharacterModel(BaseModel):
     __tablename__ = "characters"
 
     class CharacterSpecies(Enum):
@@ -196,7 +196,7 @@ class CharacterModel(Base):
         return cond_list
 
 
-class UserModel(Base):
+class UserModel(BaseModel):
     __tablename__ = "users"
 
     name: Mapped[str] = mapped_column(
@@ -285,7 +285,7 @@ def _generate_shortened(length: int, /) -> str:
             return shortened
 
 
-class LinkModel(Base):
+class LinkModel(BaseModel):
     __tablename__ = "links"
 
     @staticmethod
@@ -339,7 +339,7 @@ class LinkModel(Base):
         return [selectinload(LinkModel.user)]
 
 
-class SecretMessageModel(Base):
+class SecretMessageModel(BaseModel):
     __tablename__ = "secret_messages"
 
     url_length: int = 128
@@ -372,7 +372,7 @@ class SecretMessageModel(Base):
     )
 
 
-class AuthSessionModel(Base):
+class AuthSessionModel(BaseModel):
     __tablename__ = "auth_sessions"
 
     key_length: int = 32
@@ -429,7 +429,7 @@ class AuthSessionModel(Base):
         await session.commit()
 
 
-class RequestsCounterModel(Base):
+class RequestsCounterModel(BaseModel):
     __tablename__ = "requests_counter"
 
     url: Mapped[str] = mapped_column(
@@ -462,7 +462,7 @@ class RequestsCounterModel(Base):
             await session.commit()
 
 
-class SystemMessage(Base):
+class SystemMessageModel(BaseModel):
     __tablename__ = "system_messages"
 
     message: Mapped[str] = mapped_column(
@@ -478,7 +478,7 @@ class SystemMessage(Base):
     )
 
 
-class FavoriteCharacterModel(Base):
+class FavoriteCharacterModel(BaseModel):
     __tablename__ = "favorite_characters"
 
     user_uuid: Mapped[uuid.UUID] = mapped_column(

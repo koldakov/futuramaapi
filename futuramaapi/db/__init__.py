@@ -1,13 +1,13 @@
 from ._base import (
     INT32,
-    Base,
+    BaseModel,
     FilterStatementKwargs,
     ModelDoesNotExistError,
 )
 
 __all__ = [
     "INT32",
-    "Base",
+    "BaseModel",
     "FilterStatementKwargs",
     "ModelDoesNotExistError",
 ]

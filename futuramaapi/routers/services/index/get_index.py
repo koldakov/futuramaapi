@@ -6,7 +6,7 @@ from aiocache import cached
 from sqlalchemy import Result, Select, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from futuramaapi.db.models import CharacterModel, RequestsCounterModel, SystemMessage, UserModel
+from futuramaapi.db.models import CharacterModel, RequestsCounterModel, SystemMessageModel, UserModel
 from futuramaapi.routers.services import BaseTemplateService
 
 _TOTAL_REQUESTS_TTL: Final[int] = 60 * 60
@@ -45,8 +45,8 @@ class GetIndexService(BaseTemplateService):
         statement: Select[tuple[CharacterModel]] = select(CharacterModel).limit(12).order_by(CharacterModel.id.asc())
         return (await self.session.execute(statement)).scalars().all()
 
-    async def __get_system_messages(self) -> Sequence[SystemMessage]:
-        statement: Select[tuple[SystemMessage]] = select(SystemMessage)
+    async def __get_system_messages(self) -> Sequence[SystemMessageModel]:
+        statement: Select[tuple[SystemMessageModel]] = select(SystemMessageModel)
         return (await self.session.execute(statement)).scalars().all()
 
     async def get_context(self, *args, **kwargs) -> dict[str, Any]:

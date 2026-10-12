@@ -5,7 +5,7 @@ from typing import Any, ClassVar
 import strawberry
 from strawberry.types import Info
 
-from futuramaapi.db import Base, FilterStatementKwargs
+from futuramaapi.db import BaseModel, FilterStatementKwargs
 from futuramaapi.db.models import CharacterModel, EpisodeModel, SeasonModel
 
 from .mixins import StrawberryDatabaseMixin
@@ -22,7 +22,7 @@ class PageBase(StrawberryDatabaseMixin):
 
 @strawberry.type
 class Character(StrawberryDatabaseMixin):
-    model: ClassVar[type[Base]] = CharacterModel
+    model: ClassVar[type[BaseModel]] = CharacterModel
 
     id: int
     name: str
@@ -34,18 +34,18 @@ class Character(StrawberryDatabaseMixin):
 
 @strawberry.type
 class Characters(PageBase, StrawberryDatabaseMixin):
-    model: ClassVar[type[Base]] = CharacterModel
+    model: ClassVar[type[BaseModel]] = CharacterModel
 
     edges: list[Character]
 
 
 @strawberry.type
 class Episode(StrawberryDatabaseMixin):
-    model: ClassVar[type[Base]] = EpisodeModel
+    model: ClassVar[type[BaseModel]] = EpisodeModel
 
     @strawberry.type
     class SeasonEpisode(StrawberryDatabaseMixin):
-        model: ClassVar[type[Base]] = SeasonModel
+        model: ClassVar[type[BaseModel]] = SeasonModel
 
         id: int
 
@@ -58,18 +58,18 @@ class Episode(StrawberryDatabaseMixin):
 
 @strawberry.type
 class Episodes(PageBase, StrawberryDatabaseMixin):
-    model: ClassVar[type[Base]] = EpisodeModel
+    model: ClassVar[type[BaseModel]] = EpisodeModel
 
     edges: list[Episode]
 
 
 @strawberry.type
 class Season(StrawberryDatabaseMixin):
-    model: ClassVar[type[Base]] = SeasonModel
+    model: ClassVar[type[BaseModel]] = SeasonModel
 
     @strawberry.type
     class EpisodeSeason(StrawberryDatabaseMixin):
-        model: ClassVar[type[Base]] = EpisodeModel
+        model: ClassVar[type[BaseModel]] = EpisodeModel
 
         id: int
         air_date: date | None
@@ -82,7 +82,7 @@ class Season(StrawberryDatabaseMixin):
 
 @strawberry.type
 class Seasons(PageBase, StrawberryDatabaseMixin):
-    model: ClassVar[type[Base]] = SeasonModel
+    model: ClassVar[type[BaseModel]] = SeasonModel
 
     edges: list[Season]
 

@@ -8,7 +8,7 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from futuramaapi.api_clients import RequestData
-from futuramaapi.db import Base
+from futuramaapi.db import BaseModel
 from futuramaapi.db.session import session_manager
 from futuramaapi.helpers import BaseSchema
 from futuramaapi.workers.services._base import BaseAPITaskService
@@ -31,7 +31,7 @@ class GetItemCallbackTaskService(BaseAPITaskService):
     delay: int
     callback_url: HttpUrl
 
-    model_class: ClassVar[type[Base]]
+    model_class: ClassVar[type[BaseModel]]
     response_class: ClassVar[type[BaseSchema]]
 
     def __init__(self, *args, **kwargs) -> None:
@@ -47,12 +47,12 @@ class GetItemCallbackTaskService(BaseAPITaskService):
         return self._session
 
     @property
-    def _statement(self) -> Select[tuple[Base]]:
+    def _statement(self) -> Select[tuple[BaseModel]]:
         return select(self.model_class).where(self.model_class.id == self.id)
 
     async def _get_item(self) -> dict[str, Any]:
         try:
-            obj: Base = (await self.session.execute(self._statement)).scalars().one()
+            obj: BaseModel = (await self.session.execute(self._statement)).scalars().one()
         except NoResultFound:
             return {"item": {"id": self.id}}
 

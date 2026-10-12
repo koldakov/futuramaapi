@@ -3,13 +3,13 @@ from typing import ClassVar, Self, cast
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from strawberry.types.field import StrawberryField
 
-from futuramaapi.db import Base, FilterStatementKwargs, ModelDoesNotExistError
+from futuramaapi.db import BaseModel, FilterStatementKwargs, ModelDoesNotExistError
 
 from .conversion import ConverterBase, converter
 
 
 class StrawberryDatabaseMixin:
-    model: ClassVar[type[Base]]
+    model: ClassVar[type[BaseModel]]
 
     converter: ClassVar[ConverterBase] = converter
 
@@ -18,13 +18,13 @@ class StrawberryDatabaseMixin:
         return cls.__strawberry_definition__.fields  # type: ignore[attr-defined]
 
     @classmethod
-    def from_model(cls, instance: Base, /) -> Self:
+    def from_model(cls, instance: BaseModel, /) -> Self:
         return cls.converter.to_strawberry(cls, instance)
 
     @classmethod
     async def get(cls, session: AsyncSession, id_: int, /) -> Self | None:
         try:
-            obj: Base = await cls.model.get(
+            obj: BaseModel = await cls.model.get(
                 session,
                 id_,
             )
@@ -36,7 +36,7 @@ class StrawberryDatabaseMixin:
     @classmethod
     async def paginate(cls, session: AsyncSession, kwargs: FilterStatementKwargs, /) -> Self:
         total: int = await cls.model.count(session)
-        edges: list[Base] = cast("list[Base]", await cls.model.filter(session, kwargs))
+        edges: list[BaseModel] = cast("list[BaseModel]", await cls.model.filter(session, kwargs))
 
         return cls(
             limit=kwargs.limit,  # type: ignore[call-arg]

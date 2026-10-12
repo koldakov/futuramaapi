@@ -11,7 +11,7 @@ from strawberry.types.base import StrawberryList, StrawberryOptional, has_object
 from strawberry.types.enum import StrawberryEnumDefinition
 from strawberry.types.union import StrawberryUnion
 
-from futuramaapi.db import Base
+from futuramaapi.db import BaseModel
 
 if TYPE_CHECKING:
     from strawberry.types.field import StrawberryField
@@ -71,7 +71,7 @@ class ConverterBase(ABC):
     @abstractmethod
     def to_strawberry[S](
         cls: type[S],  # noqa: PLW0211
-        model_instance: Base,
+        model_instance: BaseModel,
         /,
     ) -> S: ...
 
@@ -79,7 +79,7 @@ class ConverterBase(ABC):
     @abstractmethod
     def get_edges[S](
         cls: type[S],  # noqa: PLW0211
-        model_instance: list[Base],
+        model_instance: list[BaseModel],
         /,
     ) -> list[S] | None: ...
 
@@ -88,7 +88,7 @@ class ModelConverter(ConverterBase):
     @staticmethod
     def to_strawberry[S](
         cls: type[S],  # noqa: PLW0211
-        model_instance: Base,
+        model_instance: BaseModel,
         /,
     ) -> S:
         kwargs: dict = {}
@@ -107,7 +107,7 @@ class ModelConverter(ConverterBase):
     @staticmethod
     def get_edges[S](
         cls: type[S],  # noqa: PLW0211
-        data: list[Base],
+        data: list[BaseModel],
         /,
     ) -> list[S] | None:
         field: StrawberryField = next(f for f in cls.__strawberry_definition__.fields if f.python_name == "edges")  # type: ignore[attr-defined]
