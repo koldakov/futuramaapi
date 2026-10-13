@@ -1,5 +1,5 @@
 from fastapi_pagination import Page
-from fastapi_pagination.ext.sqlalchemy import paginate
+from fastapi_pagination.ext.sqlalchemy import apaginate
 from sqlalchemy import Select, select
 from sqlalchemy.orm import selectinload
 
@@ -18,7 +18,7 @@ class ListEpisodesService(BaseSessionService[Page[ListEpisodesResponse]]):
         return select(EpisodeModel).filter().options(selectinload(EpisodeModel.season))
 
     async def process(self, *args, **kwargs) -> Page[ListEpisodesResponse]:
-        return await paginate(
+        return await apaginate(
             self.session,
             self.statement,
         )

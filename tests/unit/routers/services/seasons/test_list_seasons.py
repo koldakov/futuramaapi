@@ -6,9 +6,9 @@ from futuramaapi.routers.services.seasons.list_seasons import ListSeasonsService
 
 
 @pytest.fixture
-def mock_paginate(request):
+def mock_apaginate(request):
     patcher = patch(
-        "futuramaapi.routers.services.seasons.list_seasons.paginate",
+        "futuramaapi.routers.services.seasons.list_seasons.apaginate",
         new_callable=AsyncMock,
     )
     mocked = patcher.start()
@@ -21,11 +21,11 @@ class TestListSeasonsService:
     async def test_list_seasons_success(
         self,
         mock_session_manager,
-        mock_paginate,
+        mock_apaginate,
     ):
         # Arrange
         page = MagicMock()
-        mock_paginate.return_value = page
+        mock_apaginate.return_value = page
 
         service = ListSeasonsService()
 
@@ -34,7 +34,7 @@ class TestListSeasonsService:
 
         # Assert
         assert result is page
-        mock_paginate.assert_called_once()
+        mock_apaginate.assert_called_once()
 
-        args, _ = mock_paginate.call_args
+        args, _ = mock_apaginate.call_args
         assert args[0] is mock_session_manager

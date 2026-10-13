@@ -7,9 +7,9 @@ from futuramaapi.routers.services.characters.list_characters import ListCharacte
 
 
 @pytest.fixture
-def mock_paginate(request):
+def mock_apaginate(request):
     patcher = patch(
-        "futuramaapi.routers.services.characters.list_characters.paginate",
+        "futuramaapi.routers.services.characters.list_characters.apaginate",
         new_callable=AsyncMock,
     )
     mocked = patcher.start()
@@ -22,11 +22,11 @@ class TestListCharactersService:
     async def test_list_characters_success(
         self,
         mock_session_manager,
-        mock_paginate,
+        mock_apaginate,
     ):
         # Arrange
         page = MagicMock()
-        mock_paginate.return_value = page
+        mock_apaginate.return_value = page
 
         service = ListCharactersService(
             gender=None,
@@ -40,19 +40,19 @@ class TestListCharactersService:
 
         # Assert
         assert result is page
-        mock_paginate.assert_called_once()
+        mock_apaginate.assert_called_once()
 
-        args, _ = mock_paginate.call_args
+        args, _ = mock_apaginate.call_args
         assert args[0] is mock_session_manager
 
     @pytest.mark.asyncio
     async def test_list_characters_gender_negation(
         self,
         mock_session_manager,
-        mock_paginate,
+        mock_apaginate,
     ):
         # Arrange
-        mock_paginate.return_value = MagicMock()
+        mock_apaginate.return_value = MagicMock()
 
         service = ListCharactersService(
             gender="!male",
@@ -65,16 +65,16 @@ class TestListCharactersService:
         await service()
 
         # Assert
-        mock_paginate.assert_called_once()
+        mock_apaginate.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_list_characters_gender_positive(
         self,
         mock_session_manager,
-        mock_paginate,
+        mock_apaginate,
     ):
         # Arrange
-        mock_paginate.return_value = MagicMock()
+        mock_apaginate.return_value = MagicMock()
 
         service = ListCharactersService(
             gender="male",
@@ -87,16 +87,16 @@ class TestListCharactersService:
         await service()
 
         # Assert
-        mock_paginate.assert_called_once()
+        mock_apaginate.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_list_characters_status_positive(
         self,
         mock_session_manager,
-        mock_paginate,
+        mock_apaginate,
     ):
         # Arrange
-        mock_paginate.return_value = MagicMock()
+        mock_apaginate.return_value = MagicMock()
 
         service = ListCharactersService(
             gender=None,
@@ -109,16 +109,16 @@ class TestListCharactersService:
         await service()
 
         # Assert
-        mock_paginate.assert_called_once()
+        mock_apaginate.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_list_characters_status_negation(
         self,
         mock_session_manager,
-        mock_paginate,
+        mock_apaginate,
     ):
         # Arrange
-        mock_paginate.return_value = MagicMock()
+        mock_apaginate.return_value = MagicMock()
 
         service = ListCharactersService(
             gender=None,
@@ -131,16 +131,16 @@ class TestListCharactersService:
         await service()
 
         # Assert
-        mock_paginate.assert_called_once()
+        mock_apaginate.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_list_characters_species_positive(
         self,
         mock_session_manager,
-        mock_paginate,
+        mock_apaginate,
     ):
         # Arrange
-        mock_paginate.return_value = MagicMock()
+        mock_apaginate.return_value = MagicMock()
 
         service = ListCharactersService(
             gender=None,
@@ -153,16 +153,16 @@ class TestListCharactersService:
         await service()
 
         # Assert
-        mock_paginate.assert_called_once()
+        mock_apaginate.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_list_characters_species_negation(
         self,
         mock_session_manager,
-        mock_paginate,
+        mock_apaginate,
     ):
         # Arrange
-        mock_paginate.return_value = MagicMock()
+        mock_apaginate.return_value = MagicMock()
 
         service = ListCharactersService(
             gender=None,
@@ -175,17 +175,17 @@ class TestListCharactersService:
         await service()
 
         # Assert
-        mock_paginate.assert_called_once()
+        mock_apaginate.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_list_characters_query_filter(
         self,
         faker: Faker,
         mock_session_manager,
-        mock_paginate,
+        mock_apaginate,
     ):
         # Arrange
-        mock_paginate.return_value = MagicMock()
+        mock_apaginate.return_value = MagicMock()
 
         service = ListCharactersService(
             gender=None,
@@ -198,16 +198,16 @@ class TestListCharactersService:
         await service()
 
         # Assert
-        mock_paginate.assert_called_once()
+        mock_apaginate.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_list_characters_order_desc(
         self,
         mock_session_manager,
-        mock_paginate,
+        mock_apaginate,
     ):
         # Arrange
-        mock_paginate.return_value = MagicMock()
+        mock_apaginate.return_value = MagicMock()
 
         service = ListCharactersService(
             order_by="id",
@@ -222,4 +222,4 @@ class TestListCharactersService:
         await service()
 
         # Assert
-        mock_paginate.assert_called_once()
+        mock_apaginate.assert_called_once()

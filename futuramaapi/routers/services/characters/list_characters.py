@@ -1,7 +1,7 @@
 from typing import Literal
 
 from fastapi_pagination import Page
-from fastapi_pagination.ext.sqlalchemy import paginate
+from fastapi_pagination.ext.sqlalchemy import apaginate
 from pydantic import Field
 from sqlalchemy import ColumnElement, Select, UnaryExpression, select
 
@@ -68,7 +68,7 @@ class ListCharactersService(BaseSessionService[Page[ListCharactersResponse]]):
         return statement.where(*self.__where).order_by(self.__order_by)
 
     async def process(self, *args, **kwargs) -> Page[ListCharactersResponse]:
-        return await paginate(
+        return await apaginate(
             self.session,
             self.statement,
         )

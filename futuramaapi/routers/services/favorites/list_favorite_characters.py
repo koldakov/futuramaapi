@@ -1,5 +1,5 @@
 from fastapi_pagination import Page
-from fastapi_pagination.ext.sqlalchemy import paginate
+from fastapi_pagination.ext.sqlalchemy import apaginate
 from sqlalchemy import select
 
 from futuramaapi.db.models import CharacterModel, FavoriteCharacterModel
@@ -23,7 +23,7 @@ class ListFavoriteCharacters(BaseUserAuthenticatedService[Page[ListFavoriteChara
         )
 
     async def process(self, *args, **kwargs) -> Page[ListFavoriteCharactersResponse]:
-        return await paginate(
+        return await apaginate(
             self.session,
             self.statement,
         )

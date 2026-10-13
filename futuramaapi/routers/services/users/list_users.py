@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from fastapi_pagination import Page
-from fastapi_pagination.ext.sqlalchemy import paginate
+from fastapi_pagination.ext.sqlalchemy import apaginate
 from pydantic import Field
 from sqlalchemy import Select, select
 
@@ -53,7 +53,7 @@ class ListUsersService(BaseSessionService[Page[ListUsersResponse]]):
         return statement
 
     async def process(self, *args, **kwargs) -> Page[ListUsersResponse]:
-        return await paginate(
+        return await apaginate(
             self.session,
             self._statement,
         )

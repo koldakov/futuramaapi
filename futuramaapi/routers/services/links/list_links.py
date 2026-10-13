@@ -1,5 +1,5 @@
 from fastapi_pagination import Page
-from fastapi_pagination.ext.sqlalchemy import paginate
+from fastapi_pagination.ext.sqlalchemy import apaginate
 from pydantic import Field
 from sqlalchemy import Select, select
 
@@ -31,7 +31,7 @@ class ListLinksService(BaseUserAuthenticatedService[Page[ListLinksResponse]]):
         return select(LinkModel).order_by(LinkModel.created_at.desc())
 
     async def process(self, *args, **kwargs) -> Page[ListLinksResponse]:
-        return await paginate(
+        return await apaginate(
             self.session,
             self._statement,
         )
