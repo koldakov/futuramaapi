@@ -564,7 +564,7 @@ wheels = [
 
 [[package]]
 name = "futuramaapi"
-version = "1.13.13"
+version = "1.13.14"
 source = { editable = "." }
 dependencies = [
     { name = "aiocache" },
